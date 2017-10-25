@@ -1,0 +1,30 @@
+@import './_fonts.css';
+@import './_common.css';
+
+::selection {
+  background: var(--color_mono-white);
+  color: var(--color_neutral-grey-offblack);
+  text-shadow: none;
+}
+
+::-moz-selection {
+  background: var(--color_mono-white);
+  color: var(--color_neutral-grey-offblack);
+  text-shadow: none;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  overflow: hidden;
+}
+
+body {
+  background: var(--color_neutral-grey-offblack);
+  overflow-x: hidden;
+  color: var(--color_mono-white);
+  font-family: 'Futura Std';
+  font-size: 60px;
+  font-weight: 300;
+}

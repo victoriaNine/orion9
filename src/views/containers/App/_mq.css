@@ -1,0 +1,2 @@
+@custom-media --mq_mobile screen and (min-width: 700px);
+@custom-media --mq_laptop screen and (min-width: 961px);

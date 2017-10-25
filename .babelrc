@@ -1,0 +1,11 @@
+{
+  "sourceMaps": true,
+  "presets": [
+    "env",
+    "stage-0"
+  ],
+  "plugins": [
+    "babel-plugin-transform-es2015-spread",
+    "babel-plugin-transform-object-rest-spread"
+  ]
+}

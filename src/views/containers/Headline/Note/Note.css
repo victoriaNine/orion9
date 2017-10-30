@@ -1,0 +1,22 @@
+.Note {
+  font-size: 10px;
+  opacity: 0.5;
+  cursor: pointer;
+  vertical-align: super;
+  margin-left: 0.5em;
+  display: inline-block;
+  transition: opacity 200ms;
+  animation: color 2s infinite;
+
+  &:hover {
+    opacity: 1;
+  }
+}
+
+@keyframes color {
+  0% { color: hsl(0, 90%, 60%); }
+  25% { color: hsl(90, 90%, 60%); }
+  50% { color: hsl(180, 90%, 60%); transform: translateY(4px) }
+  75% { color: hsl(270, 90%, 60%); }
+  100% { color: hsl(360, 90%, 60%); }
+}

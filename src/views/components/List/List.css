@@ -1,0 +1,101 @@
+@import 'App/_common.css';
+
+.List {
+  &:hover {
+    .item:not(:hover) {
+      color: var(--color_neutral-grey-dark);
+      opacity: 0.5;
+    }
+  }
+}
+
+.item {
+  font-size: 30px;
+  text-transform: lowercase;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  transition: transform 200ms;
+
+  &:hover {
+    transform: translateX(18px);
+
+    .title {
+      transform: skew(-15deg);
+    }
+
+    .detailsWrapper {
+      opacity: 1;
+      margin: 0.5em 0;
+      height: auto;
+    }
+
+    .dash { opacity: 1; transform: scaleX(1); }
+    .details { opacity: 1; transform: translateX(0); }
+  }
+}
+
+.title {
+  width: 100%;
+  transition: color 200ms, transform 200ms;
+}
+
+.detailsWrapper {
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  height: 0;
+  opacity: 0;
+  transition: height 200ms, margin 200ms, opacity 200ms;
+}
+
+.dash {
+  width: 2em;
+  position: relative;
+  opacity: 0;
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 200ms 100ms, opacity 200ms 100ms;
+  display: inline-block;
+  margin-right: 0.5em;
+
+  &:after {
+    content: "";
+    position: absolute;
+    height: 1px;
+    width: 100%;
+    background: currentColor;
+  }
+}
+
+.details {
+  opacity: 0;
+  transform: translateX(1em);
+  transition: transform 200ms 200ms, opacity 200ms 200ms;
+}
+
+.gifContainer {
+  position: fixed;
+  width: 256px;
+  top: 100px;
+  left: calc(50% - 128px);
+  opacity: 0;
+  transition: opacity 200ms, transform 200ms;
+  transform: translateX(30px);
+
+  @media (--mq_laptop) {
+    left: auto;
+    right: 50px;
+  }
+
+  &.is--active {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.gif {
+  width: 100%;
+  height: auto;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.75);
+}

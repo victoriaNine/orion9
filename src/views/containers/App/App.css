@@ -2,13 +2,13 @@
 @import './_common.css';
 
 ::selection {
-  background: var(--color_mono-white);
+  background: var(--color_neutral-grey-light);
   color: var(--color_neutral-grey-offblack);
   text-shadow: none;
 }
 
 ::-moz-selection {
-  background: var(--color_mono-white);
+  background: var(--color_neutral-grey-light);
   color: var(--color_neutral-grey-offblack);
   text-shadow: none;
 }
@@ -17,14 +17,42 @@ html, body {
   width: 100%;
   height: 100%;
   position: absolute;
-  overflow: hidden;
+  overflow-x: hidden;
 }
 
 body {
   background: var(--color_neutral-grey-offblack);
-  overflow-x: hidden;
-  color: var(--color_mono-white);
+  color: var(--color_neutral-grey-light);
   font-family: 'Futura Std';
-  font-size: 60px;
+  font-size: 30px;
   font-weight: 300;
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+strike {
+  text-decoration: none;
+  position: relative;
+
+  &:after {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 1px;
+    background: currentColor;
+    left: 0;
+    top: 0.5em;
+  }
+}
+
+.App {
+  padding: 25px;
+
+  @media (--mq_laptop) {
+    padding: 50px;
+  }
 }

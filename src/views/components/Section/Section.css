@@ -1,0 +1,14 @@
+.Section {}
+
+.contents {
+  margin-left: 12px;
+}
+
+.title {
+  margin-bottom: 0.5em;
+}
+
+.text {
+  text-transform: lowercase;
+  max-width: 600px;
+}

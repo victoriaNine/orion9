@@ -10,6 +10,7 @@ const IS_DEV = ENV === 'development';
 
 module.exports = {
   context: path.resolve(__dirname, "src"),
+
   entry: './index.js',
 
   output: {
@@ -21,12 +22,13 @@ module.exports = {
   resolve: {
     extensions: ['.jsx', '.js', '.json', '.css'],
     modules: [
-      path.resolve(__dirname, "node_modules"),
       'node_modules'
     ],
     alias: {
-      App: path.resolve(__dirname, 'src/containers/App'),
+      App: path.resolve(__dirname, 'src/views/containers/App'),
+      Components: path.resolve(__dirname, 'src/views/components'),
       Containers: path.resolve(__dirname, 'src/views/containers'),
+      Data: path.resolve(__dirname, 'src/data'),
       Internal: path.resolve(__dirname, 'src/internal'),
 
       'react': 'preact-compat',
@@ -61,8 +63,7 @@ module.exports = {
         }
       },
       {
-        // Transform our own .(less|css) files with PostCSS and CSS-modules
-        test: /\.(css)$/,
+        test: /[^.global].(css)$/,
         include: [path.resolve(__dirname, 'src/views')],
         use: ExtractTextPlugin.extract({
           fallback: 'style-loader',
@@ -72,7 +73,26 @@ module.exports = {
               options: { modules: true, sourceMap: IS_DEV, importLoaders: 1, root: '', localIdentName: '[name]_[local]_[hash:base64:5]' }
             },
             {
-              loader: `postcss-loader`,
+              loader: 'postcss-loader',
+              options: {
+                sourceMap: IS_DEV
+              }
+            }
+          ]
+        })
+      },
+      {
+        test: /\.global.(css)$/,
+        include: [path.resolve(__dirname, 'src/views')],
+        use: ExtractTextPlugin.extract({
+          fallback: 'style-loader',
+          use: [
+            {
+              loader: 'css-loader',
+              options: { sourceMap: IS_DEV, importLoaders: 1 }
+            },
+            {
+              loader: 'postcss-loader',
               options: {
                 sourceMap: IS_DEV
               }
@@ -95,7 +115,7 @@ module.exports = {
     ]
   },
 
-  plugins: ([
+  plugins: [
     new WebpackMd5Hash(),
     new webpack.NoEmitOnErrorsPlugin(),
     new ExtractTextPlugin('style.css'),
@@ -108,11 +128,10 @@ module.exports = {
       minify: { collapseWhitespace: true }
     }),
     new CopyWebpackPlugin([
-      { from: './favicon.png', to: './' }
-    ].concat(IS_DEV ? [
+      { from: './favicon.png', to: './' },
       { from: './config.json', to: './' },
-    ] : []))
-  ]).concat(!IS_DEV ? [
+    ])
+  ].concat(!IS_DEV ? [
     new webpack.optimize.UglifyJsPlugin({
       output: {
         comments: false
@@ -163,8 +182,6 @@ module.exports = {
     publicPath: '/',
     contentBase: './src',
     historyApiFallback: true,
-    open: true,
-    openPage: '',
     proxy: {
       // OPTIONAL: proxy configuration:
       // '/optional-prefix/**': { // path pattern to rewrite

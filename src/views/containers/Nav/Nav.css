@@ -1,0 +1,37 @@
+.Nav {
+  position: fixed;
+  right: 50px;
+  top: 25px;
+  display: flex;
+  z-index: 99;
+}
+
+.langNav {
+  font-size: 10px;
+  display: flex;
+  margin-left: 25px;
+  font-weight: 400;
+}
+
+.langItem {
+  padding: 0 0.5em;
+}
+
+.linkWrapper {
+  position: relative;
+  width: 44px;
+}
+
+.link {
+  opacity: 0;
+  transform: translateX(-18px);
+  transition: opacity 200ms, transform 200ms;
+  position: absolute;
+  pointer-events: none;
+
+  &.is--active {
+    opacity: 1;
+    transform: translateX(0);
+    pointer-events: auto;
+  }
+}

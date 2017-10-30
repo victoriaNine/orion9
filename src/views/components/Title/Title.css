@@ -1,0 +1,37 @@
+.Title {
+  font-size: 10px;
+  text-transform: uppercase;
+  position: relative;
+  display: inline-block;
+  letter-spacing: 2px;
+  font-weight: 400;
+  transition: letter-spacing 200ms 100ms;
+
+  &.is--active, &:hover {
+    letter-spacing: 4px;
+
+    .background {
+      animation: extend 400ms 100ms ease;
+    }
+  }
+}
+
+.background {
+  position: absolute;
+  width: 100%;
+  background: #333;
+  opacity: 0.2;
+  height: 100%;
+  left: 1.25em;
+  padding: 0.25em;
+  top: -0.25em;
+  box-sizing: content-box;
+  z-index: -1;
+  transform-origin: left center;
+  transition: background 200ms;
+}
+
+@keyframes extend {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}

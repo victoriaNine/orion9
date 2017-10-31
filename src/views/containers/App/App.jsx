@@ -37,7 +37,7 @@ class App extends Component {
 
     const tl = new TimelineMax({ delay: 0.5 });
     tl.from(this.DOM.querySelector(`.${styles.contents}`), 0.4, { opacity: 0, y: 12, clearProps: "all" }, 0.4);
-    tl.from(this.navDOM, 0.2, { opacity: 0, x: 12, clearProps: "all" }, "+=0.4");
+    tl.from(this.navDOM, 0.4, { opacity: 0, x: 12, clearProps: "all" }, "-=0.2");
   }
 
   getGradientOffset () {

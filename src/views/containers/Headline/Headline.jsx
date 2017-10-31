@@ -24,8 +24,8 @@ class Headline extends Component {
 
   componentDidMount () {
     const tl = new TimelineMax({ delay: 0.5 });
-    tl.from(this.DOM.querySelectorAll(`.${styles.paragraph}`)[0], 0.6, { opacity: 0, clearProps: "all" });
-    tl.from(this.DOM.querySelectorAll(`.${styles.paragraph}`)[1], 0.4, { opacity: 0, y: -12, clearProps: "all" }, "+=0.3");
+    tl.from(this.DOM.querySelectorAll(`.${styles.paragraph}`)[0], 0.4, { opacity: 0, y: -12, clearProps: "all" });
+    tl.from(this.DOM.querySelectorAll(`.${styles.paragraph}`)[1], 0.4, { opacity: 0, y: -12, clearProps: "all" }, "-=0.2");
     tl.from(this.noteDOM, 0.4, { opacity: 0, clearProps: "all" });
   }
 

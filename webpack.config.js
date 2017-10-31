@@ -3,6 +3,9 @@ import ExtractTextPlugin from 'extract-text-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import CopyWebpackPlugin from 'copy-webpack-plugin';
 import WebpackMd5Hash from 'webpack-md5-hash';
+import OfflinePlugin from 'offline-plugin';
+import ImageminPlugin from 'imagemin-webpack-plugin';
+import ResourceHintWebpackPlugin from 'resource-hints-webpack-plugin';
 import path from 'path';
 
 const ENV = process.env.NODE_ENV || 'development';
@@ -28,7 +31,6 @@ module.exports = {
       App: path.resolve(__dirname, 'src/views/containers/App'),
       Components: path.resolve(__dirname, 'src/views/components'),
       Containers: path.resolve(__dirname, 'src/views/containers'),
-      Data: path.resolve(__dirname, 'src/data'),
       Internal: path.resolve(__dirname, 'src/internal'),
 
       'react': 'preact-compat',
@@ -127,38 +129,68 @@ module.exports = {
       template: './index.html',
       minify: { collapseWhitespace: true }
     }),
+    new ResourceHintWebpackPlugin(),
     new CopyWebpackPlugin([
-      { from: './favicon.png', to: './' },
-      { from: './config.json', to: './' },
+      { from: './public', to: './' }
     ])
   ].concat(!IS_DEV ? [
+    new ImageminPlugin({
+      test: /\.(jpe?g|png|gif|svg)$/i,
+    }),
+
     new webpack.optimize.UglifyJsPlugin({
-      output: {
-        comments: false
+      uglifyOptions: {
+        output: {
+          comments: false
+        },
+        compress: {
+          unsafe_comps: true,
+          properties: true,
+          keep_fargs: false,
+          pure_getters: false,
+          collapse_vars: true,
+          unsafe: true,
+          warnings: false,
+          screw_ie8: true,
+          sequences: true,
+          dead_code: true,
+          drop_debugger: true,
+          comparisons: true,
+          conditionals: true,
+          evaluate: true,
+          booleans: true,
+          loops: true,
+          unused: true,
+          hoist_funs: true,
+          if_return: true,
+          join_vars: true,
+          cascade: true,
+          drop_console: true
+        }
+      }
+    }),
+
+    new OfflinePlugin({
+      safeToUseOptionalCaches: true,
+      caches: {
+        main: [
+          'bundle.js',
+          'style.css',
+          'index.html'
+        ],
+        additional: [
+          '*.jpg',
+          '*.png',
+          '*.svg',
+          '*.gif'
+        ],
+        optional: [
+          ':rest:'
+        ]
       },
-      compress: {
-        unsafe_comps: true,
-        properties: true,
-        keep_fargs: false,
-        pure_getters: false,
-        collapse_vars: true,
-        unsafe: true,
-        warnings: false,
-        screw_ie8: true,
-        sequences: true,
-        dead_code: true,
-        drop_debugger: true,
-        comparisons: true,
-        conditionals: true,
-        evaluate: true,
-        booleans: true,
-        loops: true,
-        unused: true,
-        hoist_funs: true,
-        if_return: true,
-        join_vars: true,
-        cascade: true,
-        drop_console: true
+      AppCache: false,
+      ServiceWorker: {
+        events: true
       }
     })
   ] : []),

@@ -5,9 +5,10 @@ import { h, render } from 'preact';
 import App from 'Containers/App';
 
 if (!__IS_DEV__) {
-  require('./ga');
+  require('Internal/ga');
+  require('Internal/pwa');
 } else {
-  require('./stats').default();
+  require('Internal/stats').default();
 }
 
 let root;

@@ -1,0 +1,19 @@
+{
+  "name": "orion9",
+  "short_name": "orion9",
+  "start_url": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#111111",
+  "theme_color": "#111111",
+  "icons": [{
+    "src": "./icon_192x192.png",
+    "type": "image/png",
+    "sizes": "192x192"
+  },
+  {
+    "src": "./icon_512x512.png",
+    "type": "image/png",
+    "sizes": "512x512"
+  }]
+}

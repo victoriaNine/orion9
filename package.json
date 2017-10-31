@@ -88,7 +88,9 @@
     "classnames": "^2.2.5",
     "copy": "^0.3.1",
     "gsap": "^1.20.3",
+    "imagemin-webpack-plugin": "^1.5.2",
     "lodash": "^4.17.4",
+    "offline-plugin": "^4.8.4",
     "postcss-cssnext": "^3.0.2",
     "preact": "^8.1.0",
     "preact-compat": "^3.15.0",
@@ -98,6 +100,7 @@
     "promise-polyfill": "^6.0.2",
     "proptypes": "^1.0.0",
     "react-router-dom": "^4.2.2",
+    "resource-hints-webpack-plugin": "^0.0.1",
     "serve": "^6.3.1",
     "stats.js": "^0.17.0",
     "webpack-md5-hash": "^0.0.5"

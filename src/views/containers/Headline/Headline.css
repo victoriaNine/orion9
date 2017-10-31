@@ -1,5 +1,8 @@
+@import 'App/_common.css';
+
 .Headline {
   margin: 75px 0 50px;
+  font-family: var(--font_didot);
 }
 
 .paragraph:first-of-type {

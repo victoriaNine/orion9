@@ -10,7 +10,9 @@ class Title extends Component {
         [styles['is--active']]: this.props.isActive
       })}>
         <div className={styles.background} style={{ background: this.props.backgroundColor }} />
-        {this.props.children}
+        <div className={styles.contents}>
+          {this.props.children}
+        </div>
       </div>
     );
   }

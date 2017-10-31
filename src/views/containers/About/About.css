@@ -1,5 +1,7 @@
-.Home {}
+@import 'App/_common.css';
+
+.About {}
 
 .section {
-  margin-bottom: 25px;
+  margin-bottom: var(--size_sectionBottomMargin);
 }

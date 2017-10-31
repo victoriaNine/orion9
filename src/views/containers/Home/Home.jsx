@@ -1,9 +1,7 @@
 import { h, Component } from 'preact';
 import { TweenMax, Power2 } from 'gsap';
 
-import Headline from 'Components/Headline';
 import Section from 'Components/Section';
-
 import data from './Home.data';
 
 import styles from './Home.css';

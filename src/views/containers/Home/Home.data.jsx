@@ -1,5 +1,3 @@
-import { h } from 'preact';
-
 const data = [
   {
     title: { fr: "Projets", en: "Projects", jp: "プロジェクト" },
@@ -9,28 +7,28 @@ const data = [
         url: "https://15thtriad.com",
         details: ["webaudio", "canvas", "webgl", "node.js", "socket.io", "couchdb", "audio", "design"],
         color: "#3399cc",
-        visuals: "15thtriad"
+        visuals: { type: "video", url: "" }
       },
       {
         title: "I Want To Work With You",
         url: "http://orion9.net/iWantToWork/#!/With/You",
         details: ["webaudio", "css3d", "canvas", "audio", "design"],
         color: "#6233cc",
-        visuals: "iwtwwy"
+        visuals: { type: "video", url: "" }
       },
       {
         title: "Psycho-Cube",
         url: "http://orion9.net/_demos/psychoCube",
         details: ["webaudio", "css3d", "canvas", "audio", "design"],
         color: "#20cad9",
-        visuals: "15thtriad"
+        visuals: { type: "video", url: "" }
       },
       {
         title: "Waltz Waltz Revolution",
         url: "http://orion9.net/_demos/waltzRevolution",
         details: ["webaudio", "canvas", "audio", "design"],
         color: "#d48930",
-        visuals: "15thtriad"
+        visuals: { type: "video", url: "" }
       }
     ]
   },
@@ -42,14 +40,14 @@ const data = [
         url: "http://orion9.net/_demos/meteorRain",
         details: ["canvas", "svg", "design"],
         color: "#d44b30",
-        visuals: "15thtriad"
+        visuals: { type: "video", url: "" }
       },
       {
         title: "Intertap",
         url: "http://orion9.net/_demos/intertap",
         details: ["webaudio", "canvas", "audio", "design"],
         color: "#e4347a",
-        visuals: "iwtwwy"
+        visuals: { type: "video", url: "" }
       }
     ]
   },
@@ -69,7 +67,7 @@ const data = [
         url: "mailto:victoria-nine[ at ]orion9.net"
       },
       {
-        title: { fr: "M'écrire un tweet", en: "Tweet me something", jp: "ツイートする" },
+        title: { fr: "M'envoyer un tweet", en: "Tweet me something", jp: "ツイートする" },
         url: "http://twitter.com/victoria9nine",
         color: "#00aced"
       },

@@ -15,6 +15,10 @@
 
 .langItem {
   padding: 0 0.5em;
+
+  /*&:not(:last-of-type) {
+    border-right: 1px solid currentColor;
+  }*/
 }
 
 .linkWrapper {

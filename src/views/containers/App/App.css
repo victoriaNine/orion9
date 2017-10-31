@@ -23,7 +23,7 @@ html, body {
 body {
   background: var(--color_neutral-grey-offblack);
   color: var(--color_neutral-grey-light);
-  font-family: 'Futura Std';
+  font-family: var(--font_futura);
   font-size: 30px;
   font-weight: 300;
   -webkit-font-smoothing: antialiased;
@@ -56,3 +56,6 @@ strike {
     padding: 50px;
   }
 }
+
+.contents {}
+.wrapper {}

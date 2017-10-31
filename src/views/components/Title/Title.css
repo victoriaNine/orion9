@@ -1,3 +1,5 @@
+@import 'App/_common.css';
+
 .Title {
   font-size: 10px;
   text-transform: uppercase;
@@ -19,7 +21,7 @@
 .background {
   position: absolute;
   width: 100%;
-  background: #333;
+  background: var(--color_neutral-grey-dark);
   opacity: 0.2;
   height: 100%;
   left: 1.25em;
@@ -30,6 +32,8 @@
   transform-origin: left center;
   transition: background 200ms;
 }
+
+.contents {}
 
 @keyframes extend {
   from { transform: scaleX(0); }

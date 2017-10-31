@@ -1,4 +1,6 @@
-.Section {}
+.Section {
+  max-width: 570px;
+}
 
 .contents {
   margin-left: 12px;
@@ -10,5 +12,6 @@
 
 .text {
   text-transform: lowercase;
-  max-width: 600px;
+  font-size: 24px;
+  line-height: 1.5em;
 }

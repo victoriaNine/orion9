@@ -3,13 +3,14 @@
   opacity: 0.5;
   cursor: pointer;
   vertical-align: super;
-  margin-left: 0.5em;
+  margin: 0 0.5em;
   display: inline-block;
-  transition: opacity 200ms;
+  transition: opacity 200ms, font-size 200ms;
   animation: color 2s infinite;
 
   &:hover {
     opacity: 1;
+    font-size: 14px;
   }
 }
 

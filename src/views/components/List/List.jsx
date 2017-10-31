@@ -1,4 +1,3 @@
-import classnames from 'classnames';
 import { h, Component } from 'preact';
 
 import styles from './List.css';
@@ -9,28 +8,19 @@ class List extends Component {
   };
 
   itemsDOM = [];
+  gifsDOM = [];
 
   onSelect = (item, index) => {
     this.itemsDOM[index].querySelector(`.${styles.title}`).style.color = item.color;
 
-    item.gif && this.setState({
-      currentGif: item.gif,
-      showGif: true,
-    });
-
+    item.gif && this.gifsDOM[index].classList.add(styles['is--visible']);
     this.props.onSelect(item);
   };
 
   onDeselect = (item, index) => {
     this.itemsDOM[index].querySelector(`.${styles.title}`).style.color = '';
+    item.gif && this.gifsDOM[index].classList.remove(styles['is--visible']);
 
-    !this.state.showGif && setTimeout(() => {
-      this.setState({
-        currentGif: ''
-      });
-    }, 200);
-
-    this.setState({ showGif: false });
     this.props.onDeselect(item);
   };
 
@@ -58,14 +48,14 @@ class List extends Component {
             );
           })}
         </ul>
-        <div
-          className={classnames(styles.gifContainer, {
-            [styles['is--active']]: this.state.showGif
+        <div className={styles.gifWrapper}>
+          {this.props.items.map((item, index) => {
+            return item.gif && (
+              <div className={styles.gifContainer} ref={(ref) => { this.gifsDOM[index] = ref; }}>
+                <img src={item.gif} className={styles.gif} />
+              </div>
+            );
           })}
-        >
-          {
-            this.state.currentGif && <img src={this.state.currentGif} className={styles.gif} />
-          }
         </div>
       </div>
     );

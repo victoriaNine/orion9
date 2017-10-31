@@ -99,6 +99,7 @@
     "proptypes": "^1.0.0",
     "react-router-dom": "^4.2.2",
     "serve": "^6.3.1",
+    "stats.js": "^0.17.0",
     "webpack-md5-hash": "^0.0.5"
   }
 }

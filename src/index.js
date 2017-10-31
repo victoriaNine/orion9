@@ -5,7 +5,9 @@ import { h, render } from 'preact';
 import App from 'Containers/App';
 
 if (!__IS_DEV__) {
-  require('Internal/ga');
+  require('./ga');
+} else {
+  require('./stats').default();
 }
 
 let root;

@@ -19,7 +19,7 @@ import styles from './App.css';
 
 class App extends Component {
   state = {
-    language: 'en'
+    language: 'en',
   };
 
   navWithRouter = withRouter(Nav);
@@ -58,6 +58,10 @@ class App extends Component {
     const st = 'scrollTop';
     const sh = 'scrollHeight';
 
+    if (b[sh] - h.clientHeight <= 0) {
+      return 1;
+    }
+
     return (b[st] / (b[sh] - h.clientHeight));
   }
 
@@ -69,20 +73,20 @@ class App extends Component {
   render () {
     return (
       <Router>
-        <div id="app" class={styles.App} ref={this.setDOM}>
+        <main id="app" role="main" className={styles.App} ref={this.setDOM}>
           <Canvas />
           <this.navWithRouter language={this.state.language} onLanguageUpdate={this.onLanguageUpdate} onMount={this.setNavDOM} />
           <div className={styles.wrapper} ref={this.setWrapperDOM}>
             <Headline language={this.state.language} />
             <div className={styles.contents}>
               <Switch>
-                <Route path="/home" render={() => <Home language={this.state.language} />} />
-                <Route path="/about" render={() => <About language={this.state.language} />} />
+                <Route path="/:lang?/home" render={() => <Home language={this.state.language} />} />
+                <Route path="/:lang?/about" render={() => <About language={this.state.language} />} />
                 <Route render={() => <Home language={this.state.language} />} />
               </Switch>
             </div>
           </div>
-        </div>
+        </main>
       </Router>
     );
   }

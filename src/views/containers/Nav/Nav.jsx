@@ -7,42 +7,49 @@ import Title from 'Components/Title';
 import styles from './Nav.css';
 
 class Nav extends Component {
+  state = {
+    language: 'en',
+  };
+
   componentDidMount() {
     let languageFromPath = this.props.location.pathname.match(/\/(fr|en|jp)/);
     languageFromPath = languageFromPath && languageFromPath[1];
 
     const languageFromNavigator = navigator.language.match('fr|en|ja') ? navigator.language : null;
-    const language = languageFromPath || languageFromNavigator || 'en';
+    this.setState({ language: languageFromPath || languageFromNavigator || 'en' });
 
-    this.props.onLanguageUpdate(language);
+    this.props.onLanguageUpdate(this.state.language);
     this.props.onMount(this.DOM);
   }
 
   setDOM = (ref) => { this.DOM = ref; };
 
   render () {
-    const location = this.props.location.pathname.slice(1) || 'home';
+    const locationParam = this.props.location.pathname.split('/');
+    const page = locationParam[locationParam.length - 1] || 'home';
 
     return (
-      <nav role="navigation" className={styles.Nav} ref={this.setDOM}>
-        <Title>
-          <div className={styles.linkWrapper}>
-            <NavLink to="/home" className={classnames(styles.link, { [styles['is--active']] : location === 'about' })}>Home</NavLink>
-            <NavLink to="/about" className={classnames(styles.link, { [styles['is--active']] : location === 'home' })}>About</NavLink>
-          </div>
-        </Title>
-        <ul className={styles.langNav}>
-          <li className={styles.langItem}>
-            <NavLink to="/fr" className={classnames(styles.link, { [styles['is--active']] : location === 'about' })}>FR</NavLink>
-          </li> |
-          <li className={styles.langItem}>
-            <NavLink to="/en" className={classnames(styles.link, { [styles['is--active']] : location === 'about' })}>EN</NavLink>
-          </li> |
-          <li className={styles.langItem}>
-            <NavLink to="/jp" className={classnames(styles.link, { [styles['is--active']] : location === 'about' })}>JP</NavLink>
-          </li>
-        </ul>
-      </nav>
+      <div className={styles.Nav} ref={this.setDOM}>
+        <nav role="navigation" className={styles.container}>
+          <Title>
+            <div className={styles.linkWrapper}>
+              <NavLink to="/home" className={classnames(styles.link, { [styles['is--active']] : page === 'about' })}>Home</NavLink>
+              <NavLink to="/about" className={classnames(styles.link, { [styles['is--active']] : page === 'home' })}>About</NavLink>
+            </div>
+          </Title>
+          <ul className={styles.langNav}>
+            <li className={styles.langItem}>
+              <a href={`/fr/${page}`} className={classnames(styles.langLink, { [styles['is--active']] : this.state.language === 'fr' })}>FR</a>
+            </li>
+            <li className={styles.langItem}>
+              <a href={`/en/${page}`} className={classnames(styles.langLink, { [styles['is--active']] : this.state.language === 'en' })}>EN</a>
+            </li>
+            <li className={styles.langItem}>
+              <a href={`/jp/${page}`} className={classnames(styles.langLink, { [styles['is--active']] : this.state.language === 'jp' })}>JP</a>
+            </li>
+          </ul>
+        </nav>
+      </div>
     );
   }
 }

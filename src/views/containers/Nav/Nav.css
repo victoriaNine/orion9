@@ -30,7 +30,6 @@
 
 .langItem {
   width: 25px;
-  height: 1em;
   position: relative;
 
   &:not(:last-of-type) {
@@ -58,12 +57,10 @@
 }
 
 .langLink {
-  position: absolute;
-  width: 100%;
-  height: 100%;
   text-align: center;
   padding: 0 0.5em;
   transition: transform 200ms;
+  display: block;
 
   &:hover {
     font-family: var(--font_didot);

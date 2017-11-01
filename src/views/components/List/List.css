@@ -38,6 +38,7 @@
 
 .title {
   width: 100%;
+  display: block;
   transition: color 200ms, transform 200ms;
 }
 

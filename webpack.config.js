@@ -33,6 +33,8 @@ module.exports = {
       Containers: path.resolve(__dirname, 'src/views/containers'),
       Internal: path.resolve(__dirname, 'src/internal'),
 
+      utils: path.resolve(__dirname, 'src/internal/utils.js'),
+
       'react': 'preact-compat',
       'react-dom': 'preact-compat',
       'create-react-class': 'preact-compat/lib/create-react-class',
@@ -65,7 +67,7 @@ module.exports = {
         }
       },
       {
-        test: /[^.global].(css)$/,
+        test: /^((?!.global).)*\.css$/,
         include: [path.resolve(__dirname, 'src/views')],
         use: ExtractTextPlugin.extract({
           fallback: 'style-loader',
@@ -84,7 +86,7 @@ module.exports = {
         })
       },
       {
-        test: /\.global.(css)$/,
+        test: /.*\.global\.css$/,
         include: [path.resolve(__dirname, 'src/views')],
         use: ExtractTextPlugin.extract({
           fallback: 'style-loader',

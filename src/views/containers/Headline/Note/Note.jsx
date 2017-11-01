@@ -13,8 +13,8 @@ class Note extends Component {
 
   render () {
     return (
-      <div class={styles.Note} ref={this.setDOM}>
-        <i class="fa fa-music" aria-hidden="true" />
+      <div className={styles.Note} ref={this.setDOM} onClick={this.props.onClick}>
+        <i className="fa fa-music" aria-hidden="true" />
       </div>
     );
   }

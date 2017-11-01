@@ -1,0 +1,7 @@
+@import 'App/_common.css';
+
+.Work {}
+
+.section {
+  margin-bottom: var(--size_sectionBottomMargin);
+}

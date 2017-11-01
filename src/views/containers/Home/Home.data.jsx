@@ -1,57 +1,91 @@
 const data = [
   {
+    name: "projects",
     title: { fr: "Projets", en: "Projects", jp: "プロジェクト" },
     items: [
       {
+        id: "15thtriad",
         title: "The Fifteenth Triad",
+        type: "project",
         url: "https://15thtriad.com",
-        details: ["webaudio", "canvas", "webgl", "node.js", "socket.io", "couchdb", "audio", "design"],
+        details: {
+          role: ["dev", "audio", "design"],
+          stack: ["backbone", "webpack", "webaudio", "canvas", "webgl", "node.js", "socket.io", "couchdb"],
+          github: "http://github.com/victoriaNine/xvthTriad"
+        },
         color: "#3399cc",
         visuals: { type: "video", url: "" }
       },
       {
+        id: "iwtwwy",
         title: "I Want To Work With You",
+        type: "project",
         url: "http://orion9.net/iWantToWork/#!/With/You",
-        details: ["webaudio", "css3d", "canvas", "audio", "design"],
+        details: {
+          role: ["dev", "audio", "design"],
+          stack: ["homemade framework", "webaudio", "css3d", "canvas"]
+        },
         color: "#6233cc",
         visuals: { type: "video", url: "" }
       },
       {
+        id: "psychoCube",
         title: "Psycho-Cube",
+        type: "project",
         url: "http://orion9.net/_demos/psychoCube",
-        details: ["webaudio", "css3d", "canvas", "audio", "design"],
+        details: {
+          role: ["dev", "audio", "design"],
+          stack: ["homemade framework", "webaudio", "css3d", "canvas"]
+        },
         color: "#20cad9",
         visuals: { type: "video", url: "" }
       },
       {
+        id: "waltz",
         title: "Waltz Waltz Revolution",
+        type: "project",
         url: "http://orion9.net/_demos/waltzRevolution",
-        details: ["webaudio", "canvas", "audio", "design"],
+        details: {
+          role: ["dev", "audio", "design"],
+          stack: ["homemade framework", "webaudio", "canvas"]
+        },
         color: "#d48930",
         visuals: { type: "video", url: "" }
       }
     ]
   },
   {
+    name: "experiments",
     title: { fr: "Expériences", en: "Experiments", jp: "試験" },
     items: [
       {
+        id: "meteorRain",
         title: "Meteor Rain",
+        type: "experiment",
         url: "http://orion9.net/_demos/meteorRain",
-        details: ["canvas", "svg", "design"],
+        details: {
+          role: ["dev", "design"],
+          stack: ["vanillajs", "canvas", "svg"]
+        },
         color: "#d44b30",
         visuals: { type: "video", url: "" }
       },
       {
+        id: "intertap",
         title: "Intertap",
+        type: "experiment",
         url: "http://orion9.net/_demos/intertap",
-        details: ["webaudio", "canvas", "audio", "design"],
+        details: {
+          role: ["dev", "audio", "design"],
+          stack: ["homemade framework", "webaudio", "canvas"]
+        },
         color: "#e4347a",
         visuals: { type: "video", url: "" }
       }
     ]
   },
   {
+    name: "clients",
     title: { fr: "Clients", en: "Clients", jp: "クライアント" },
     text: {
       fr: "J'ai eu le plaisir de travailler avec HBO, Netflix, Google, Canal+, Emirates & plus",
@@ -60,6 +94,7 @@ const data = [
     }
   },
   {
+    name: "contact",
     title: { fr: "Contact", en: "Contact", jp: "連絡" },
     items: [
       {

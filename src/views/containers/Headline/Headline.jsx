@@ -1,52 +1,68 @@
 import { h, Component } from 'preact';
-import { TimelineMax } from 'gsap';
 
 import Note from './Note';
-
+import Piano from './Piano';
 import data from './Headline.data';
+import * as _$ from 'utils';
 
 import styles from './Headline.css';
-
-function replaceStringToJSX (string, match, jsx, join) {
-  const result = [];
-
-  string.split(match).forEach((part, index, array) => {
-    result.push(part);
-    (index < array.length - 1) && result.push(jsx);
-  });
-
-  return join ? result.join("") : result;
-}
 
 class Headline extends Component {
   DOB = new Date(Date.UTC(1992, 7, 10, 0, 15, 0));
   age = new Date().getFullYear() - this.DOB.getFullYear();
 
-  componentDidMount () {
-    const tl = new TimelineMax({ delay: 0.5 });
-    tl.from(this.DOM.querySelectorAll(`.${styles.paragraph}`)[0], 0.4, { opacity: 0, y: -12, clearProps: "all" });
-    tl.from(this.DOM.querySelectorAll(`.${styles.paragraph}`)[1], 0.4, { opacity: 0, y: -12, clearProps: "all" }, "-=0.2");
-    tl.from(this.noteDOM, 0.4, { opacity: 0, clearProps: "all" });
-  }
+  setDOM = (ref) => { this.props.setAppState({ dom: {...this.props.appState.dom, headline: ref } }); };
+  setNoteDOM = (ref) => { this.props.setAppState({ dom: {...this.props.appState.dom, note: ref } }); };
+  setPianoDOM = (ref) => { this.props.setAppState({ dom: {...this.props.appState.dom, piano: ref } }); };
 
-  setDOM = (ref) => { this.DOM = ref; };
-  setNoteDOM = (ref) => { this.noteDOM = ref; };
+  openPiano = () => {
+    this.props.setAppState({ headlineMode: 'piano' });
+  };
+
+  closePiano = () => {
+    this.props.setAppState({ headlineMode: 'default' });
+  };
 
   render () {
     const appState = this.props.appState;
     const language = appState.language;
 
-    let p1 = replaceStringToJSX(data[0].text[language], '${age}', this.age, true);
-    p1 = replaceStringToJSX(p1, '${note}', <Note onMount={this.setNoteDOM} />);
+    let p1 = _$.replaceStringToJSX(data[0].text[language], '${age}', this.age, true);
+    p1 = _$.replaceStringToJSX(p1, '${note}', <Note onMount={this.setNoteDOM} onClick={this.openPiano} />);
 
-    return (
-      <div className={styles.Headline} ref={this.setDOM}>
+    const defaultDOM = (
+      <div className={styles.headlineWrapper}>
         <p className={styles.paragraph}>
           {p1}
         </p>
         <p className={styles.paragraph}>
           { data[1].text[language] }
         </p>
+      </div>
+    );
+
+    let headlineDOM;
+
+    switch (this.props.mode) {
+      case 'work':
+        headlineDOM = (
+          <div className={styles.headlineWrapper}>
+            {this.props.appState.currentWork.title}
+          </div>
+        );
+        break;
+      case 'piano':
+        headlineDOM = <Piano onMount={this.setPianoDOM} onClick={this.closePiano} />;
+        break;
+      case 'default':
+      default:
+        headlineDOM = defaultDOM;
+        break;
+    }
+
+    return (
+      <div className={styles.Headline} ref={this.setDOM}>
+        {headlineDOM}
       </div>
     );
   }

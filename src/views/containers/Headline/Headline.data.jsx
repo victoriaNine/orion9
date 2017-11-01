@@ -3,9 +3,9 @@ import { h } from 'preact';
 const data = [
   {
     text: {
-      fr: "bonjour — je suis victoria nine, creative front-end developer et musicienne${note}",
-      en: "hi — i'm victoria nine, a french creative front-end developer and musician${note}",
-      jp: "こんにちは — victoria nineと言います。フランスのクリエーティブ・フロントエンド・デベロッパーと音楽家${note}です。",
+      fr: "Bonjour — Je suis Victoria Nine, creative front-end developer et musicienne${note}",
+      en: "Hi — I'm Victoria Nine, a French creative front-end developer and musician${note}",
+      jp: "こんにちは — Victoria Nineと言います。フランスのクリエーティブ・フロントエンド・デベロッパーと音楽家${note}です。",
     },
   },
   {

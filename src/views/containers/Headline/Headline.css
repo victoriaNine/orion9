@@ -3,6 +3,7 @@
 .Headline {
   margin: 75px 0 50px;
   font-family: var(--font_didot);
+  text-transform: lowercase;
 }
 
 .paragraph:first-of-type {

@@ -49,13 +49,13 @@ strike {
   }
 }
 
-.App {
+.App {}
+
+.contents {}
+.wrapper {
   padding: 25px;
 
   @media (--mq_laptop) {
     padding: 50px;
   }
 }
-
-.contents {}
-.wrapper {}

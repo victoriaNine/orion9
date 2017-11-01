@@ -1,0 +1,13 @@
+.Piano {
+  font-size: 14px;
+  opacity: 0.5;
+  cursor: pointer;
+  vertical-align: super;
+  margin: 0 0.5em;
+  display: inline-block;
+  transition: opacity 200ms;
+
+  &:hover {
+    opacity: 1;
+  }
+}

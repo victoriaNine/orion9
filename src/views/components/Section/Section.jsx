@@ -26,7 +26,12 @@ class Section extends Component {
   render () {
     const { language } = this.props;
 
-    const listDOM = this.props.items && <List language={language} items={this.props.items} onSelect={this.onItemSelect} onDeselect={this.onItemDeselect} />;
+    const listDOM = this.props.items && <List
+      language={language}
+      items={this.props.items}
+      onSelect={this.onItemSelect}
+      onDeselect={this.onItemDeselect}
+    />;
     const textDOM = this.props.text &&
       <p className={styles.text} onMouseEnter={this.onItemSelect} onMouseLeave={this.onItemDeselect}>
         { typeof this.props.text === 'object' ? this.props.text[language] : this.props.text }

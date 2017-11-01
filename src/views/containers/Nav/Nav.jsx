@@ -3,45 +3,70 @@ import { h, Component } from 'preact';
 import { NavLink } from 'react-router-dom';
 
 import Title from 'Components/Title';
+import data from './Nav.data';
+import * as _$ from 'utils';
 
 import styles from './Nav.css';
 
 class Nav extends Component {
   componentDidMount() {
-    let languageFromPath = this.props.location.pathname.match(/\/(fr|en|jp)/);
+    let languageFromPath = _$.getLanguageFromPath(this.props.location.pathname);
     languageFromPath = languageFromPath && languageFromPath[1];
 
     const languageFromNavigator = navigator.language.match('fr|en|ja') ? navigator.language : null;
-    this.props.setAppState({ language: languageFromPath || languageFromNavigator || 'en' });
-
-    this.props.onMount(this.DOM);
+    this.props.setAppState({
+      language: languageFromPath || languageFromNavigator || 'en',
+    });
   }
 
-  setDOM = (ref) => { this.DOM = ref; };
+  setDOM = (ref) => { this.props.setAppState({ dom: {...this.props.appState.dom, nav: ref } }); };
 
   render () {
-    const locationParam = this.props.location.pathname.split('/');
-    const page = locationParam[locationParam.length - 1] || 'home';
-    const appState = this.props.appState;
+    const locationWithoutLang = _$.getLocationWithoutLang(this.props.location.pathname);
+    const page = _$.getPageName(this.props.location.pathname) || 'home';
+    const { language, aboutLanding } = this.props.appState;
 
     return (
       <div className={styles.Nav} ref={this.setDOM}>
         <nav role="navigation" className={styles.container}>
-          <Title>
-            <div className={styles.linkWrapper}>
-              <NavLink to="/home" className={classnames(styles.link, { [styles['is--active']] : page === 'about' })}>Home</NavLink>
-              <NavLink to="/about" className={classnames(styles.link, { [styles['is--active']] : page === 'home' })}>About</NavLink>
-            </div>
-          </Title>
+          <div className={classnames(styles.linkWrapper, { [styles['is--inactive']]: page !== 'work' })}>
+            <Title>
+              <div className={styles.linkContainer}>
+                <NavLink to="/home" className={styles.link}>{data.translations.home[language]}</NavLink>
+              </div>
+            </Title>
+          </div>
+          <div className={styles.linkWrapper}>
+            <Title>
+              <div className={styles.linkContainer}>
+                {
+                  !aboutLanding && <div
+                    onClick={this.props.history.goBack}
+                    className={classnames(styles.link, { [styles['is--inactive']]: page !== 'about' })}
+                  >
+                    {data.translations.back[language]}
+                  </div>
+                }
+                {
+                  aboutLanding && <NavLink to="/home" className={classnames(styles.link, { [styles['is--inactive']]: page !== 'about' })}>
+                    {data.translations.home[language]}
+                  </NavLink>
+                }
+                <NavLink to="/about" className={classnames(styles.link, { [styles['is--inactive']]: page === 'about' })}>
+                  {data.translations.about[language]}
+                </NavLink>
+              </div>
+            </Title>
+          </div>
           <ul className={styles.langNav}>
             <li className={styles.langItem}>
-              <a href={`/fr/${page}`} className={classnames(styles.langLink, { [styles['is--active']] : appState.language === 'fr' })}>FR</a>
+              <a href={`/fr${locationWithoutLang}`} className={classnames(styles.langLink, { [styles['is--active']] : language === 'fr' })}>FR</a>
             </li>
             <li className={styles.langItem}>
-              <a href={`/en/${page}`} className={classnames(styles.langLink, { [styles['is--active']] : appState.language === 'en' })}>EN</a>
+              <a href={`/en${locationWithoutLang}`} className={classnames(styles.langLink, { [styles['is--active']] : language === 'en' })}>EN</a>
             </li>
             <li className={styles.langItem}>
-              <a href={`/jp/${page}`} className={classnames(styles.langLink, { [styles['is--active']] : appState.language === 'jp' })}>JP</a>
+              <a href={`/jp${locationWithoutLang}`} className={classnames(styles.langLink, { [styles['is--active']] : language === 'jp' })}>JP</a>
             </li>
           </ul>
         </nav>

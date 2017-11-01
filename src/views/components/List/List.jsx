@@ -1,12 +1,11 @@
 import { h, Component } from 'preact';
+import { Link } from 'react-router-dom';
+
+import data from './List.data';
 
 import styles from './List.css';
 
 class List extends Component {
-  state = {
-    currentGif: ''
-  };
-
   itemsDOM = [];
   gifsDOM = [];
 
@@ -26,7 +25,7 @@ class List extends Component {
 
   render () {
     const { language } = this.props;
-    
+
     return (
       <div className={styles.wrapper}>
         <ul className={styles.List}>
@@ -42,9 +41,9 @@ class List extends Component {
                   { typeof item.title === 'object' ? item.title[language] : item.title }
                 </a>
                 {
-                  item.details && <div className={styles.detailsWrapper}>
-                    <div className={styles.dash} /><div className={styles.details}>{item.details.join(", ")}</div>
-                  </div>
+                  item.details && <Link to={`/work/${item.id}`} onClick={() => { this.onDeselect(item, index); }} className={styles.detailsWrapper}>
+                    <div className={styles.dash} /><div className={styles.details}>{data.translations.more[language]}</div>
+                  </Link>
                 }
               </li>
             );

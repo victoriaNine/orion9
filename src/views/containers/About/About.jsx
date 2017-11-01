@@ -11,9 +11,13 @@ class About extends Component {
     TweenMax.to(document.body, 0.4, { scrollTop: 0, ease: Power2.easeInOut });
   }
 
+  componentWillUnmount() {
+    this.props.appState.aboutLanding && this.props.setAppState({ aboutLanding: false });
+  }
+
   render () {
     const { language } = this.props.appState;
-    
+
     return (
       <div className={styles.About}>
         {data.map((section) => {

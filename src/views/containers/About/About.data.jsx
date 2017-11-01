@@ -3,7 +3,7 @@ import { h } from 'preact';
 const data = [
   {
     title: { fr: "Compétences & Outils", en: "Skills & Tools", jp: "スキルとツール" },
-    text: "HTML5, CSS3, ES2017+, PostCSS, SASS, Greensock, Canvas, WebAudio API, Gamepad API, jQuery, React, Preact, Backbone, Webpack, RequireJS, Grunt, lodash, Socket.io, CouchDB, Node.js, Git, Custom framework development, Photoshop, Illustrator, Premiere Pro, Webdesign, Audio"
+    text: "HTML5, CSS3, ES2017+, PostCSS, SASS, Greensock, Canvas, WebAudio API, Gamepad API, jQuery, React, Preact, Backbone, Webpack, RequireJS, Grunt, lodash, Socket.io, CouchDB, Node.js, Git, Homemade framework development, Photoshop, Illustrator, Premiere Pro, Webdesign, Audio"
   },
   {
     title: { fr: "Divers", en: "Trivia", jp: "豆知識" },

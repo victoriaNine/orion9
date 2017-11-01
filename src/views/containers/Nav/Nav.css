@@ -5,14 +5,17 @@
   width: 100%;
   top: 0;
   left: 0;
-  background: rgba(0, 0, 0, 0.85);
+  background: linear-gradient(top, rgba(0, 0, 0, 0.85) 35%, rgba(0, 0, 0, 0) 100%);
   z-index: 99;
   padding: 15px;
-  
 
   @media (--mq_mobile) {
     padding: 25px;
     background: rgba(0, 0, 0, 0);
+  }
+
+  @media (--mq_laptop) {
+    padding: 50px;
   }
 }
 

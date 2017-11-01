@@ -105,4 +105,6 @@
 }
 
 .wrapper {}
-.gifWrapper {}
+.gifWrapper {
+  pointer-events: none;
+}

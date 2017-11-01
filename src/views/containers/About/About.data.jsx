@@ -20,7 +20,7 @@ const data = [
         title: {
           fr: "Je joue à Final Fantasy depuis mes 5 ans",
           en: "I've been playing Final Fantasy since I was 5y/o",
-          jp: "9歳の頃からファイナルファンタジーをやっています。"
+          jp: "5歳の頃からファイナルファンタジーをやっています。"
         },
         gif: "https://media.giphy.com/media/3ohhwGqvtfynPcIDf2/giphy.gif",
       },
@@ -36,7 +36,7 @@ const data = [
         title: {
           fr: "Fière d'être Serdaigle",
           en: "I'm a proud Ravenclaw",
-          jp: "レイブンクロー万歳"
+          jp: "レイブンクロー万歳！"
         },
         gif: "https://media.giphy.com/media/O2jbWYHzSOuT6/giphy.gif",
       },

@@ -12,12 +12,14 @@ class Home extends Component {
   }
 
   render () {
+    const { language } = this.props.appState;
+
     return (
       <div className={styles.Home}>
         {data.map((section) => {
           return (
             <div className={styles.section}>
-              <Section {...section} />
+              <Section language={language} {...section} />
             </div>
           );
         })}

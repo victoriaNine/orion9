@@ -25,6 +25,8 @@ class List extends Component {
   };
 
   render () {
+    const { language } = this.props;
+    
     return (
       <div className={styles.wrapper}>
         <ul className={styles.List}>
@@ -37,7 +39,7 @@ class List extends Component {
                 ref={(ref) => { this.itemsDOM[index] = ref; }}
               >
                 <a href={item.url} target="_blank" className={styles.title}>
-                  { typeof item.title === 'object' ? item.title['fr'] : item.title }
+                  { typeof item.title === 'object' ? item.title[language] : item.title }
                 </a>
                 {
                   item.details && <div className={styles.detailsWrapper}>

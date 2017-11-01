@@ -33,7 +33,8 @@ class Headline extends Component {
   setNoteDOM = (ref) => { this.noteDOM = ref; };
 
   render () {
-    const language = this.props.language;
+    const appState = this.props.appState;
+    const language = appState.language;
 
     let p1 = replaceStringToJSX(data[0].text[language], '${age}', this.age, true);
     p1 = replaceStringToJSX(p1, '${note}', <Note onMount={this.setNoteDOM} />);

@@ -12,12 +12,14 @@ class About extends Component {
   }
 
   render () {
+    const { language } = this.props.appState;
+    
     return (
       <div className={styles.About}>
         {data.map((section) => {
           return (
             <div className={styles.section}>
-              <Section {...section} />
+              <Section language={language} {...section} />
             </div>
           );
         })}

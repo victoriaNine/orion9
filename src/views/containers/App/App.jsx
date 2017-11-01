@@ -10,20 +10,46 @@ import { TimelineMax } from 'gsap';
 
 import About from 'Containers/About';
 import Canvas from 'Containers/Canvas';
-import Home from 'Containers/Home';
 import Headline from 'Containers/Headline';
+import Home from 'Containers/Home';
 import Nav from 'Containers/Nav';
+import withAppState from 'Containers/AppState';
 
 import './reset.global.css';
 import './font-awesome.global.css';
 import styles from './App.css';
 
-class App extends Component {
-  state = {
-    language: 'en',
-  };
+let ConnectedAbout;
+let ConnectedCanvas;
+let ConnectedHeadline;
+let ConnectedHome;
+let ConnectedNav;
 
-  navWithRouter = withRouter(Nav);
+class App extends Component {
+  constructor(...props) {
+    super(...props);
+
+    this.state = {
+      language: 'en',
+    };
+
+    ConnectedAbout = withAppState(About, this.state, this.setAppState);
+    ConnectedCanvas = withAppState(Canvas, this.state, this.setAppState);
+    ConnectedHeadline = withAppState(Headline, this.state, this.setAppState);
+    ConnectedHome = withAppState(Home, this.state, this.setAppState);
+    ConnectedNav = withAppState(withRouter(Nav), this.state, this.setAppState);
+  }
+
+  setAppState = (updater, callback) => {
+    this.setState(updater, () => {
+      if (this.props.debug) {
+        console.log('setAppState', JSON.stringify(this.state));
+      }
+      if (callback) {
+        callback();
+      }
+    });
+  };
 
   componentDidMount() {
     this.updateGradient(this.getGradientOffset());
@@ -69,22 +95,25 @@ class App extends Component {
   setDOM = (ref) => { this.DOM = ref; };
   setWrapperDOM = (ref) => { this.wrapperDOM = ref; };
   setNavDOM = (ref) => { this.navDOM = ref; };
-  onLanguageUpdate = (language) => { this.setState({ language }); };
+
+  getLanguageCode (code) {
+    return code === 'jp' ? 'ja' : code;
+  }
 
   render () {
     return (
       <Router>
         <main id="app" role="main" className={styles.App} ref={this.setDOM}>
-          <Canvas />
-          <this.navWithRouter language={this.state.language} onLanguageUpdate={this.onLanguageUpdate} onMount={this.setNavDOM} />
           <Helmet htmlAttributes={{ lang : this.getLanguageCode(this.state.language) }}/>
+          <ConnectedCanvas />
+          <ConnectedNav onMount={this.setNavDOM} />
           <div className={styles.wrapper} ref={this.setWrapperDOM}>
-            <Headline language={this.state.language} />
+            <ConnectedHeadline />
             <div className={styles.contents}>
               <Switch>
-                <Route path="/:lang?/home" render={() => <Home language={this.state.language} />} />
-                <Route path="/:lang?/about" render={() => <About language={this.state.language} />} />
-                <Route render={() => <Home language={this.state.language} />} />
+                <Route path="/:lang?/home" component={ConnectedHome} />
+                <Route path="/:lang?/about" component={ConnectedAbout} />
+                <Route component={ConnectedHome} />
               </Switch>
             </div>
           </div>

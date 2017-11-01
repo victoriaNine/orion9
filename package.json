@@ -99,6 +99,7 @@
     "precss": "^2.0.0",
     "promise-polyfill": "^6.0.2",
     "proptypes": "^1.0.0",
+    "react-helmet": "^5.2.0",
     "react-router-dom": "^4.2.2",
     "resource-hints-webpack-plugin": "^0.0.1",
     "serve": "^6.3.1",

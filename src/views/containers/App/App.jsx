@@ -5,6 +5,7 @@ import {
   Route,
   Switch
 } from 'react-router-dom';
+import { Helmet } from 'react-helmet';
 import { TimelineMax } from 'gsap';
 
 import About from 'Containers/About';
@@ -76,6 +77,7 @@ class App extends Component {
         <main id="app" role="main" className={styles.App} ref={this.setDOM}>
           <Canvas />
           <this.navWithRouter language={this.state.language} onLanguageUpdate={this.onLanguageUpdate} onMount={this.setNavDOM} />
+          <Helmet htmlAttributes={{ lang : this.getLanguageCode(this.state.language) }}/>
           <div className={styles.wrapper} ref={this.setWrapperDOM}>
             <Headline language={this.state.language} />
             <div className={styles.contents}>

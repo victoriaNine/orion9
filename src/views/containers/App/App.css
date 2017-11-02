@@ -83,9 +83,9 @@ strike {
 
 .contents {}
 .wrapper {
-  padding: 25px;
+  padding: 25px 25px 25px 50px;
 
   @media (--mq_laptop) {
-    padding: 50px;
+    padding: 50px 50px 50px 75px;
   }
 }

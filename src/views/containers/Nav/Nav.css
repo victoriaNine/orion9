@@ -5,18 +5,14 @@
   width: 100%;
   top: 0;
   left: 0;
-  background: linear-gradient(to bottom, color(var(--color_mono-black) a(85%)) 35%, color(var(--color_mono-black) a(0)) 100%);
+  background: linear-gradient(to bottom, color(var(--color_mono-black) a(85%)) 50%, color(var(--color_mono-black) a(0)) 100%);
   z-index: 99;
-  padding: 15px;
+  padding: 50px 25px 25px;
   pointer-events: none;
 
   @media (--mq_mobile) {
-    padding: 25px;
-    background: color(var(--color_mono-black) a(0));
-  }
-
-  @media (--mq_laptop) {
     padding: 50px;
+    background: color(var(--color_mono-black) a(0));
   }
 }
 

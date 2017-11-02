@@ -1,7 +1,7 @@
 @import 'App/_common.css';
 
 .Headline {
-  margin: 75px 0 50px;
+  margin: 100px 0 50px;
   font-family: var(--font_didot);
   text-transform: lowercase;
 }

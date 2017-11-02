@@ -12,7 +12,7 @@ const data = {
     jp: <span>ここまで来てくれたよかった！<br />アイデアを共有したい場合は是非連絡してください。</span>,
   },
   translations: {
-    dev: { fr: "Développement", en: "Development", jp: "コーディング" },
+    dev: { fr: "Développement", en: "Development", jp: "開発" },
     audio: { fr: "Édition audio", en: "Audio editing", jp: "オーディオ編集" },
     design: { fr: "Design", en: "Design", jp: "デザイン" },
     sd: { fr: "Sound design", en: "Sound design", jp: "サウンド・デザイン" },

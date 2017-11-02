@@ -1,6 +1,6 @@
 const data = {
   translations: {
-    more: { fr: "En voir plus", en: "More info", jp: "詳細" }
+    more: { fr: "Plus d'info", en: "More info", jp: "詳細" }
   }
 };
 

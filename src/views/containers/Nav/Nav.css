@@ -8,6 +8,7 @@
   background: linear-gradient(to bottom, color(var(--color_mono-black) a(85%)) 35%, color(var(--color_mono-black) a(0)) 100%);
   z-index: 99;
   padding: 15px;
+  pointer-events: none;
 
   @media (--mq_mobile) {
     padding: 25px;
@@ -22,6 +23,10 @@
 .container {
   display: flex;
   justify-content: flex-end;
+
+  & > * {
+    pointer-events: auto;
+  }
 }
 
 .langNav {

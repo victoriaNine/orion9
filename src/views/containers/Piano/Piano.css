@@ -1,9 +1,43 @@
 @import 'App/_common.css';
+@custom-media --mq_widthOK screen and (min-width: 560px);
 
 .Piano {
   position: relative;
-  width: 550px;
+  width: 535px;
   font-family: var(--font_futura);
+
+  &:after {
+    content: "";
+    position: fixed;
+    width: 100vw;
+    height: 100%;
+    left: 0;
+    top: 0;
+    background: color(var(--color_mono-black) a(85%)) url('App/assets/img/rotateDevice.png') no-repeat 50% 50%;
+    z-index: 9999;
+    transition: opacity 200ms;
+
+    @media (--mq_widthOK) {
+      opacity: 0;
+      pointer-events: none;
+    }
+  }
+
+  & > * {
+    visibility: hidden;
+
+    @media (--mq_widthOK) {
+      visibility: visible;
+    }
+  }
+}
+
+:global html, :global body {
+  overflow-y: hidden;
+
+  @media (--mq_widthOK) {
+    overflow-y: inherit;
+  }
 }
 
 .close {

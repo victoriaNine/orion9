@@ -20,9 +20,7 @@ class Piano extends Component {
     window.removeEventListener("keyup", this.deactivateKey);
   }
 
-  setDOM = (ref) => {
-    this.DOM = ref;
-  };
+  setDOM = (ref) => { this.DOM = ref; };
 
   activateKey = (event) => {
     if (this.keysDOM[event.code]) {
@@ -57,8 +55,9 @@ class Piano extends Component {
     const blackKeys = data.keys.filter((key) => !!key.note.match("#")).map((key, index) => {
       prevX += keySpacing;
 
-      if (index % 5 === 2) { prevX += keySpacing; }
-      if (index % 5 === 0 && index !== 0) { prevX += keySpacing; }
+      if ((index % 5 === 2) || (index % 5 === 0 && index !== 0)) {
+        prevX += keySpacing;
+      }
 
       return (
         <div

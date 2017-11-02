@@ -48,7 +48,7 @@ class App extends Component {
       dom: {}
     };
 
-    this.workIds = this.state.works.map(work => work.id).join('|');
+    this.workIdsRegex = this.state.works.map(work => work.id).join('|');
 
     ConnectedAbout = withAppState(About, this.state, this.setAppState);
     ConnectedCanvas = withAppState(Canvas, this.state, this.setAppState);
@@ -128,7 +128,7 @@ class App extends Component {
               <Switch>
                 <Route path="/:lang?/home" component={ConnectedHome} />
                 <Route path="/:lang?/about" component={ConnectedAbout} />
-                <Route path={`/:lang?/work/(${this.workIds})`} component={ConnectedWork} />
+                <Route path={`/:lang?/work/(${this.workIdsRegex})`} component={ConnectedWork} />
                 <Redirect to="/home" />
               </Switch>
             </div>

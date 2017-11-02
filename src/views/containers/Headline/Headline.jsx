@@ -26,11 +26,11 @@ class Headline extends Component {
   render () {
     const { language, currentWork } = this.props.appState;
 
-    let p1 = _$.replaceStringToJSX(data.baseline1[language], '${age}', this.age, true);
-    p1 = _$.replaceStringToJSX(p1, '${note}', <Note onMount={this.setNoteDOM} onClick={this.openPiano} />);
+    let baseline1 = _$.replaceStringToJSX(data.baseline1[language], '${age}', this.age, true);
+    baseline1 = _$.replaceStringToJSX(baseline1, '${note}', <Note onMount={this.setNoteDOM} onClick={this.openPiano} />);
 
     const defaultDOM = [
-      (<h1 className={styles.baseline1}>{p1}</h1>),
+      (<h1 className={styles.baseline1}>{baseline1}</h1>),
       (<h2 className={styles.baseline2}>{data.baseline2[language]}</h2>)
     ];
 

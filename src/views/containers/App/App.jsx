@@ -36,12 +36,9 @@ class App extends Component {
   constructor (...args) {
     super(...args);
 
-    const locationParam = window.location.pathname.split('/');
-    const page = locationParam[locationParam.length - 1];
-
     this.state = {
       language: 'en',
-      aboutLanding: page === 'about',
+      aboutLanding: _$.getPageName(window.location.pathname) === 'about',
       headlineMode: 'default',
       works: worksData.sections.filter(item => item.name.match('projects|experiments')).map(section => section.items).reduce((acc, item) => [...acc, ...item], []),
       currentWork: null,
@@ -60,9 +57,7 @@ class App extends Component {
     ConnectedWork = withAppState(withRouter(Work), this.state, this.setAppState);
   }
 
-  setAppState = (updater) => {
-    this.setState(updater);
-  };
+  setAppState = (updater) => { this.setState(updater); };
 
   componentDidMount () {
     this.updateGradient(this.getGradientOffset());

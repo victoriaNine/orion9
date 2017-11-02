@@ -11,6 +11,7 @@ class Piano extends Component {
   componentDidMount () {
     window.addEventListener("keypress", this.activateKey);
     window.addEventListener("keyup", this.deactivateKey);
+    document.querySelector("html").classList.add("scrollingLocked");
 
     this.props.onMount(this.DOM);
   }
@@ -18,6 +19,7 @@ class Piano extends Component {
   componentWillUnmount () {
     window.removeEventListener("keypress", this.activateKey);
     window.removeEventListener("keyup", this.deactivateKey);
+    document.querySelector("html").classList.remove("scrollingLocked");
   }
 
   setDOM = (ref) => { this.DOM = ref; };

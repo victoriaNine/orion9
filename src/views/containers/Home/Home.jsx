@@ -7,7 +7,7 @@ import data from './Home.data';
 import styles from './Home.css';
 
 class Home extends Component {
-  componentDidMount() {
+  componentDidMount () {
     TweenMax.to(document.body, 0.4, { scrollTop: 0, ease: Power2.easeInOut });
   }
 

@@ -14,7 +14,7 @@ function createCanvas (width, height) {
 }
 
 class Canvas extends Component {
-  componentDidMount() {
+  componentDidMount () {
     window.addEventListener("resize", this.onResize);
 
     this.bgColor             = getComputedStyle(document.body).backgroundColor;

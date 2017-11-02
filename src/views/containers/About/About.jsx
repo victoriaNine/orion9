@@ -7,11 +7,11 @@ import data from './About.data';
 import styles from './About.css';
 
 class About extends Component {
-  componentDidMount() {
+  componentDidMount () {
     TweenMax.to(document.body, 0.4, { scrollTop: 0, ease: Power2.easeInOut });
   }
 
-  componentWillUnmount() {
+  componentWillUnmount () {
     this.props.appState.aboutLanding && this.props.setAppState({ aboutLanding: false });
   }
 

@@ -9,7 +9,7 @@ import * as _$ from 'utils';
 import styles from './Nav.css';
 
 class Nav extends Component {
-  componentDidMount() {
+  componentDidMount () {
     let languageFromPath = _$.getLanguageFromPath(this.props.location.pathname);
     languageFromPath = languageFromPath && languageFromPath[1];
 

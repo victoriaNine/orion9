@@ -8,14 +8,14 @@ class Piano extends Component {
   keysDOM = {};
   layout = this.props.language === 'fr' ? 'azerty' : 'qwerty';
 
-  componentDidMount() {
+  componentDidMount () {
     window.addEventListener("keypress", this.activateKey);
     window.addEventListener("keyup", this.deactivateKey);
 
     this.props.onMount(this.DOM);
   }
 
-  componentWillUnmount() {
+  componentWillUnmount () {
     window.removeEventListener("keypress", this.activateKey);
     window.removeEventListener("keyup", this.deactivateKey);
   }

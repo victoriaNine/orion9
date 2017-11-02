@@ -33,7 +33,7 @@ let ConnectedNav;
 let ConnectedWork;
 
 class App extends Component {
-  constructor(...args) {
+  constructor (...args) {
     super(...args);
 
     const locationParam = window.location.pathname.split('/');
@@ -62,7 +62,7 @@ class App extends Component {
     this.setState(updater);
   };
 
-  componentDidMount() {
+  componentDidMount () {
     this.updateGradient(this.getGradientOffset());
 
     document.body.addEventListener("scroll", () => {

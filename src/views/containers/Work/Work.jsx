@@ -8,7 +8,7 @@ import * as _$ from 'utils';
 import styles from './Work.css';
 
 class Work extends Component {
-  constructor(...args) {
+  constructor (...args) {
     super(...args);
 
     this.props.setAppState({

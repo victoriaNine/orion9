@@ -1,4 +1,12 @@
+@import 'App/_common.css';
+
 .Piano {
+  position: relative;
+  width: 550px;
+  font-family: var(--font_futura);
+}
+
+.close {
   font-size: 14px;
   opacity: 0.5;
   cursor: pointer;
@@ -6,8 +14,68 @@
   margin: 0 0.5em;
   display: inline-block;
   transition: opacity 200ms;
+  z-index: 99;
+  position: absolute;
+  top: 0;
+  right: 0;
 
   &:hover {
     opacity: 1;
   }
+}
+
+.key {
+  width: 30px;
+  position: absolute;
+  height: 100px;
+  background: rgba(51, 51, 51, 0.25);
+  border-radius: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  padding-bottom: 0.25em;
+  transition: background 200ms;
+  z-index: 0;
+  font-size: 22px;
+  cursor: pointer;
+
+  &:hover, &.is--active {
+    background: color(#e4347a a(70%));
+  }
+
+  &.isAccidental {
+    background: rgba(255, 255, 255, 0.15);
+    z-index: 1;
+
+    &:hover, &.is--active {
+      background: color(#e4347a a(80%))
+    }
+  }
+}
+
+.keyboardWrapper {
+  width: calc(15 * (30px + 4px ));
+  height: 133px;
+  position: relative;
+  user-select: none;
+}
+
+.hint {
+  font-size: 16px;
+  display: flex;
+}
+
+.label {
+  display: flex;
+}
+
+.dash {
+  height: 1em;
+  display: flex;
+  align-items: center;
+}
+
+.score {
+  padding-left: 2em;
+  line-height: 1.25em;
 }

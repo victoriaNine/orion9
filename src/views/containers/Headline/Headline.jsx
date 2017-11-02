@@ -54,7 +54,7 @@ class Headline extends Component {
         headlineDOM = workDOM;
         break;
       case 'piano':
-        headlineDOM = <Piano onMount={this.setPianoDOM} onClick={this.closePiano} />;
+        headlineDOM = <Piano language={language} onMount={this.setPianoDOM} onClose={this.closePiano} />;
         break;
       case 'default':
       default:

@@ -18,6 +18,7 @@ import Work from 'Containers/Work';
 import withAppState from 'Containers/AppState';
 import * as _$ from 'utils';
 
+import data from './App.data';
 import worksData from 'Containers/Home/Home.data';
 
 import './reset.global.css';
@@ -110,10 +111,15 @@ class App extends Component {
   setWrapperDOM = (ref) => { this.setState({ dom: {...this.state.dom, appWrapper: ref } });  };
 
   render () {
+    const pageTitle = data.translations.pageTitle[this.state.language] && ` — ${data.translations.pageTitle[this.state.language]}`;
+
     return (
       <Router>
         <main id="app" role="main" className={styles.App} ref={this.setDOM}>
-          <Helmet htmlAttributes={{ lang : _$.getLanguageCode(this.state.language) }}/>
+          <Helmet
+            htmlAttributes={{ lang : _$.getLanguageCode(this.state.language) }}
+            title={`orion9 // victoria nine${pageTitle}`}
+          />
           <ConnectedCanvas />
           <ConnectedNav />
           <div className={styles.wrapper} ref={this.setWrapperDOM}>

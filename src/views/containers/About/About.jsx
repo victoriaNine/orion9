@@ -20,7 +20,7 @@ class About extends Component {
 
     return (
       <div className={styles.About}>
-        {data.map((section) => {
+        {data.sections.map((section) => {
           return (
             <div className={styles.section}>
               <Section language={language} {...section} />

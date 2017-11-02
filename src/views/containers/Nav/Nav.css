@@ -50,6 +50,7 @@
   display: flex;
   transition: opacity 200ms, transform 200ms;
   cursor: pointer;
+  position: relative;
 
   &:last-of-type {
     margin-left: 25px;

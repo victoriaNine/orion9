@@ -44,7 +44,7 @@ class List extends Component {
                   </a>
                 }
                 {
-                  item.internalLink && <Link to={item.url} className={styles.title}>
+                  item.internalLink && <Link to={item.url} onClick={() => { this.onDeselect(item, index); }} className={styles.title}>
                     { linkTitle }
                   </Link>
                 }

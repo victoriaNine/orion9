@@ -28,7 +28,7 @@
   width: 30px;
   position: absolute;
   height: 100px;
-  background: rgba(51, 51, 51, 0.25);
+  background: color(var(--color_neutral-grey-dark) a(25%));
   border-radius: 5px;
   display: flex;
   justify-content: center;
@@ -40,15 +40,15 @@
   cursor: pointer;
 
   &:hover, &.is--active {
-    background: color(#e4347a a(70%));
+    background: color(var(--color_piano-activeKey) a(70%));
   }
 
   &.isAccidental {
-    background: rgba(255, 255, 255, 0.15);
+    background: color(var(--color_mono-white) a(15%));
     z-index: 1;
 
     &:hover, &.is--active {
-      background: color(#e4347a a(80%))
+      background: color(var(--color_piano-activeKey) a(80%))
     }
   }
 }

@@ -7,6 +7,9 @@ import styles from './Piano.css';
 class Piano extends Component {
   keysDOM = {};
   layout = this.props.language === 'fr' ? 'azerty' : 'qwerty';
+  keyWidth = 30;
+  keyGap = 4;
+  keySpacing = this.keyWidth + this.keyGap;
 
   componentDidMount () {
     window.addEventListener("keypress", this.activateKey);
@@ -39,13 +42,11 @@ class Piano extends Component {
   };
 
   buildKeyboard = () => {
-    const keySpacing = (30 + 4);
-
     const whiteKeys = data.keys.filter((key) => !key.note.match("#")).map((key, index) => {
       return (
         <div
           className={styles.key}
-          style={{ transform: `translate3d(${ index * keySpacing }px, 0, 0)` }}
+          style={{ transform: `translate3d(${ index * this.keySpacing }px, 0, 0)` }}
           ref={(ref) => { this.keysDOM[key.code] = ref; }}
         >
           {data.keyLayout[key.code][this.layout]}
@@ -53,18 +54,18 @@ class Piano extends Component {
       );
     });
 
-    let prevX = -1 * keySpacing;
+    let prevX = -1 * this.keySpacing;
     const blackKeys = data.keys.filter((key) => !!key.note.match("#")).map((key, index) => {
-      prevX += keySpacing;
+      prevX += this.keySpacing;
 
       if ((index % 5 === 2) || (index % 5 === 0 && index !== 0)) {
-        prevX += keySpacing;
+        prevX += this.keySpacing;
       }
 
       return (
         <div
           className={classnames(styles.key, styles.isAccidental)}
-          style={{ transform: `translate3d(${ prevX + 15 }px, -33px, 0)` }}
+          style={{ transform: `translate3d(${ prevX + (this.keyWidth / 2) }px, -33.33%, 0)` }}
           ref={(ref) => { this.keysDOM[key.code] = ref; }}
         >
           {data.keyLayout[key.code][this.layout]}

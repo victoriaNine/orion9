@@ -1,5 +1,13 @@
 @import 'App/_common.css';
 
+:root {
+  --size_keyWidth: 30px;
+  --size_keyHeight: 100px;
+  --size_keyGap: 4px;
+  --count_whiteKeys: 15;
+  --count_blackKeys: 10;
+}
+
 .Piano {
   position: relative;
   width: 535px;
@@ -62,8 +70,8 @@
 }
 
 .keyboardWrapper {
-  width: calc(15 * (30px + 4px ));
-  height: 133px;
+  width: calc(var(--count_whiteKeys) * (var(--size_keyWidth) + var(--size_keyGap)));
+  height: calc(var(--size_keyHeight) + (var(--size_keyHeight) * 0.33));
   position: relative;
   user-select: none;
 }

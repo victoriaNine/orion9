@@ -80,7 +80,7 @@
     transform: translateX(0);
   }
 
-  @media (--mq_laptop) {
+  @media (--mq_mobile) {
     left: auto;
     right: 50px;
   }

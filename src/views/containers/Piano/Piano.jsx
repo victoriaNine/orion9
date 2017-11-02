@@ -2,6 +2,8 @@ import classnames from 'classnames';
 import { h, Component } from 'preact';
 
 import data from './Piano.data';
+import * as _$ from 'utils';
+
 import styles from './Piano.css';
 
 class Piano extends Component {
@@ -10,35 +12,109 @@ class Piano extends Component {
   keyWidth = 30;
   keyGap = 4;
   keySpacing = this.keyWidth + this.keyGap;
+  deviceType = this.props.appState.deviceType;
+
+  isPressing = false;
+  pointerPressedKeys = [];
 
   componentDidMount () {
-    window.addEventListener("keypress", this.activateKey);
-    window.addEventListener("keyup", this.deactivateKey);
     document.querySelector("html").classList.add("scrollingLocked");
+    window.addEventListener("keypress", this.onKeypress);
+    window.addEventListener("keyup", this.onKeyup);
+
+    const keyboardDOM = this.DOM.querySelector(`.${styles.keyboard}`);
+    keyboardDOM.addEventListener(_$.eventsMap.down[this.deviceType], this.onPointerDown);
+    window.addEventListener(_$.eventsMap.move[this.deviceType], this.onPointerMove);
+    window.addEventListener(_$.eventsMap.up[this.deviceType], this.onPointerUp);
 
     this.props.onMount(this.DOM);
   }
 
   componentWillUnmount () {
-    window.removeEventListener("keypress", this.activateKey);
-    window.removeEventListener("keyup", this.deactivateKey);
     document.querySelector("html").classList.remove("scrollingLocked");
+    window.removeEventListener("keypress", this.onKeypress);
+    window.removeEventListener("keyup", this.onKeyup);
+
+    const keyboardDOM = this.DOM.querySelector(`.${styles.keyboard}`);
+    keyboardDOM.removeEventListener(_$.eventsMap.down[this.deviceType], this.onPointerDown);
+    window.removeEventListener(_$.eventsMap.move[this.deviceType], this.onPointerMove);
+    window.removeEventListener(_$.eventsMap.up[this.deviceType], this.onPointerUp);
   }
 
   setDOM = (ref) => { this.DOM = ref; };
 
-  activateKey = (event) => {
-    if (this.keysDOM[event.code]) {
-      this.keysDOM[event.code].classList.add(styles['is--active']);
-      data.keys.find((key) => key.code === event.code).pressed = true;
+  onKeypress = (event) => {
+    if (this.keysDOM[event.code] && !this.pointerPressedKeys.includes(event.code)) {
+      this.activateKey(event.code);
     }
   };
 
-  deactivateKey = (event) => {
-    if (this.keysDOM[event.code]) {
-      this.keysDOM[event.code].classList.remove(styles['is--active']);
-      data.keys.find((key) => key.code === event.code).pressed = false;
+  onKeyup = (event) => {
+    if (this.keysDOM[event.code] && !this.pointerPressedKeys.includes(event.code)) {
+      this.deactivateKey(event.code);
     }
+  };
+
+  onPointerDown = (event) => {
+    if (!this.isPressing) {
+      Object.keys(this.keysDOM).forEach((keyCode) => {
+        if (event.target === this.keysDOM[keyCode]) {
+          this.activateKey(keyCode) && this.pointerPressedKeys.push(keyCode);
+        }
+      });
+
+      this.isPressing = true;
+    }
+  };
+
+  onPointerMove = (event) => {
+    if (this.isPressing) {
+      const target = event.type === 'touchmove' ? document.elementFromPoint(event.touches[0].pageX, event.touches[0].pageY) : event.target;
+      Object.keys(this.keysDOM).forEach((keyCode) => {
+        if (target === this.keysDOM[keyCode]) {
+          this.activateKey(keyCode) && this.pointerPressedKeys.push(keyCode);
+        } else if (this.pointerPressedKeys.includes(keyCode)) {
+          this.deactivateKey(keyCode) && this.pointerPressedKeys.splice(this.pointerPressedKeys.indexOf(keyCode), 1);
+        }
+      });
+    }
+  };
+
+  onPointerUp = () => {
+    if (this.isPressing) {
+      this.pointerPressedKeys.forEach((keyCode) => {
+        this.deactivateKey(keyCode);
+      });
+
+      this.pointerPressedKeys.length = 0;
+      this.isPressing = false;
+    }
+  };
+
+  activateKey = (keyCode) => {
+    const key = data.keys.find((key) => key.code === keyCode);
+
+    if (!key.pressed) {
+      this.keysDOM[keyCode].classList.add(styles['is--active']);
+      key.pressed = true;
+
+      return true;
+    }
+
+    return false;
+  };
+
+  deactivateKey = (keyCode) => {
+    const key = data.keys.find((key) => key.code === keyCode);
+
+    if (key.pressed) {
+      this.keysDOM[keyCode].classList.remove(styles['is--active']);
+      key.pressed = false;
+
+      return true;
+    }
+
+    return false;
   };
 
   buildKeyboard = () => {
@@ -81,7 +157,7 @@ class Piano extends Component {
 
     return (
       <div className={styles.Piano} ref={this.setDOM}>
-        <div className={styles.keyboardWrapper}>
+        <div className={styles.keyboard}>
           {this.buildKeyboard()}
         </div>
         <div className={styles.close} onClick={this.props.onClose}>

@@ -55,25 +55,28 @@
   font-size: 22px;
   cursor: pointer;
 
-  &:hover, &.is--active {
-    background: color(var(--color_piano-activeKey) a(70%));
+  &:not(.is--active):hover {
+    background: color(var(--color_neutral-grey-dark) a(80%));
   }
 
   &.isAccidental {
     background: color(var(--color_mono-white) a(15%));
     z-index: 1;
 
-    &:hover, &.is--active {
-      background: color(var(--color_piano-activeKey) a(80%))
+    &:not(.is--active):hover {
+      background: color(var(--color_mono-white) a(50%));
     }
+  }
+
+  &.is--active {
+    background: color(var(--color_piano-activeKey) a(80%));
   }
 }
 
-.keyboardWrapper {
+.keyboard {
   width: calc(var(--count_whiteKeys) * (var(--size_keyWidth) + var(--size_keyGap)));
   height: calc(var(--size_keyHeight) + (var(--size_keyHeight) * 0.33));
   position: relative;
-  user-select: none;
 }
 
 .hint {

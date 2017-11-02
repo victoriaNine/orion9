@@ -38,6 +38,7 @@ class App extends Component {
 
     this.state = {
       language: 'en',
+      deviceType: 'ontouchstart' in window ? 'mobile' : 'desktop',
       aboutLanding: _$.getPageName(window.location.pathname) === 'about',
       headlineMode: 'default',
       works: worksData.sections.filter(item => item.name.match('projects|experiments')).map(section => section.items).reduce((acc, item) => [...acc, ...item], []),

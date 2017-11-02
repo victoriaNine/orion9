@@ -27,6 +27,7 @@ body {
   font-size: 30px;
   font-weight: 300;
   -webkit-font-smoothing: antialiased;
+  user-select: none;
 }
 
 :global html.scrollingLocked body {

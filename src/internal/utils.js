@@ -1,3 +1,9 @@
+const eventsMap = {
+  down: { mobile: 'touchstart', desktop: 'mousedown' },
+  up: { mobile: 'touchend', desktop: 'mouseup' },
+  move: { mobile: 'touchmove', desktop: 'mousemove' },
+};
+
 const langRegex = /\/(fr|en|jp)\//;
 
 function getLanguageFromPath (location) {
@@ -37,6 +43,7 @@ function replaceStringToJSX (string, match, jsx, join) {
 }
 
 export {
+  eventsMap,
   langRegex,
   getLanguageFromPath,
   getLocationWithoutLang,

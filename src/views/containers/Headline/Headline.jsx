@@ -24,32 +24,34 @@ class Headline extends Component {
   };
 
   render () {
-    const appState = this.props.appState;
-    const language = appState.language;
+    const { language, currentWork } = this.props.appState;
 
-    let p1 = _$.replaceStringToJSX(data[0].text[language], '${age}', this.age, true);
+    let p1 = _$.replaceStringToJSX(data.baseline1[language], '${age}', this.age, true);
     p1 = _$.replaceStringToJSX(p1, '${note}', <Note onMount={this.setNoteDOM} onClick={this.openPiano} />);
 
-    const defaultDOM = (
-      <div className={styles.headlineWrapper}>
-        <p className={styles.paragraph}>
-          {p1}
-        </p>
-        <p className={styles.paragraph}>
-          { data[1].text[language] }
-        </p>
-      </div>
-    );
+    const defaultDOM = [
+      (<h1 className={styles.baseline1}>{p1}</h1>),
+      (<h2 className={styles.baseline2}>{data.baseline2[language]}</h2>)
+    ];
+
+    const workDOM = currentWork && [
+      (<h1 className={styles.title} style={{ color: currentWork.color }}>{currentWork.title}</h1>),
+      (<h2 className={styles.role}>
+        <div className={styles.dash} />
+        <span>
+          {
+            currentWork.details.role.map(role => data.translations[role][language]).join(data.translations.separator[language])
+          }
+        </span>
+      </h2>
+      )
+    ];
 
     let headlineDOM;
 
     switch (this.props.mode) {
       case 'work':
-        headlineDOM = (
-          <div className={styles.headlineWrapper}>
-            {this.props.appState.currentWork.title}
-          </div>
-        );
+        headlineDOM = workDOM;
         break;
       case 'piano':
         headlineDOM = <Piano onMount={this.setPianoDOM} onClick={this.closePiano} />;

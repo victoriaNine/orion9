@@ -10,7 +10,7 @@
 }
 
 .item {
-  font-size: 24px;
+  font-size: 22px;
   text-transform: lowercase;
   transition: transform 200ms;
   position: relative;
@@ -52,22 +52,10 @@
 }
 
 .dash {
-  width: 2em;
-  position: relative;
   opacity: 0;
   transform: scaleX(0);
   transform-origin: left center;
   transition: transform 200ms 100ms, opacity 200ms 100ms;
-  display: inline-block;
-  margin-right: 0.5em;
-
-  &:after {
-    content: "";
-    position: absolute;
-    height: 1px;
-    width: 100%;
-    background: currentColor;
-  }
 }
 
 .details {

@@ -9,9 +9,14 @@ const data = [
         type: "project",
         url: "https://15thtriad.com",
         details: {
-          role: ["dev", "audio", "design"],
+          role: ["dev", "design", "audio"],
           stack: ["backbone", "webpack", "webaudio", "canvas", "webgl", "node.js", "socket.io", "couchdb"],
-          github: "http://github.com/victoriaNine/xvthTriad"
+          github: "http://github.com/victoriaNine/xvthTriad",
+          about: {
+            fr: "",
+            en: "",
+            jp: ""
+          }
         },
         color: "#3399cc",
         visuals: { type: "video", url: "" }
@@ -22,8 +27,13 @@ const data = [
         type: "project",
         url: "http://orion9.net/iWantToWork/#!/With/You",
         details: {
-          role: ["dev", "audio", "design"],
-          stack: ["homemade framework", "webaudio", "css3d", "canvas"]
+          role: ["dev", "design", "audio", "sd"],
+          stack: ["custom framework", "webaudio", "css3d", "canvas"],
+          about: {
+            fr: "",
+            en: "",
+            jp: ""
+          }
         },
         color: "#6233cc",
         visuals: { type: "video", url: "" }
@@ -34,8 +44,13 @@ const data = [
         type: "project",
         url: "http://orion9.net/_demos/psychoCube",
         details: {
-          role: ["dev", "audio", "design"],
-          stack: ["homemade framework", "webaudio", "css3d", "canvas"]
+          role: ["dev", "design", "audio", "sd"],
+          stack: ["custom framework", "webaudio", "css3d", "canvas"],
+          about: {
+            fr: "",
+            en: "",
+            jp: ""
+          }
         },
         color: "#20cad9",
         visuals: { type: "video", url: "" }
@@ -46,8 +61,13 @@ const data = [
         type: "project",
         url: "http://orion9.net/_demos/waltzRevolution",
         details: {
-          role: ["dev", "audio", "design"],
-          stack: ["homemade framework", "webaudio", "canvas"]
+          role: ["dev", "design", "audio", "music", "sd"],
+          stack: ["custom framework", "webaudio", "canvas"],
+          about: {
+            fr: "",
+            en: "",
+            jp: ""
+          }
         },
         color: "#d48930",
         visuals: { type: "video", url: "" }
@@ -65,7 +85,12 @@ const data = [
         url: "http://orion9.net/_demos/meteorRain",
         details: {
           role: ["dev", "design"],
-          stack: ["vanillajs", "canvas", "svg"]
+          stack: ["vanillajs", "canvas", "svg"],
+          about: {
+            fr: "",
+            en: "",
+            jp: ""
+          }
         },
         color: "#d44b30",
         visuals: { type: "video", url: "" }
@@ -76,8 +101,13 @@ const data = [
         type: "experiment",
         url: "http://orion9.net/_demos/intertap",
         details: {
-          role: ["dev", "audio", "design"],
-          stack: ["homemade framework", "webaudio", "canvas"]
+          role: ["dev", "design", "audio", "sd"],
+          stack: ["custom framework", "webaudio", "canvas"],
+          about: {
+            fr: "",
+            en: "",
+            jp: ""
+          }
         },
         color: "#e4347a",
         visuals: { type: "video", url: "" }

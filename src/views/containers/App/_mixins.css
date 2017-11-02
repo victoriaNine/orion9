@@ -1,0 +1,15 @@
+.dash {
+  width: 2em;
+  position: relative;
+  
+  display: inline-block;
+  margin-right: 0.5em;
+
+  &:after {
+    content: "";
+    position: absolute;
+    height: 1px;
+    width: 100%;
+    background: currentColor;
+  }
+}

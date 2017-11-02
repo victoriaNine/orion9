@@ -6,7 +6,15 @@
   text-transform: lowercase;
 }
 
-.paragraph:first-of-type {
+.baseline1 {
   margin-bottom: 1em;
   max-width: 570px;
+}
+
+.role {
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  font-family: var(--font_futura);
+  margin-top: 1em;
 }

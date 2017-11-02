@@ -73,8 +73,8 @@ class App extends Component {
     });
 
     const tl = new TimelineMax({ delay: 0.5 });
-    tl.from(this.state.dom.headline.querySelectorAll('p')[0], 0.4, { opacity: 0, y: -12, clearProps: "all" });
-    tl.from(this.state.dom.headline.querySelectorAll('p')[1], 0.4, { opacity: 0, y: -12, clearProps: "all" }, "-=0.2");
+    tl.from(this.state.dom.headline.children[0], 0.4, { opacity: 0, y: -12, clearProps: "opacity,transform" });
+    tl.from(this.state.dom.headline.children[1], 0.4, { opacity: 0, y: -12, clearProps: "all" }, "-=0.2");
     tl.from(this.state.dom.app.querySelector(`.${styles.contents}`), 0.4, { opacity: 0, y: 12, clearProps: "all" }, 0.4);
     tl.from(this.state.dom.nav, 0.4, { opacity: 0, x: 12, clearProps: "all" }, "-=0.2");
     tl.from(this.state.dom.note, 0.4, { opacity: 0, clearProps: "all" }, "-=0.2");
@@ -85,9 +85,10 @@ class App extends Component {
   }
 
   updateGradient (offset) {
-    const string = `top, rgba(0,0,0,1) ${offset}px, rgba(0,0,0,1) calc(60vh + ${offset}px), rgba(0,0,0,${this.getScrollRatio()}) calc(95vh + ${offset}px)`;
+    const scrollRatio = this.getScrollRatio();
+    const string = `to bottom, rgba(0,0,0,1) ${offset}px, rgba(0,0,0,1) calc(60vh + ${offset}px), rgba(0,0,0,${scrollRatio}) calc(95vh + ${offset}px)`;
 
-    this.state.dom.appWrapper.style.webkitMaskImage = `-webkit-linear-gradient(${string})`;
+    this.state.dom.appWrapper.style.webkitMaskImage = `linear-gradient(${string})`;
     this.state.dom.appWrapper.style.maskImage = `linear-gradient(${string})`;
   }
 

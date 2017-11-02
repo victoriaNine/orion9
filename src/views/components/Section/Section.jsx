@@ -32,6 +32,7 @@ class Section extends Component {
       onSelect={this.onItemSelect}
       onDeselect={this.onItemDeselect}
     />;
+    
     const textDOM = this.props.text &&
       <p className={styles.text} onMouseEnter={this.onItemSelect} onMouseLeave={this.onItemDeselect}>
         { typeof this.props.text === 'object' ? this.props.text[language] : this.props.text }
@@ -41,7 +42,7 @@ class Section extends Component {
       <div className={styles.Section}>
         <div className={styles.title}>
           <Title backgroundColor={this.state.backgroundColor} isActive={this.state.isActive}>
-            {this.props.title[language]}
+            { typeof this.props.title === 'object' ? this.props.title[language] : this.props.title }
           </Title>
         </div>
         <div className={styles.contents}>

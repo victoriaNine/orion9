@@ -30,6 +30,7 @@ class List extends Component {
       <div className={styles.wrapper}>
         <ul className={styles.List}>
           {this.props.items.map((item, index) => {
+            const linkTitle = typeof item.title === 'object' ? item.title[language] : item.title;
             return (
               <li
                 className={styles.item}
@@ -37,9 +38,16 @@ class List extends Component {
                 onMouseLeave={() => { this.onDeselect(item, index); }}
                 ref={(ref) => { this.itemsDOM[index] = ref; }}
               >
-                <a href={item.url} target="_blank" className={styles.title}>
-                  { typeof item.title === 'object' ? item.title[language] : item.title }
-                </a>
+                {
+                  !item.internalLink && <a href={item.url} target="_blank" className={styles.title}>
+                    { linkTitle }
+                  </a>
+                }
+                {
+                  item.internalLink && <Link to={item.url} className={styles.title}>
+                    { linkTitle }
+                  </Link>
+                }
                 {
                   item.details && <Link to={`/work/${item.id}`} onClick={() => { this.onDeselect(item, index); }} className={styles.detailsWrapper}>
                     <div className={styles.dash} /><div className={styles.details}>{data.translations.more[language]}</div>

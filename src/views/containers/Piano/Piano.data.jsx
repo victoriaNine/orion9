@@ -152,6 +152,13 @@ const data = {
     Digit7: { azerty: "7", qwerty: "7" },
     KeyU: { azerty: "U", qwerty: "U" },
     KeyI: { azerty: "I", qwerty: "I" },
+  },
+  translations: {
+    midi: { fr: "Périphérique MIDI", en: "MIDI device", jp: "MIDIデバイス" },
+    status: { fr: "Statut ", en: "Status", jp: "状況" },
+    note: { fr: "Note ", en: "Note", jp: "ノート" },
+    connected: { fr: "Connecté", en: "Connected", jp: "接続中" },
+    disconnected: { fr: "Déconnecté", en: "Disconnected", jp: "切断されている" }
   }
 };
 

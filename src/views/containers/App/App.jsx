@@ -45,6 +45,8 @@ class App extends Component {
       headlineMode: 'default',
       works: worksData.sections.filter(item => item.name.match('projects|experiments')).map(section => section.items).reduce((acc, item) => [...acc, ...item], []),
       currentWork: null,
+      midiStatus: false,
+      midiLastNote: null,
       dom: {}
     };
 

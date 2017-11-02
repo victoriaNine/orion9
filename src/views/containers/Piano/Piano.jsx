@@ -75,6 +75,8 @@ class Piano extends Component {
   };
 
   render () {
+    const { language, appState } = this.props;
+
     return (
       <div className={styles.Piano} ref={this.setDOM}>
         <div className={styles.keyboardWrapper}>
@@ -87,9 +89,18 @@ class Piano extends Component {
           <div className={styles.label}>
             <div className={styles.dash} /><span>Hedwig's Theme</span>
           </div>
-          <div className={styles.score}>
+          <div className={styles.hintContent}>
             a b cd e / efh d / a b cd e / efh d<br />
             a b cd e / efh d
+          </div>
+        </div>
+        <div className={styles.hint}>
+          <div className={styles.label}>
+            <div className={styles.dash} /><span>{data.translations.midi[language]}</span>
+          </div>
+          <div className={styles.hintContent}>
+            {data.translations.status[language]}: {appState.midiStatus ? data.translations.connected[language] : data.translations.disconnected[language]}<br />
+            {data.translations.note[language]}: {appState.midiLastNote || '—'}
           </div>
         </div>
       </div>

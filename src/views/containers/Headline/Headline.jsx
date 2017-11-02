@@ -1,7 +1,7 @@
 import { h, Component } from 'preact';
 
-import Note from './Note';
-import Piano from './Piano';
+import Note from 'Components/Note';
+import Piano from 'Containers/Piano';
 import data from './Headline.data';
 import * as _$ from 'utils';
 
@@ -54,7 +54,7 @@ class Headline extends Component {
         headlineDOM = workDOM;
         break;
       case 'piano':
-        headlineDOM = <Piano language={language} onMount={this.setPianoDOM} onClose={this.closePiano} />;
+        headlineDOM = <Piano language={language} appState={this.props.appState} onMount={this.setPianoDOM} onClose={this.closePiano} />;
         break;
       case 'default':
       default:

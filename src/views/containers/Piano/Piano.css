@@ -63,10 +63,15 @@
 .hint {
   font-size: 16px;
   display: flex;
+
+  &:not(:last-of-type) {
+    margin-bottom: 1em;
+  }
 }
 
 .label {
   display: flex;
+  width: 200px;
 }
 
 .dash {
@@ -75,7 +80,7 @@
   align-items: center;
 }
 
-.score {
+.hintContent {
   padding-left: 2em;
   line-height: 1.25em;
 }

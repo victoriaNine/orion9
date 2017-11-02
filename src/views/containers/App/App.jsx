@@ -59,17 +59,11 @@ class App extends Component {
   }
 
   setAppState = (updater) => { this.setState(updater); };
+  rAF = null;
+  prevScrollTop = null;
 
   componentDidMount () {
-    this.updateGradient(this.getGradientOffset());
-
-    document.body.addEventListener("scroll", () => {
-      this.updateGradient(this.getGradientOffset());
-    });
-
-    window.addEventListener("resize", () => {
-      this.updateGradient(this.getGradientOffset());
-    });
+    this.rAF = requestAnimationFrame(this.paintGradient);
 
     const tl = new TimelineMax({ delay: 0.5 });
     tl.from(this.state.dom.headline.children[0], 0.4, { opacity: 0, y: -12, clearProps: "opacity,transform" });
@@ -90,6 +84,15 @@ class App extends Component {
     this.state.dom.appWrapper.style.webkitMaskImage = `linear-gradient(${string})`;
     this.state.dom.appWrapper.style.maskImage = `linear-gradient(${string})`;
   }
+
+  paintGradient = () => {
+    this.rAF = requestAnimationFrame(this.paintGradient);
+
+    if (this.prevScrollTop !== document.body.scrollTop) {
+      this.updateGradient(this.getGradientOffset());
+      this.prevScrollTop = document.body.scrollTop;
+    }
+  };
 
   getScrollRatio () {
     // https://stackoverflow.com/questions/2387136/cross-browser-method-to-determine-vertical-scroll-percentage-in-javascript

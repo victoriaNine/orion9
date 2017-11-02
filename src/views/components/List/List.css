@@ -89,7 +89,7 @@
 .gif {
   width: 100%;
   height: auto;
-  box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.5);
+  box-shadow: 4px 4px 8px color(var(--color_mono-black) a(50%));
 }
 
 .wrapper {}

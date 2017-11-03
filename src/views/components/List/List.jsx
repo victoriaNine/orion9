@@ -39,19 +39,24 @@ class List extends Component {
                 ref={(ref) => { this.itemsDOM[index] = ref; }}
               >
                 {
-                  !item.internalLink && <a href={item.url} target="_blank" className={styles.title}>
+                  item.details && (
+                    <Link to={`/work/${item.id}`} onClick={() => { this.onDeselect(item, index); }}>
+                      <div className={styles.title}>{ linkTitle }</div>
+                      <div className={styles.detailsWrapper}>
+                        <div className={styles.dash} /><div className={styles.details}>{data.translations.more[language]}</div>
+                      </div>
+                    </Link>
+                  )
+                }
+                {
+                  !item.details && item.internalLink && <Link to={item.url} onClick={() => { this.onDeselect(item, index); }} className={styles.title}>
+                    { linkTitle }
+                  </Link>
+                }
+                {
+                  !item.details && !item.internalLink && <a href={item.url} target="_blank" className={styles.title}>
                     { linkTitle }
                   </a>
-                }
-                {
-                  item.internalLink && <Link to={item.url} onClick={() => { this.onDeselect(item, index); }} className={styles.title}>
-                    { linkTitle }
-                  </Link>
-                }
-                {
-                  item.details && <Link to={`/work/${item.id}`} onClick={() => { this.onDeselect(item, index); }} className={styles.detailsWrapper}>
-                    <div className={styles.dash} /><div className={styles.details}>{data.translations.more[language]}</div>
-                  </Link>
                 }
               </li>
             );

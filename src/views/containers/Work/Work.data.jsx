@@ -2,6 +2,7 @@ const data = {
   translations: {
     about: { fr: "À propos", en: "About", jp: "作品について" },
     client: { fr: "Client", en: "Client", jp: "クライアント" },
+    agency: { fr: "Agence", en: "Agency", jp: "エージェンシー" },
     stack: { fr: "Technologies", en: "Technical stack", jp: "技術スタック" },
     awards: { fr: "Récompenses", en: "Awards", jp: "受賞" },
     links: { fr: "Liens", en: "Links", jp: "リンク" },

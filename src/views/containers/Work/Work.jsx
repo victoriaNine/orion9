@@ -88,6 +88,11 @@ class Work extends Component {
             <Section language={language} title={data.translations.client} text={currentWork.details.client} />
           </div>
         }
+        {
+          currentWork.details.agency && <div className={styles.section}>
+            <Section language={language} title={data.translations.agency} text={currentWork.details.agency} />
+          </div>
+        }
         <div className={styles.section}>
           <Section language={language} title={data.translations.stack} text={currentWork.details.stack.join(', ')} />
         </div>

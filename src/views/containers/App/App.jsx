@@ -15,7 +15,7 @@ import Headline from 'Containers/Headline';
 import Home from 'Containers/Home';
 import Nav from 'Containers/Nav';
 import Work from 'Containers/Work';
-import withAppState from 'Containers/AppState';
+import withHocWrapper from 'Containers/HocWrapper';
 import * as _$ from 'utils';
 
 import data from './App.data';
@@ -50,6 +50,8 @@ class App extends Component {
 
     this.workIdsRegex = this.state.works.map(work => work.id).join('|');
 
+    const withAppState = (component) => withHocWrapper(component, { appState: this.state, setAppState: this.setAppState });
+    
     ConnectedAbout = withAppState(About, this.state, this.setAppState);
     ConnectedCanvas = withAppState(Canvas, this.state, this.setAppState);
     ConnectedHeadline = withAppState(Headline, this.state, this.setAppState);

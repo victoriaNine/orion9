@@ -51,13 +51,13 @@ class App extends Component {
     this.workIdsRegex = this.state.works.map(work => work.id).join('|');
 
     const withAppState = (component) => withHocWrapper(component, { appState: this.state, setAppState: this.setAppState });
-    
-    ConnectedAbout = withAppState(About, this.state, this.setAppState);
-    ConnectedCanvas = withAppState(Canvas, this.state, this.setAppState);
-    ConnectedHeadline = withAppState(Headline, this.state, this.setAppState);
-    ConnectedHome = withAppState(Home, this.state, this.setAppState);
-    ConnectedNav = withAppState(withRouter(Nav), this.state, this.setAppState);
-    ConnectedWork = withAppState(withRouter(Work), this.state, this.setAppState);
+
+    ConnectedAbout = withAppState(About);
+    ConnectedCanvas = withAppState(Canvas);
+    ConnectedHeadline = withAppState(Headline);
+    ConnectedHome = withAppState(Home);
+    ConnectedNav = withAppState(withRouter(Nav));
+    ConnectedWork = withAppState(withRouter(Work));
   }
 
   setAppState = (updater) => { this.setState(updater); };

@@ -3,11 +3,11 @@ import { withRouter } from 'react-router';
 import {
   BrowserRouter as Router,
   Redirect,
-  Route,
-  Switch
+  Route
 } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import { TimelineMax } from 'gsap';
+import TransitionGroup from 'react-transition-group/TransitionGroup';
 
 import About from 'Containers/About';
 import Canvas from 'Containers/Canvas';
@@ -70,7 +70,7 @@ class App extends Component {
     const tl = new TimelineMax({ delay: 0.5 });
     tl.from(this.state.dom.headline.children[0], 0.4, { opacity: 0, y: -12, clearProps: "opacity,transform" });
     tl.from(this.state.dom.headline.children[1], 0.4, { opacity: 0, y: -12, clearProps: "all" }, "-=0.2");
-    tl.from(this.state.dom.app.querySelector(`.${styles.contents}`), 0.4, { opacity: 0, y: 12, clearProps: "all" }, 0.4);
+    tl.from(this.state.dom.appContents, 0.4, { opacity: 0, y: 12, clearProps: "all" }, 0.4);
     tl.from(this.state.dom.nav, 0.4, { opacity: 0, x: 12, clearProps: "all" }, "-=0.2");
     tl.from(this.state.dom.note, 0.4, { opacity: 0, clearProps: "all" }, "-=0.2");
   }
@@ -111,10 +111,12 @@ class App extends Component {
   }
 
   setDOM = (ref) => { this.setState({ dom: {...this.state.dom, app: ref } }); };
-  setWrapperDOM = (ref) => { this.setState({ dom: {...this.state.dom, appWrapper: ref } });  };
+  setWrapperDOM = (ref) => { this.setState({ dom: {...this.state.dom, appWrapper: ref } }); };
+  setContentsDOM = (ref) => { this.setState({ dom: {...this.state.dom, appContents: ref } }); };
 
   render () {
     const pageTitle = data.translations.pageTitle[this.state.language] && ` — ${data.translations.pageTitle[this.state.language]}`;
+    let hasMatch = false;
 
     return (
       <Router>
@@ -127,13 +129,35 @@ class App extends Component {
           <ConnectedNav />
           <div className={styles.wrapper} ref={this.setWrapperDOM}>
             <ConnectedHeadline mode={this.state.headlineMode} />
-            <div className={styles.contents}>
-              <Switch>
-                <Route path="/:lang?/home" component={ConnectedHome} />
-                <Route path="/:lang?/about" component={ConnectedAbout} />
-                <Route path={`/:lang?/work/(${this.workIdsRegex})`} component={ConnectedWork} />
-                <Redirect to="/home" />
-              </Switch>
+            <div className={styles.contents} ref={this.setContentsDOM}>
+              <Route exact path="/:lang?/home" children={({ match }) => {
+                if (match) { hasMatch = true; }
+                return (
+                  <TransitionGroup component={_$.getFirstChild}>
+                    {match && <ConnectedHome />}
+                  </TransitionGroup>
+                );
+              }} />
+              <Route exact path="/:lang?/about" children={({ match }) => {
+                if (match) { hasMatch = true; }
+                return (
+                  <TransitionGroup component={_$.getFirstChild}>
+                    {match && <ConnectedAbout />}
+                  </TransitionGroup>
+                );
+              }} />
+              <Route exact path={`/:lang?/work/(${this.workIdsRegex})`} children={({ match }) => {
+                if (match) { hasMatch = true; }
+                return (
+                  <TransitionGroup component={_$.getFirstChild}>
+                    {match && <ConnectedWork />}
+                  </TransitionGroup>
+                );
+              }} />
+              <Route path="/:lang?/*" render={({ match }) => !hasMatch
+                ? <Redirect to={`${match.params.lang && _$.getLanguageFromPath(`/${match.params.lang}/`) ? `/${match.params.lang}` : ''}/home`} />
+                : null
+              } />
             </div>
           </div>
         </main>

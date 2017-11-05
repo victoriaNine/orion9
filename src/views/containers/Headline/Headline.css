@@ -4,17 +4,47 @@
   margin: 100px 0 50px;
   font-family: var(--font_didot);
   text-transform: lowercase;
-}
+  height: 500px;
+  transition: height 400ms;
 
-.baseline1 {
-  margin-bottom: 1em;
-  max-width: 570px;
-}
+  @media screen and (min-width: 300px) {
+    height: 420px;
+  }
 
-.role {
-  display: flex;
-  align-items: center;
-  font-size: 14px;
-  font-family: var(--font_futura);
-  margin-top: 1em;
+  @media screen and (min-width: 350px) {
+    height: 400px;
+  }
+
+  @media screen and (min-width: 400px) {
+    height: 350px;
+  }
+
+  @media screen and (min-width: 450px) {
+    height: 275px;
+  }
+
+  @media screen and (min-width: 550px) {
+    height: 250px;
+  }
+
+  @media screen and (min-width: 650px)  {
+    height: 200px;
+  }
+
+  &.is--piano {
+    height: 200px;
+  }
+
+  &.is--work {
+    height: 80px;
+    transition: height 400ms 400ms;
+  }
+
+  html:lang(ja) & {
+    line-height: 1.3em;
+  }
+
+  & > * {
+    position: absolute;
+  }
 }

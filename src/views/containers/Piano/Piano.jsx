@@ -1,5 +1,6 @@
 import classnames from 'classnames';
 import { h, Component } from 'preact';
+import { TimelineMax } from 'gsap';
 
 import data from './Piano.data';
 import * as _$ from 'utils';
@@ -39,6 +40,16 @@ class Piano extends Component {
     keyboardDOM.removeEventListener(_$.eventsMap.down[this.deviceType], this.onPointerDown);
     window.removeEventListener(_$.eventsMap.move[this.deviceType], this.onPointerMove);
     window.removeEventListener(_$.eventsMap.up[this.deviceType], this.onPointerUp);
+  }
+
+  componentWillEnter (callback) {
+    const tl = new TimelineMax({ delay: 0.2, onComplete: () => { callback && callback(); } });
+    tl.from(this.DOM, 0.2, { opacity: 0, y: -12, clearProps: "all" });
+  }
+
+  componentWillLeave (callback) {
+    const tl = new TimelineMax({ onComplete: () => { callback && callback(); } });
+    tl.to(this.DOM, 0.2, { opacity: 0, y: -12, clearProps: "all" });
   }
 
   setDOM = (ref) => { this.DOM = ref; };

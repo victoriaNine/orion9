@@ -1,0 +1,11 @@
+@import 'App/_common.css';
+
+.WorkHeadline {}
+
+.role {
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  font-family: var(--font_futura);
+  margin-top: 1em;
+}

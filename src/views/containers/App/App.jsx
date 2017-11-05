@@ -36,16 +36,20 @@ class App extends Component {
   constructor (...args) {
     super(...args);
 
+    const pageName = _$.getPageName(window.location.pathname);
+
     this.state = {
       language: 'en',
       deviceType: 'ontouchstart' in window ? 'mobile' : 'desktop',
-      aboutLanding: _$.getPageName(window.location.pathname) === 'about',
-      headlineMode: 'default',
+      aboutLanding: pageName === 'about',
+      headlineMode: pageName === 'work' ? 'work' : 'default',
       works: worksData.sections.filter(item => item.name.match('projects|experiments')).map(section => section.items).reduce((acc, item) => [...acc, ...item], []),
       currentWork: null,
       midiStatus: false,
       midiLastNote: null,
-      dom: {}
+      initialized: false,
+      dom: {},
+      instances: {},
     };
 
     this.workIdsRegex = this.state.works.map(work => work.id).join('|');
@@ -57,22 +61,30 @@ class App extends Component {
     ConnectedHeadline = withAppState(Headline);
     ConnectedHome = withAppState(Home);
     ConnectedNav = withAppState(withRouter(Nav));
-    ConnectedWork = withAppState(withRouter(Work));
+    ConnectedWork = withAppState(Work);
   }
 
-  setAppState = (updater) => { this.setState(updater); };
   rAF = null;
   prevScrollTop = null;
 
-  componentDidMount () {
-    this.rAF = requestAnimationFrame(this.paintGradient);
+  setAppState = (updater) => { this.setState(updater); };
 
-    const tl = new TimelineMax({ delay: 0.5 });
-    tl.from(this.state.dom.headline.children[0], 0.4, { opacity: 0, y: -12, clearProps: "opacity,transform" });
-    tl.from(this.state.dom.headline.children[1], 0.4, { opacity: 0, y: -12, clearProps: "all" }, "-=0.2");
-    tl.from(this.state.dom.appContents, 0.4, { opacity: 0, y: 12, clearProps: "all" }, 0.4);
-    tl.from(this.state.dom.nav, 0.4, { opacity: 0, x: 12, clearProps: "all" }, "-=0.2");
-    tl.from(this.state.dom.note, 0.4, { opacity: 0, clearProps: "all" }, "-=0.2");
+  componentDidMount() {
+    this.rAF = requestAnimationFrame(this.paintGradient);
+  }
+
+  componentDidUpdate () {
+    if (!this.state.initialized && this.state.headlineMode) {
+
+      const tl = new TimelineMax({ delay: 0.5 });
+      tl.from(this.state.dom.headline.querySelector('h1'), 0.4, { opacity: 0, y: -12, clearProps: "opacity,transform" });
+      tl.from(this.state.dom.headline.querySelector('h2'), 0.4, { opacity: 0, y: -12, clearProps: "all" }, "-=0.2");
+      tl.from(this.state.dom.appContents, 0.4, { opacity: 0, y: 12, clearProps: "all" }, "-=0.2");
+      tl.from(this.state.dom.nav, 0.4, { opacity: 0, x: 12, clearProps: "all" }, "-=0.2");
+      this.state.headlineMode === 'default' && tl.from(this.state.dom.note, 0.4, { opacity: 0, clearProps: "all" }, "-=0.2");
+
+      this.setState({ initialized: true });
+    }
   }
 
   getGradientOffset () {
@@ -130,7 +142,7 @@ class App extends Component {
           <div className={styles.wrapper} ref={this.setWrapperDOM}>
             <ConnectedHeadline mode={this.state.headlineMode} />
             <div className={styles.contents} ref={this.setContentsDOM}>
-              <Route exact path="/:lang?/home" children={({ match }) => {
+              <Route exact path="/:lang?/(home|)" children={({ match }) => {
                 if (match) { hasMatch = true; }
                 return (
                   <TransitionGroup component={_$.getFirstChild}>
@@ -146,11 +158,11 @@ class App extends Component {
                   </TransitionGroup>
                 );
               }} />
-              <Route exact path={`/:lang?/work/(${this.workIdsRegex})`} children={({ match }) => {
+              <Route exact path={`/:lang?/work/(${this.workIdsRegex})`} children={({ match, history, location }) => {
                 if (match) { hasMatch = true; }
                 return (
                   <TransitionGroup component={_$.getFirstChild}>
-                    {match && <ConnectedWork />}
+                    {match && <ConnectedWork history={history} location={location} />}
                   </TransitionGroup>
                 );
               }} />

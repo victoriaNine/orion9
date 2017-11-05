@@ -1,5 +1,5 @@
 import { h, Component } from 'preact';
-import { TweenMax, Power2 } from 'gsap';
+import { TweenMax, TimelineMax, Power2 } from 'gsap';
 
 import Section from 'Components/Section';
 import data from './Work.data';
@@ -21,23 +21,57 @@ class Work extends Component {
     TweenMax.to(document.body, 0.4, { scrollTop: 0, ease: Power2.easeInOut });
 
     this.historyRemoveListener = this.props.history.listen((location) => {
-      if (_$.getPageName(location.pathname) !== 'work') {
-        this.props.setAppState({ headlineMode: 'default', currentWork: null });
-      } else {
-        this.props.setAppState({
-          currentWork: this.getCurrentWorkFromPath(location.pathname)
+      if (_$.getPageName(location.pathname) === 'work') {
+        this.props.appState.instances.workHeadline.doLeave(() => {
+          this.props.appState.instances.workHeadline.doEnter();
+        });
+
+        this.doLeave(() => {
+          this.props.setAppState({
+            currentWork: this.getCurrentWorkFromPath(location.pathname)
+          });
+
+          TweenMax.to(document.body, 0.4, { scrollTop: 0, ease: Power2.easeInOut });
+          this.doEnter();
+
         });
       }
     });
   }
 
   componentWillUnmount () {
+    this.props.setAppState({ headlineMode: 'default', currentWork: null });
     this.historyRemoveListener();
   }
+
+  componentWillEnter (callback) {
+    this.doEnter(callback);
+  }
+
+  componentWillLeave (callback) {
+    this.doLeave(callback);
+  }
+
+  doEnter = (callback) => {
+    const tl = new TimelineMax({ delay: 0.4, onComplete: () => { callback && callback(); } });
+    tl.set(this.DOM.parentNode, { height: "100vh" });
+    tl.set(this.DOM, { position: "absolute" });
+    tl.from(this.DOM, 0.4, { opacity: 0, y: 12, clearProps: "all" });
+    tl.set(this.DOM.parentNode, { clearProps: "height" });
+  };
+
+  doLeave = (callback) => {
+    const tl = new TimelineMax({ onComplete: () => { callback && callback(); } });
+    tl.set(this.DOM.parentNode, { height: "100vh" });
+    tl.set(this.DOM, { position: "absolute" });
+    tl.to(this.DOM, 0.4, { opacity: 0, y: 12, clearProps: "all" });
+  };
 
   getCurrentWorkFromPath = (path) => {
     return this.props.appState.works.find(item => item.id === _$.getWorkIdFromPath(path));
   };
+
+  setDOM = (ref) => { this.DOM = ref; };
 
   render () {
     const { language, currentWork, works } = this.props.appState;
@@ -74,7 +108,7 @@ class Work extends Component {
     ];
 
     return (
-      <div className={styles.Work}>
+      <div className={styles.Work} ref={this.setDOM}>
         <div className={styles.section}>
           <Section language={language} title={data.translations.links} items={linkItems} />
         </div>

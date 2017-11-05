@@ -1,21 +1,17 @@
 import classnames from 'classnames';
-import { h, Component } from 'preact';
+import { h } from 'preact';
 
 import styles from './Title.css';
 
-class Title extends Component {
-  render () {
-    return (
-      <div className={classnames(styles.Title, {
-        [styles['is--active']]: this.props.isActive
-      })}>
-        <div className={styles.background} style={{ background: this.props.backgroundColor }} />
-        <div className={styles.contents}>
-          {this.props.children}
-        </div>
-      </div>
-    );
-  }
-}
+const Title = ({ isActive, backgroundColor, children }) => (
+  <div className={classnames(styles.Title, {
+    [styles['is--active']]: isActive
+  })}>
+    <div className={styles.background} style={{ background: backgroundColor }} />
+    <div className={styles.contents}>
+      {children}
+    </div>
+  </div>
+);
 
 export default Title;

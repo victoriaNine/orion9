@@ -13,7 +13,7 @@ class Nav extends Component {
     let languageFromPath = _$.getLanguageFromPath(this.props.location.pathname);
     languageFromPath = languageFromPath && languageFromPath[1];
 
-    const languageFromNavigator = navigator.language.match('fr|en|ja') ? navigator.language : null;
+    const languageFromNavigator = navigator.language.slice(0, 2).match(/^(fr|en|ja)$/) ? navigator.language.slice(0, 2) : null;
     this.props.setAppState({
       language: languageFromPath || languageFromNavigator || 'en',
     });

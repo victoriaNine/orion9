@@ -82,7 +82,10 @@ strike {
 
 .App {}
 
-.contents {}
+.contents {
+  transition: height 200ms;
+}
+
 .wrapper {
   padding: 25px 25px 25px 50px;
   position: relative;

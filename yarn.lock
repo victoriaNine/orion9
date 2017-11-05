@@ -7789,6 +7789,10 @@ to-object-path@^0.3.0:
   dependencies:
     kind-of "^3.0.2"
 
+tone@^0.11.11:
+  version "0.11.12"
+  resolved "https://registry.yarnpkg.com/tone/-/tone-0.11.12.tgz#cb042dcad55d7965a66bbdb665ca1a8853442be2"
+
 toposort@^1.0.0:
   version "1.0.6"
   resolved "https://registry.yarnpkg.com/toposort/-/toposort-1.0.6.tgz#c31748e55d210effc00fdcdc7d6e68d7d7bb9cec"

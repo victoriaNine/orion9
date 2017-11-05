@@ -1,6 +1,7 @@
 import classnames from 'classnames';
 import { h, Component } from 'preact';
 import { TimelineMax } from 'gsap';
+import * as Tone from 'tone';
 
 import data from './Piano.data';
 import * as _$ from 'utils';
@@ -18,6 +19,9 @@ class Piano extends Component {
   isPressing = false;
   pointerPressedKeys = [];
 
+  synth = new Tone.PolySynth(1, Tone.FMSynth).toMaster();
+  midiInput = null;
+
   componentDidMount () {
     document.querySelector("html").classList.add("scrollingLocked");
     window.addEventListener("keypress", this.onKeypress);
@@ -28,6 +32,34 @@ class Piano extends Component {
     window.addEventListener(_$.eventsMap.move[this.deviceType], this.onPointerMove);
     window.addEventListener(_$.eventsMap.up[this.deviceType], this.onPointerUp);
 
+    if (navigator.requestMIDIAccess)
+      navigator.requestMIDIAccess().then(this.onMIDIInit);
+
+    this.synth.set({
+      harmonicity: 3,
+      modulationIndex: 10,
+      detune: 0,
+      oscillator: {
+        type: "sine"
+      },
+      envelope: {
+        attack: 0.01,
+        decay: 0.01,
+        sustain: 1,
+        release: 0.5
+      },
+      modulation: {
+        type: 'square'
+      },
+      modulationEnvelope: {
+        attack: 0.5,
+        decay: 0,
+        sustain: 1,
+        release: 0.5
+      }
+    });
+
+    this.synth.triggerAttackRelease("C6", "8n", "+0.2");
     this.props.onMount(this.DOM);
   }
 
@@ -40,6 +72,13 @@ class Piano extends Component {
     keyboardDOM.removeEventListener(_$.eventsMap.down[this.deviceType], this.onPointerDown);
     window.removeEventListener(_$.eventsMap.move[this.deviceType], this.onPointerMove);
     window.removeEventListener(_$.eventsMap.up[this.deviceType], this.onPointerUp);
+
+    this.synth.triggerAttackRelease("A5", "8n");
+    if (this.midiInput && this.midiInput.value) {
+      this.midiInput.value.removeEventListener('midimessage', this.onMIDIMessageEvent);
+      this.midiInput.value.removeEventListener('statechange', this.onMIDIConnectionEvent);
+      this.midiInput.value.close();
+    }
   }
 
   componentWillEnter (callback) {
@@ -102,12 +141,57 @@ class Piano extends Component {
     }
   };
 
-  activateKey = (keyCode) => {
+  onMIDIInit = (midiAccess) => {
+    const inputs = midiAccess.inputs.values();
+
+    this.midiInput = inputs.next();
+    if (this.midiInput.value) {
+      this.midiInput.value.addEventListener('midimessage', this.onMIDIMessageEvent);
+      this.midiInput.value.addEventListener('statechange', this.onMIDIConnectionEvent);
+    }
+  };
+
+  onMIDIConnectionEvent = (event) => {
+    if (event.port.state === 'connected') {
+      this.props.setAppState({ midiStatus: true });
+    }
+
+    if (event.port.state === 'disconnected') {
+      this.props.setAppState({ midiStatus: false, midiLastNote: null });
+    }
+  };
+
+  onMIDIMessageEvent = (event) => {
+    const note = Tone.Frequency(event.data[1], "midi").toNote();
+    const velocity = event.data[2] / 127;
+    const channel = event.data[0];
+    const key = data.keys.find((key) => key.note === note);
+
+    if (channel !== 128) {
+      this.props.setAppState({ midiLastNote: note });
+
+      if (key) {
+        this.activateKey(key.code, velocity);
+      } else {
+        this.synth.triggerAttack(note, null, velocity);
+      }
+    } else {
+      // eslint-disable-next-line no-lonely-if
+      if (key) {
+        this.deactivateKey(key.code);
+      } else {
+        this.synth.triggerRelease(note);
+      }
+    }
+  };
+
+  activateKey = (keyCode, velocity = 1) => {
     const key = data.keys.find((key) => key.code === keyCode);
 
     if (!key.pressed) {
       this.keysDOM[keyCode].classList.add(styles['is--active']);
       key.pressed = true;
+      this.synth.triggerAttack(key.note, null, velocity);
 
       return true;
     }
@@ -121,6 +205,7 @@ class Piano extends Component {
     if (key.pressed) {
       this.keysDOM[keyCode].classList.remove(styles['is--active']);
       key.pressed = false;
+      this.synth.triggerRelease(key.note);
 
       return true;
     }
@@ -163,8 +248,15 @@ class Piano extends Component {
     return whiteKeys.concat(blackKeys);
   };
 
+  parseNoteName = (note) => {
+    return data.noteNames[note.at(0)][this.layout] + note.slice(1);
+  };
+
   render () {
     const { language, appState } = this.props;
+    const keyLayout = Object.keys(data.keyLayout).reduce((acc, key) => (
+      { ...acc, [key]: data.keyLayout[key][this.layout] }
+    ), {});
 
     return (
       <div className={styles.Piano} ref={this.setDOM}>
@@ -179,8 +271,9 @@ class Piano extends Component {
             <div className={styles.dash} /><span>Hedwig's Theme</span>
           </div>
           <div className={styles.hintContent}>
-            a b cd e / efh d / a b cd e / efh d<br />
-            a b cd e / efh d
+            {`${keyLayout.KeyM} ${keyLayout.KeyE}${keyLayout.KeyT}${keyLayout.Digit5}${keyLayout.KeyE}${keyLayout.KeyU} ${keyLayout.KeyY}${keyLayout.Digit5} ${keyLayout.KeyE}${keyLayout.KeyT}${keyLayout.Digit5}${keyLayout.KeyW}${keyLayout.KeyR} ${keyLayout.KeyM}`}
+            <br/>
+            {`${keyLayout.KeyM} ${keyLayout.KeyE}${keyLayout.KeyT}${keyLayout.Digit5}${keyLayout.KeyE}${keyLayout.KeyM} ${keyLayout.KeyW}${keyLayout.Digit2} ${keyLayout.KeyQ}${keyLayout.Digit6} ${keyLayout.KeyI}${keyLayout.KeyU}${keyLayout.Digit7} ${keyLayout.KeyJ}${keyLayout.KeyT} ${keyLayout.KeyE}`}
           </div>
         </div>
         <div className={styles.hint}>
@@ -189,7 +282,7 @@ class Piano extends Component {
           </div>
           <div className={styles.hintContent}>
             {data.translations.status[language]}: {appState.midiStatus ? data.translations.connected[language] : data.translations.disconnected[language]}<br />
-            {data.translations.note[language]}: {appState.midiLastNote || '—'}
+            {data.translations.note[language]}: {(appState.midiLastNote && this.parseNoteName(appState.midiLastNote)) || '—'}
           </div>
         </div>
       </div>

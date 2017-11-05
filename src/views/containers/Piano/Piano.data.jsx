@@ -1,127 +1,127 @@
 const data = {
   keys: [
     {
-      note: "c3",
+      note: "C3",
       code: "KeyZ",
       pressed: false,
     },
     {
-      note: "c#3",
+      note: "C#3",
       code: "KeyS",
       pressed: false,
     },
     {
-      note: "d3",
+      note: "D3",
       code: "KeyX",
       pressed: false,
     },
     {
-      note: "d#3",
+      note: "D#3",
       code: "KeyD",
       pressed: false,
     },
     {
-      note: "e3",
+      note: "E3",
       code: "KeyC",
       pressed: false,
     },
     {
-      note: "f3",
+      note: "F3",
       code: "KeyV",
       pressed: false,
     },
     {
-      note: "f#3",
+      note: "F#3",
       code: "KeyG",
       pressed: false,
     },
     {
-      note: "g3",
+      note: "G3",
       code: "KeyB",
       pressed: false,
     },
     {
-      note: "g#3",
+      note: "G#3",
       code: "KeyH",
       pressed: false,
     },
     {
-      note: "a3",
+      note: "A3",
       code: "KeyN",
       pressed: false,
     },
     {
-      note: "a#3",
+      note: "A#3",
       code: "KeyJ",
       pressed: false,
     },
     {
-      note: "b3",
+      note: "B3",
       code: "KeyM",
       pressed: false,
     },
     {
-      note: "c4",
+      note: "C4",
       code: "KeyQ",
       pressed: false,
     },
     {
-      note: "c#4",
+      note: "C#4",
       code: "Digit2",
       pressed: false,
     },
     {
-      note: "d4",
+      note: "D4",
       code: "KeyW",
       pressed: false,
     },
     {
-      note: "d#4",
+      note: "D#4",
       code: "Digit3",
       pressed: false,
     },
     {
-      note: "e4",
+      note: "E4",
       code: "KeyE",
       pressed: false,
     },
     {
-      note: "f4",
+      note: "F4",
       code: "KeyR",
       pressed: false,
     },
     {
-      note: "f#4",
+      note: "F#4",
       code: "Digit5",
       pressed: false,
     },
     {
-      note: "g4",
+      note: "G4",
       code: "KeyT",
       pressed: false,
     },
     {
-      note: "g#4",
+      note: "G#4",
       code: "Digit6",
       pressed: false,
     },
     {
-      note: "a4",
+      note: "A4",
       code: "KeyY",
       pressed: false,
     },
     {
-      note: "a#4",
+      note: "A#4",
       code: "Digit7",
       pressed: false,
     },
     {
-      note: "b4",
+      note: "B4",
       code: "KeyU",
       pressed: false,
     },
     {
-      note: "c5",
+      note: "C5",
       code: "KeyI",
       pressed: false,
     }
@@ -152,6 +152,15 @@ const data = {
     Digit7: { azerty: "7", qwerty: "7" },
     KeyU: { azerty: "U", qwerty: "U" },
     KeyI: { azerty: "I", qwerty: "I" },
+  },
+  noteNames: {
+    A: { azerty: "La", qwerty: "A" },
+    B: { azerty: "Si", qwerty: "B" },
+    C: { azerty: "Do", qwerty: "C" },
+    D: { azerty: "Ré", qwerty: "D" },
+    E: { azerty: "Mi", qwerty: "E" },
+    F: { azerty: "Fa", qwerty: "F" },
+    G: { azerty: "Sol", qwerty: "G" }
   },
   translations: {
     midi: { fr: "Périphérique MIDI", en: "MIDI device", jp: "MIDIデバイス" },

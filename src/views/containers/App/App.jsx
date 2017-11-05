@@ -37,12 +37,13 @@ class App extends Component {
     super(...args);
 
     const pageName = _$.getPageName(window.location.pathname);
+    const hash = window.location.hash.slice(1);
 
     this.state = {
       language: 'en',
       deviceType: 'ontouchstart' in window ? 'mobile' : 'desktop',
       aboutLanding: pageName === 'about',
-      headlineMode: pageName === 'work' ? 'work' : 'default',
+      headlineMode: pageName === 'work' ? 'work' : hash === 'play' ? 'piano' : 'default',
       works: worksData.sections.filter(item => item.name.match('projects|experiments')).map(section => section.items).reduce((acc, item) => [...acc, ...item], []),
       currentWork: null,
       midiStatus: false,
@@ -50,6 +51,7 @@ class App extends Component {
       initialized: false,
       dom: {},
       instances: {},
+      audioCtx: this.getContext()
     };
 
     this.workIdsRegex = this.state.works.map(work => work.id).join('|');
@@ -75,13 +77,15 @@ class App extends Component {
 
   componentDidUpdate () {
     if (!this.state.initialized && this.state.headlineMode) {
+      const dom = this.state.dom;
 
       const tl = new TimelineMax({ delay: 0.5 });
-      tl.from(this.state.dom.headline.querySelector('h1'), 0.4, { opacity: 0, y: -12, clearProps: "opacity,transform" });
-      tl.from(this.state.dom.headline.querySelector('h2'), 0.4, { opacity: 0, y: -12, clearProps: "all" }, "-=0.2");
-      tl.from(this.state.dom.appContents, 0.4, { opacity: 0, y: 12, clearProps: "all" }, "-=0.2");
-      tl.from(this.state.dom.nav, 0.4, { opacity: 0, x: 12, clearProps: "all" }, "-=0.2");
-      this.state.headlineMode === 'default' && tl.from(this.state.dom.note, 0.4, { opacity: 0, clearProps: "all" }, "-=0.2");
+      dom.headline.querySelector('h1') && tl.from(dom.headline.querySelector('h1'), 0.4, { opacity: 0, y: -12, clearProps: "opacity,transform" });
+      dom.headline.querySelector('h2') && tl.from(dom.headline.querySelector('h2'), 0.4, { opacity: 0, y: -12, clearProps: "all" }, "-=0.2");
+      dom.piano && tl.from(dom.piano, 0.4, { opacity: 0, y: -12, clearProps: "all" });
+      tl.from(dom.appContents, 0.4, { opacity: 0, y: 12, clearProps: "all" }, "-=0.2");
+      tl.from(dom.nav, 0.4, { opacity: 0, x: 12, clearProps: "all" }, "-=0.2");
+      dom.note && tl.from(dom.note, 0.4, { opacity: 0, clearProps: "all" }, "-=0.2");
 
       this.setState({ initialized: true });
     }
@@ -120,6 +124,18 @@ class App extends Component {
     }
 
     return (b[st] / (b[sh] - h.clientHeight));
+  }
+
+  getContext () {
+    if (typeof AudioContext !== "undefined") {
+      return new window.AudioContext();
+    } else if (typeof webkitAudioContext !== "undefined") {
+      return new window.webkitAudioContext();
+    } else if (typeof mozAudioContext !== "undefined") {
+      return new window.mozAudioContext();
+    }
+
+    __IS_DEV__ && console.error("No AudioContext available");
   }
 
   setDOM = (ref) => { this.setState({ dom: {...this.state.dom, app: ref } }); };

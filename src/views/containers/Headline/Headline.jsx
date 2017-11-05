@@ -24,14 +24,21 @@ class Headline extends Component {
     this.props.setAppState({ instances: {...this.props.appState.instances, workHeadline: inst } });
   };
 
-  openPiano = () => { this.props.setAppState({ headlineMode: 'piano' }); };
-  closePiano = () => { this.props.setAppState({ headlineMode: 'default' }); };
+  openPiano = () => {
+    this.props.setAppState({ headlineMode: 'piano' });
+    window.history.pushState(null, null, `${window.location.pathname}#play`);
+  };
+
+  closePiano = () => {
+    this.props.setAppState({ headlineMode: 'default' });
+    window.history.pushState(null, null, window.location.pathname);
+  };
 
   render () {
-    const { language, currentWork } = this.props.appState;
+    const { language, currentWork, audioCtx } = this.props.appState;
 
     let baseline1 = _$.replaceStringToJSX(data.baseline1[language], '${age}', this.age, true);
-    baseline1 = _$.replaceStringToJSX(baseline1, '${note}', <Note onMount={this.setNoteDOM} onClick={this.openPiano} />);
+    baseline1 = _$.replaceStringToJSX(baseline1, '${note}', audioCtx ? <Note onMount={this.setNoteDOM} onClick={this.openPiano} /> : '');
 
     const defaultDOM = <DefaultHeadline
       baseline1={baseline1}
@@ -49,6 +56,7 @@ class Headline extends Component {
     const pianoDOM = <Piano
       language={language}
       appState={this.props.appState}
+      setAppState={this.props.setAppState}
       onMount={this.setPianoDOM}
       onClose={this.closePiano}
     />;

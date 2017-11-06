@@ -26,12 +26,11 @@ class Headline extends Component {
 
   openPiano = () => {
     this.props.setAppState({ headlineMode: 'piano' });
-    window.history.pushState(null, null, `${window.location.pathname}#play`);
   };
 
   closePiano = () => {
     this.props.setAppState({ headlineMode: 'default' });
-    window.history.pushState(null, null, window.location.pathname);
+    window.location.hash && window.history.pushState(null, null, window.location.pathname);
   };
 
   render () {

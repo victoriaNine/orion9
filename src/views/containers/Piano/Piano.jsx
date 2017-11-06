@@ -81,6 +81,11 @@ class Piano extends Component {
     }
   }
 
+  componentWillUpdate (newProps) {
+    this.layout = newProps.language === 'fr' ? 'azerty' : 'qwerty';
+    this.deviceType = newProps.appState.deviceType;
+  }
+
   componentWillEnter (callback) {
     const tl = new TimelineMax({ delay: 0.2, onComplete: () => { callback && callback(); } });
     tl.from(this.DOM, 0.2, { opacity: 0, y: -12, clearProps: "all" });

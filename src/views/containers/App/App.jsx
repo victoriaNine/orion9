@@ -17,6 +17,7 @@ import Nav from 'Containers/Nav';
 import Work from 'Containers/Work';
 import withHocWrapper from 'Containers/HocWrapper';
 import * as _$ from 'utils';
+import synth from 'Internal/synth';
 
 import data from './App.data';
 import worksData from 'Containers/Home/Home.data';
@@ -51,7 +52,8 @@ class App extends Component {
       initialized: false,
       dom: {},
       instances: {},
-      audioCtx: this.getContext()
+      audioCtx: this.getContext(),
+      synth: this.getContext() && synth
     };
 
     this.workIdsRegex = this.state.works.map(work => work.id).join('|');

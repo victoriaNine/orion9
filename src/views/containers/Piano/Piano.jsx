@@ -19,7 +19,7 @@ class Piano extends Component {
   isPressing = false;
   pointerPressedKeys = [];
 
-  synth = new Tone.PolySynth(1, Tone.FMSynth).toMaster();
+  synth = this.props.appState.synth;
   midiInput = null;
 
   componentDidMount () {
@@ -32,32 +32,7 @@ class Piano extends Component {
     window.addEventListener(_$.eventsMap.move[this.deviceType], this.onPointerMove);
     window.addEventListener(_$.eventsMap.up[this.deviceType], this.onPointerUp);
 
-    if (navigator.requestMIDIAccess)
-      navigator.requestMIDIAccess().then(this.onMIDIInit);
-
-    this.synth.set({
-      harmonicity: 3,
-      modulationIndex: 10,
-      detune: 0,
-      oscillator: {
-        type: "sine"
-      },
-      envelope: {
-        attack: 0.01,
-        decay: 0.01,
-        sustain: 1,
-        release: 0.5
-      },
-      modulation: {
-        type: 'square'
-      },
-      modulationEnvelope: {
-        attack: 0.5,
-        decay: 0,
-        sustain: 1,
-        release: 0.5
-      }
-    });
+    navigator.requestMIDIAccess && navigator.requestMIDIAccess().then(this.onMIDIInit);
 
     this.synth.triggerAttackRelease("C6", "8n", "+0.2");
     this.props.onMount(this.DOM);
@@ -73,7 +48,6 @@ class Piano extends Component {
     window.removeEventListener(_$.eventsMap.move[this.deviceType], this.onPointerMove);
     window.removeEventListener(_$.eventsMap.up[this.deviceType], this.onPointerUp);
 
-    this.synth.triggerAttackRelease("A5", "8n");
     Object.keys(this.keysDOM).forEach((keyCode) => {
       this.deactivateKey(keyCode);
     });
@@ -83,11 +57,14 @@ class Piano extends Component {
       this.midiInput.value.removeEventListener('statechange', this.onMIDIConnectionEvent);
       this.midiInput.value.close();
     }
+
+    this.synth.triggerAttackRelease("A5", "8n");
   }
 
   componentWillUpdate (newProps) {
     this.layout = newProps.language === 'fr' ? 'azerty' : 'qwerty';
     this.deviceType = newProps.appState.deviceType;
+    this.synth = newProps.appState.synth;
   }
 
   componentWillEnter (callback) {

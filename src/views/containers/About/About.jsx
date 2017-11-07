@@ -1,7 +1,7 @@
 import { h, Component } from 'preact';
 import { TweenMax, TimelineMax, Power2 } from 'gsap';
 
-import Section from 'Components/Section';
+import Section from 'Containers/Section';
 import data from './About.data';
 
 import styles from './About.css';

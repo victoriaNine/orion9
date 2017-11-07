@@ -8,19 +8,30 @@ import styles from './Section.css';
 class Section extends Component {
   state = {
     active: false,
-    backgroundColor: ''
+    color: ''
   };
 
   onItemSelect = (item) => {
     this.setState({ isActive: true });
-    item && item.color && this.setState({ backgroundColor: item.color });
+    item && item.color && this.setState({ color: item.color });
+
+    item && item.visuals && this.props.setAppState({ visuals: item.visuals });
   };
 
   onItemDeselect = () => {
+    const { appState, setAppState } = this.props;
     this.setState({
       isActive: false,
-      backgroundColor: ''
+      color: ''
     });
+
+    if (appState) {
+      if (appState.currentWork && appState.currentWork.visuals) {
+        setAppState({ visuals: appState.currentWork.visuals });
+      } else if (!appState.currentWork || !appState.currentWork.visuals) {
+        setAppState({ visuals: null });
+      }
+    }
   };
 
   render () {
@@ -32,7 +43,7 @@ class Section extends Component {
       onSelect={this.onItemSelect}
       onDeselect={this.onItemDeselect}
     />;
-    
+
     const textDOM = this.props.text &&
       <p className={styles.text} onMouseEnter={this.onItemSelect} onMouseLeave={this.onItemDeselect}>
         { typeof this.props.text === 'object' ? this.props.text[language] : this.props.text }
@@ -41,7 +52,7 @@ class Section extends Component {
     return (
       <div className={styles.Section}>
         <div className={styles.title}>
-          <Title backgroundColor={this.state.backgroundColor} isActive={this.state.isActive}>
+          <Title backgroundColor={this.state.color} isActive={this.state.isActive}>
             { typeof this.props.title === 'object' ? this.props.title[language] : this.props.title }
           </Title>
         </div>

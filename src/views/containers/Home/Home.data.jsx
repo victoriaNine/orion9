@@ -119,9 +119,9 @@ const data = {
       name: "clients",
       title: { fr: "Clients", en: "Clients", jp: "クライアント" },
       text: {
-        fr: "J'ai eu le plaisir de travailler avec HBO, Netflix, Google, Canal+, Emirates & plus",
-        en: "I’ve had the pleasure of working with HBO, Netflix, Google, Canal+, Emirates & more",
-        jp: "HBO、Netflix、Google、Canal+またはEmiratesと一緒に仕事ができて光栄です。"
+        fr: "J'ai eu le plaisir de travailler avec HBO, Netflix, Google, Canal+, Dinahmoe & plus",
+        en: "I’ve had the pleasure of working with HBO, Netflix, Google, Canal+, Dinahmoe & more",
+        jp: "HBO、Netflix、Google、Canal+またはDinahmoeと一緒に仕事ができて光栄です。"
       }
     },
     {

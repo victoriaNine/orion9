@@ -28,7 +28,12 @@ function getWorkIdFromPath (location) {
 }
 
 function getLanguageCode (code) {
-  return code === 'jp' ? 'ja' : code;
+  switch (code) {
+    case 'jp':
+      return 'ja';
+    default:
+      return code;
+  }
 }
 
 function replaceStringToJSX (string, match, jsx, join) {

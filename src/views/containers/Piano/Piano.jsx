@@ -74,6 +74,10 @@ class Piano extends Component {
     window.removeEventListener(_$.eventsMap.up[this.deviceType], this.onPointerUp);
 
     this.synth.triggerAttackRelease("A5", "8n");
+    Object.keys(this.keysDOM).forEach((keyCode) => {
+      this.deactivateKey(keyCode);
+    });
+
     if (this.midiInput && this.midiInput.value) {
       this.midiInput.value.removeEventListener('midimessage', this.onMIDIMessageEvent);
       this.midiInput.value.removeEventListener('statechange', this.onMIDIConnectionEvent);

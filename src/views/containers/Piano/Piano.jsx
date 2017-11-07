@@ -263,8 +263,8 @@ class Piano extends Component {
 
   render () {
     const { language, appState } = this.props;
-    const keyLayout = Object.keys(data.keyLayout).reduce((acc, key) => (
-      { ...acc, [key]: data.keyLayout[key][this.layout] }
+    const keyLayout = Object.keys(data.keyLayout).reduce((acc, keyCode) => (
+      { ...acc, [keyCode]: data.keyLayout[keyCode][this.layout] }
     ), {});
 
     return (

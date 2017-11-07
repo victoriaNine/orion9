@@ -13,7 +13,7 @@
     "test": "npm run -s lint && jest --coverage",
     "test:watch": "npm run -s test -- --watch",
     "lint": "eslint src test",
-    "copyModules": "babel-node internal/copyModules.js"
+    "copyModules": "babel-node ./internal/copyModules.js"
   },
   "jest": {
     "setupFiles": [

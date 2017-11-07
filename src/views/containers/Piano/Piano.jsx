@@ -172,12 +172,16 @@ class Piano extends Component {
     const channel = event.data[0];
     const key = data.keys.find((key) => key.note === note);
 
+    // If it's an attack
     if (channel !== 128) {
       this.props.setAppState({ midiLastNote: note });
 
+      // If the note played has a corresponding key in the DOM
       if (key) {
+        // Use the activateKey method to update the visuals as well
         this.activateKey(key.code, velocity);
       } else {
+        // Otherwise just play the note
         this.synth.triggerAttack(note, null, velocity);
       }
     } else {

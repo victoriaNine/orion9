@@ -33,7 +33,6 @@ class Work extends Component {
 
           TweenMax.to(document.body, 0.4, { scrollTop: 0, ease: Power2.easeInOut });
           this.doEnter();
-
         });
       }
     });

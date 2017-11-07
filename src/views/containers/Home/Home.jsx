@@ -16,7 +16,7 @@ class Home extends Component {
   }
 
   componentWillEnter (callback) {
-    const tl = new TimelineMax({ delay: 0.4, onComplete: () => { console.log("home -- enter"); callback && callback(); } });
+    const tl = new TimelineMax({ delay: 0.4, onComplete: () => { callback && callback(); } });
     tl.set(this.DOM.parentNode, { height: "100vh" });
     tl.set(this.DOM, { position: "absolute" });
     tl.from(this.DOM, 0.4, { opacity: 0, y: 12, clearProps: "all" });
@@ -24,7 +24,7 @@ class Home extends Component {
   }
 
   componentWillLeave (callback) {
-    const tl = new TimelineMax({ onComplete: () => { console.log("home -- leave"); callback && callback(); } });
+    const tl = new TimelineMax({ onComplete: () => { callback && callback(); } });
     tl.set(this.DOM.parentNode, { height: "100vh" });
     tl.set(this.DOM, { position: "absolute" });
     tl.to(this.DOM, 0.4, { opacity: 0, y: 12, clearProps: "all" });

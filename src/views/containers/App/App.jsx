@@ -20,7 +20,6 @@ import withHocWrapper from 'Containers/HocWrapper';
 import * as _$ from 'utils';
 import synth from 'Internal/synth';
 
-import data from './App.data';
 import worksData from 'Containers/Home/Home.data';
 
 import './reset.global.css';
@@ -153,7 +152,6 @@ class App extends Component {
   setContentsDOM = (ref) => { this.setState({ dom: { ...this.state.dom, appContents: ref } }); };
 
   render () {
-    const pageTitle = data.translations.pageTitle[this.state.language] && ` — ${data.translations.pageTitle[this.state.language]}`;
     let hasMatch = false;
 
     return (
@@ -161,7 +159,6 @@ class App extends Component {
         <main id="app" role="main" className={styles.App} ref={this.setDOM}>
           <Helmet
             htmlAttributes={{ lang : _$.getLanguageCode(this.state.language) }}
-            title={`orion9 // victoria nine${pageTitle}`}
           />
           <ConnectedCanvas visuals={this.state.visuals} />
           <ConnectedNav />

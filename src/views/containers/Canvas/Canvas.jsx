@@ -214,7 +214,7 @@ class Canvas extends Component {
       );
       this.ctx2d.restore();
 
-      this.ctx2d.fillStyle = `rgba(0, 0, 0, ${0.9 * this.overlayOpacity})`;
+      this.ctx2d.fillStyle = `rgba(0, 0, 0, ${0.85 * this.overlayOpacity})`;
       this.ctx2d.fillRect(0, 0, this.DOM.width, this.DOM.height);
     }
 

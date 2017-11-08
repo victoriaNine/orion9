@@ -90,6 +90,7 @@ class Headline extends Component {
       baseline1={homeBaseline1}
       baseline2={data.home.baseline2[language]}
       onMount={this.setHomeHeadlineDOM}
+      hasMaxWidth
     />;
 
     const aboutDOM = <DefaultHeadline

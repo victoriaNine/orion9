@@ -7,7 +7,7 @@
   left: 0;
   background: linear-gradient(to bottom, color(var(--color_mono-black) a(85%)) 50%, color(var(--color_mono-black) a(0)) 100%);
   z-index: 99;
-  padding: 50px 25px 25px;
+  padding: 25px;
   pointer-events: none;
 
   @media (--mq_mobile) {

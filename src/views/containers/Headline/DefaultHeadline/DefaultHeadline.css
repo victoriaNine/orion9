@@ -4,5 +4,8 @@
 
 .baseline1 {
   margin-bottom: 1em;
+}
+
+.has--maxWidth {
   max-width: 570px;
 }

@@ -1,10 +1,14 @@
 @import 'App/_common.css';
 
 .Headline {
-  margin: 100px 0 50px;
+  margin: 75px 0 50px;
   font-family: var(--font_didot);
   text-transform: lowercase;
-  transition: height 400ms;
+  transition: height 400ms, margin 400ms;
+
+  @media (--mq_mobile) {
+    margin-top: 100px;
+  }
 
   html:lang(ja) & {
     line-height: 1.3em;

@@ -87,11 +87,11 @@ strike {
 }
 
 .wrapper {
-  padding: 25px 25px 25px 15px;
+  padding: 25px;
   position: relative;
 
   @media (--mq_mobile) {
-    padding: 25px 25px 25px 50px;;
+    padding-left: 50px;;
   }
 
   @media (--mq_laptop) {

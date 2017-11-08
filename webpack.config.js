@@ -181,12 +181,6 @@ module.exports = {
           'index.html'
         ],
         additional: [
-          '*.jpg',
-          '*.png',
-          '*.svg',
-          '*.gif'
-        ],
-        optional: [
           ':rest:'
         ]
       },
@@ -216,6 +210,10 @@ module.exports = {
     publicPath: '/',
     contentBase: './src',
     historyApiFallback: true,
+    compress: !IS_DEV,
+    headers: {
+      ...!IS_DEV && { 'Cache-Control': `public, max-age=${7 * 24 * 60 * 60}` } // 1 week
+    },
     proxy: {
       // OPTIONAL: proxy configuration:
       // '/optional-prefix/**': { // path pattern to rewrite

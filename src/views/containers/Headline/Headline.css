@@ -6,10 +6,6 @@
   text-transform: lowercase;
   transition: height 400ms;
 
-  &.is--work {
-    transition: height 400ms 400ms;
-  }
-
   html:lang(ja) & {
     line-height: 1.3em;
   }

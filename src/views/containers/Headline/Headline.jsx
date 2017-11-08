@@ -1,4 +1,3 @@
-import classnames from 'classnames';
 import { h, Component } from 'preact';
 import TransitionGroup from 'react-transition-group/TransitionGroup';
 
@@ -32,14 +31,22 @@ class Headline extends Component {
     this.onResize();
   }
 
-  setDOM = (ref) => { this.props.setAppState({ dom: {...this.props.appState.dom, headline: ref } }); };
-  setNoteDOM = (ref) => { this.props.setAppState({ dom: {...this.props.appState.dom, note: ref } }); };
-  setPianoDOM = (ref) => { this.props.setAppState({ dom: {...this.props.appState.dom, piano: ref } }); };
-  setHomeHeadlineDOM = (ref) => { this.props.setAppState({ dom: {...this.props.appState.dom, homeHeadline: ref } }); };
-  setAboutHeadlineDOM = (ref) => { this.props.setAppState({ dom: {...this.props.appState.dom, aboutHeadline: ref } }); };
+  setDOM = (ref) => {
+    this.props.setAppState({
+      dom: { ...this.props.appState.dom, headline: ref },
+      instances: { ...this.props.appState.instances, headline: this }
+    });
+  };
+
+  setNoteDOM = (ref) => { this.props.setAppState({ dom: { ...this.props.appState.dom, note: ref } }); };
+  setPianoDOM = (ref) => { this.props.setAppState({ dom: { ...this.props.appState.dom, piano: ref } }); };
+  setHomeHeadlineDOM = (ref) => { this.props.setAppState({ dom: { ...this.props.appState.dom, homeHeadline: ref } }); };
+  setAboutHeadlineDOM = (ref) => { this.props.setAppState({ dom: { ...this.props.appState.dom, aboutHeadline: ref } }); };
   setWorkHeadlineDOM = (ref, inst) => {
-    this.props.setAppState({ dom: {...this.props.appState.dom, workHeadline: ref } });
-    this.props.setAppState({ instances: {...this.props.appState.instances, workHeadline: inst } });
+    this.props.setAppState({
+      dom: { ...this.props.appState.dom, workHeadline: ref },
+      instances: { ...this.props.appState.instances, workHeadline: inst }
+    });
   };
 
   openPiano = () => {
@@ -108,7 +115,7 @@ class Headline extends Component {
 
     return (
       <div
-        className={classnames(styles.Headline, styles[`is--${this.props.mode}`])}
+        className={styles.Headline}
         style={{ height: this.state.contentsHeight }}
         ref={this.setDOM}
       >

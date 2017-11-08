@@ -37,6 +37,9 @@ class Work extends Component {
             visuals: currentWork.visuals
           });
 
+          // Update the headline's height for the new content
+          this.props.appState.instances.headline.onResize();
+          
           TweenMax.to(document.body, 0.4, { scrollTop: 0, ease: Power2.easeInOut });
           this.doEnter();
         });

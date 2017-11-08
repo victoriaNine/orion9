@@ -97,6 +97,7 @@ class Headline extends Component {
       baseline1={data.about.baseline1[language]}
       baseline2={data.about.baseline2[language]}
       onMount={this.setAboutHeadlineDOM}
+      hasMaxWidth
     />;
 
     const workDOM = currentWork && <WorkHeadline

@@ -17,10 +17,9 @@ import Home from 'Containers/Home';
 import Nav from 'Containers/Nav';
 import Work from 'Containers/Work';
 import withHocWrapper from 'Containers/HocWrapper';
+import worksData from 'Containers/Home/Home.data';
 import * as _$ from 'utils';
 import synth from 'Internal/synth';
-
-import worksData from 'Containers/Home/Home.data';
 
 import './reset.global.css';
 import './font-awesome.global.css';
@@ -59,6 +58,8 @@ class App extends Component {
 
     this.state.pointerType = this.state.env.device.type ? 'touch' : 'desktop';
     this.workIdsRegex = this.state.works.map(work => work.id).join('|');
+    this.rAF = null;
+    this.prevScrollTop = null;
 
     // iPhone X hack
     if (this.state.env.browser.name.match(/safari/i) && parseInt(this.state.env.browser.major, 10) >= 11) {
@@ -74,11 +75,6 @@ class App extends Component {
     ConnectedNav = withAppState(withRouter(Nav));
     ConnectedWork = withAppState(Work);
   }
-
-  rAF = null;
-  prevScrollTop = null;
-
-  setAppState = (updater) => { this.setState(updater); };
 
   componentDidMount() {
     this.rAF = requestAnimationFrame(this.paintGradient);
@@ -100,13 +96,10 @@ class App extends Component {
     }
   }
 
-  getGradientOffset () {
-    return document.body.scrollTop - (this.state.dom.appWrapper.offsetTop + this.state.dom.app.offsetTop);
-  }
-
-  updateGradient (offset) {
+  updateGradient () {
     const scrollRatio = this.getScrollRatio();
-    const string = `to bottom, rgba(0,0,0,1) ${offset}px, rgba(0,0,0,1) calc(60vh + ${offset}px), rgba(0,0,0,${scrollRatio}) calc(95vh + ${offset}px)`;
+    const gradientOffset = document.body.scrollTop - (this.state.dom.appWrapper.offsetTop + this.state.dom.app.offsetTop);
+    const string = `to bottom, rgba(0,0,0,1) ${gradientOffset}px, rgba(0,0,0,1) calc(60vh + ${gradientOffset}px), rgba(0,0,0,${scrollRatio}) calc(95vh + ${gradientOffset}px)`;
 
     this.state.dom.appWrapper.style.webkitMaskImage = `linear-gradient(${string})`;
     this.state.dom.appWrapper.style.maskImage = `linear-gradient(${string})`;
@@ -116,7 +109,7 @@ class App extends Component {
     this.rAF = requestAnimationFrame(this.paintGradient);
 
     if (this.prevScrollTop !== document.body.scrollTop) {
-      this.updateGradient(this.getGradientOffset());
+      this.updateGradient();
       this.prevScrollTop = document.body.scrollTop;
     }
   };
@@ -150,6 +143,8 @@ class App extends Component {
   setDOM = (ref) => { this.setState({ dom: { ...this.state.dom, app: ref } }); };
   setWrapperDOM = (ref) => { this.setState({ dom: { ...this.state.dom, appWrapper: ref } }); };
   setContentsDOM = (ref) => { this.setState({ dom: { ...this.state.dom, appContents: ref } }); };
+
+  setAppState = (updater) => { this.setState(updater); };
 
   render () {
     let hasMatch = false;

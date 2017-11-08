@@ -18,10 +18,6 @@ class Home extends Component {
     TweenMax.to(document.body, 0.4, { scrollTop: 0, ease: Power2.easeInOut });
   }
 
-  componentWillUnmount () {
-    this.props.appState.homeLanding && this.props.setAppState({ homeLanding: false });
-  }
-
   componentWillEnter (callback) {
     const tl = new TimelineMax({ delay: 0.4, onComplete: () => { callback && callback(); } });
     tl.set(this.DOM.parentNode, { height: "100vh" });

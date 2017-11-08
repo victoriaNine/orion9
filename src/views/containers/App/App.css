@@ -87,8 +87,12 @@ strike {
 }
 
 .wrapper {
-  padding: 25px 25px 25px 50px;
+  padding: 25px 25px 25px 15px;
   position: relative;
+
+  @media (--mq_mobile) {
+    padding: 25px 25px 25px 50px;;
+  }
 
   @media (--mq_laptop) {
     padding: 50px 50px 50px 75px;

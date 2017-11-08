@@ -69,12 +69,12 @@
   cursor: pointer;
   display: block;
   white-space: nowrap;
+  pointer-events: none; /* Use JS triggering instead */
 
   &.is--inactive {
     opacity: 0;
     position: absolute;
     transform: translateX(-18px);
-    pointer-events: none;
   }
 }
 

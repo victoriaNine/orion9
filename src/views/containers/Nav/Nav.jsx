@@ -19,7 +19,17 @@ class Nav extends Component {
     });
   }
 
-  setDOM = (ref) => { this.props.setAppState({ dom: { ...this.props.appState.dom, nav: ref } }); };
+  setDOM = (ref) => {
+    this.props.setAppState({ dom: { ...this.props.appState.dom, nav: ref } });
+  };
+
+  clickOnActiveLink = (event) => {
+    event.preventDefault();
+
+    const clickedElement = event.path.find((element) => element.classList.contains(styles.linkWrapper));
+    const activeLink = Array.from(clickedElement.querySelectorAll(`.${styles.link}`)).find((link) => !link.classList.contains(styles['is--inactive']));
+    activeLink.click();
+  };
 
   render () {
     const locationWithoutLang = _$.getLocationWithoutLang(this.props.location.pathname);
@@ -29,14 +39,14 @@ class Nav extends Component {
     return (
       <div className={styles.Nav} ref={this.setDOM}>
         <nav role="navigation" className={styles.container}>
-          <div className={classnames(styles.linkWrapper, { [styles['is--inactive']]: page !== 'work' })}>
+          <div className={classnames(styles.linkWrapper, { [styles['is--inactive']]: page !== 'work' })} onClick={this.clickOnActiveLink}>
             <Title>
               <div className={styles.linkContainer}>
                 <NavLink to="/home" className={styles.link}>{data.translations.home[language]}</NavLink>
               </div>
             </Title>
           </div>
-          <div className={styles.linkWrapper}>
+          <div className={styles.linkWrapper} onClick={this.clickOnActiveLink}>
             <Title>
               <div className={styles.linkContainer}>
                 {

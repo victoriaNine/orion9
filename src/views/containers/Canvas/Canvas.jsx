@@ -51,7 +51,7 @@ class Canvas extends Component {
   }
 
   componentWillUpdate (newProps) {
-    // Debounce the calls to the update method
+    // Debounce calls to the update method
     clearTimeout(this.updateVisualsTimeout);
 
     this.updateVisualsTimeout = setTimeout(() => {
@@ -158,34 +158,33 @@ class Canvas extends Component {
   };
 
   resizeVisuals = (visualType) => {
-    if (visualType === "video") {
-      const ratioW = this.videoDOM.videoWidth / this.DOM.width;
-      const ratioH = this.videoDOM.videoHeight / this.DOM.height;
+    let widthPropName;
+    let heightPropName;
 
-      if (ratioW >= ratioH) {
-        this.videoDOM.width = this.DOM.height * (this.videoDOM.videoWidth / this.videoDOM.videoHeight);
-        this.videoDOM.height = this.DOM.height;
-      } else {
-        this.videoDOM.width = this.DOM.width;
-        this.videoDOM.height = this.DOM.width * (this.videoDOM.videoHeight / this.videoDOM.videoWidth);
-      }
-    } else if (visualType === "image") {
-      const ratioW = this.imageDOM.naturalWidth / this.DOM.width;
-      const ratioH = this.imageDOM.naturalHeight / this.DOM.height;
+    switch (visualType) {
+      case "video":
+        widthPropName = "videoWidth";
+        heightPropName = "videoHeight";
+        break;
+      case "image":
+        widthPropName = "naturalWidth";
+        heightPropName = "naturalHeight";
+        break;
+    }
 
-      if (ratioW >= ratioH) {
-        this.imageDOM.width = this.DOM.height * (this.imageDOM.naturalWidth / this.imageDOM.naturalHeight);
-        this.imageDOM.height = this.DOM.height;
-      } else {
-        this.imageDOM.width = this.DOM.width;
-        this.imageDOM.height = this.DOM.width * (this.imageDOM.naturalHeight / this.imageDOM.naturalWidth);
-      }
+    const ratioW = this.videoDOM[widthPropName] / this.DOM.width;
+    const ratioH = this.videoDOM[heightPropName] / this.DOM.height;
+
+    if (ratioW >= ratioH) {
+      this.videoDOM.width = this.DOM.height * (this.videoDOM[widthPropName] / this.videoDOM[heightPropName]);
+      this.videoDOM.height = this.DOM.height;
+    } else {
+      this.videoDOM.width = this.DOM.width;
+      this.videoDOM.height = this.DOM.width * (this.videoDOM[heightPropName] / this.videoDOM[widthPropName]);
     }
   };
 
-  setDOM = (ref) => {
-    this.DOM = ref;
-  };
+  setDOM = (ref) => { this.DOM = ref; };
 
   start () {
     this.seriously.go();

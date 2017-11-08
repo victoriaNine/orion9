@@ -45,6 +45,11 @@ class Canvas extends Component {
     this.start();
   }
 
+  componentWillUnmount () {
+    window.removeEventListener("resize", this.onResize);
+    this.stop();
+  }
+
   componentWillUpdate (newProps) {
     // Debounce the calls to the update method
     clearTimeout(this.updateVisualsTimeout);
@@ -185,6 +190,11 @@ class Canvas extends Component {
   start () {
     this.seriously.go();
     this.rAF = requestAnimationFrame(this.draw);
+  }
+
+  stop () {
+    cancelAnimationFrame(this.rAF);
+    this.seriously.stop();
   }
 
   draw = () => {

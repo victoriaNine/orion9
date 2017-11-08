@@ -141,9 +141,9 @@ class App extends Component {
     __IS_DEV__ && console.error("No AudioContext available");
   }
 
-  setDOM = (ref) => { this.setState({ dom: {...this.state.dom, app: ref } }); };
-  setWrapperDOM = (ref) => { this.setState({ dom: {...this.state.dom, appWrapper: ref } }); };
-  setContentsDOM = (ref) => { this.setState({ dom: {...this.state.dom, appContents: ref } }); };
+  setDOM = (ref) => { this.setState({ dom: { ...this.state.dom, app: ref } }); };
+  setWrapperDOM = (ref) => { this.setState({ dom: { ...this.state.dom, appWrapper: ref } }); };
+  setContentsDOM = (ref) => { this.setState({ dom: { ...this.state.dom, appContents: ref } }); };
 
   render () {
     const pageTitle = data.translations.pageTitle[this.state.language] && ` — ${data.translations.pageTitle[this.state.language]}`;

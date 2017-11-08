@@ -19,7 +19,7 @@ class Nav extends Component {
     });
   }
 
-  setDOM = (ref) => { this.props.setAppState({ dom: {...this.props.appState.dom, nav: ref } }); };
+  setDOM = (ref) => { this.props.setAppState({ dom: { ...this.props.appState.dom, nav: ref } }); };
 
   render () {
     const locationWithoutLang = _$.getLocationWithoutLang(this.props.location.pathname);

@@ -12,8 +12,25 @@ import * as _$ from 'utils';
 import styles from './Headline.css';
 
 class Headline extends Component {
+  state = {
+    contentsHeight: ''
+  };
+
   DOB = new Date(Date.UTC(1992, 7, 10, 0, 15, 0));
   age = new Date().getFullYear() - this.DOB.getFullYear();
+
+  componentDidMount () {
+    window.addEventListener("resize", this.onResize);
+    setTimeout(this.onResize, 0);
+  }
+
+  componentWillUnmount () {
+    window.removeEventListener("resize", this.onResize);
+  }
+
+  componentWillUpdate () {
+    this.onResize();
+  }
 
   setDOM = (ref) => { this.props.setAppState({ dom: {...this.props.appState.dom, headline: ref } }); };
   setNoteDOM = (ref) => { this.props.setAppState({ dom: {...this.props.appState.dom, note: ref } }); };
@@ -32,6 +49,28 @@ class Headline extends Component {
   closePiano = () => {
     this.props.setAppState({ headlineMode: 'home' });
     window.location.hash && window.history.pushState(null, null, window.location.pathname);
+  };
+
+  onResize = () => {
+    const dom = this.props.appState.dom;
+    let headlineDOM;
+
+    switch (this.props.mode) {
+      case 'work':
+        headlineDOM = dom.workHeadline;
+        break;
+      case 'piano':
+        headlineDOM = dom.piano;
+        break;
+      case 'about':
+        headlineDOM = dom.aboutHeadline;
+        break;
+      case 'home':
+      default:
+        headlineDOM = dom.homeHeadline;
+    }
+
+    this.setState({ contentsHeight: headlineDOM && `${headlineDOM.clientHeight}px` || '' });
   };
 
   render () {
@@ -68,7 +107,11 @@ class Headline extends Component {
     />;
 
     return (
-      <div className={classnames(styles.Headline, styles[`is--${this.props.mode}`])} ref={this.setDOM}>
+      <div
+        className={classnames(styles.Headline, styles[`is--${this.props.mode}`])}
+        style={{ height: this.state.contentsHeight }}
+        ref={this.setDOM}
+      >
         <TransitionGroup component={_$.getFirstChild}>
           {this.props.mode === 'work' && workDOM}
         </TransitionGroup>

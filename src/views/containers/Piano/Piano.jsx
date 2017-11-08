@@ -14,7 +14,7 @@ class Piano extends Component {
   keyWidth = 30;
   keyGap = 4;
   keySpacing = this.keyWidth + this.keyGap;
-  deviceType = this.props.appState.deviceType;
+  pointerType = this.props.appState.pointerType;
 
   isPressing = false;
   pointerPressedKeys = [];
@@ -28,9 +28,9 @@ class Piano extends Component {
     window.addEventListener("keyup", this.onKeyup);
 
     const keyboardDOM = this.DOM.querySelector(`.${styles.keyboard}`);
-    keyboardDOM.addEventListener(_$.eventsMap.down[this.deviceType], this.onPointerDown);
-    window.addEventListener(_$.eventsMap.move[this.deviceType], this.onPointerMove);
-    window.addEventListener(_$.eventsMap.up[this.deviceType], this.onPointerUp);
+    keyboardDOM.addEventListener(_$.eventsMap.down[this.pointerType], this.onPointerDown);
+    window.addEventListener(_$.eventsMap.move[this.pointerType], this.onPointerMove);
+    window.addEventListener(_$.eventsMap.up[this.pointerType], this.onPointerUp);
 
     navigator.requestMIDIAccess && navigator.requestMIDIAccess().then(this.onMIDIInit);
 
@@ -44,9 +44,9 @@ class Piano extends Component {
     window.removeEventListener("keyup", this.onKeyup);
 
     const keyboardDOM = this.DOM.querySelector(`.${styles.keyboard}`);
-    keyboardDOM.removeEventListener(_$.eventsMap.down[this.deviceType], this.onPointerDown);
-    window.removeEventListener(_$.eventsMap.move[this.deviceType], this.onPointerMove);
-    window.removeEventListener(_$.eventsMap.up[this.deviceType], this.onPointerUp);
+    keyboardDOM.removeEventListener(_$.eventsMap.down[this.pointerType], this.onPointerDown);
+    window.removeEventListener(_$.eventsMap.move[this.pointerType], this.onPointerMove);
+    window.removeEventListener(_$.eventsMap.up[this.pointerType], this.onPointerUp);
 
     Object.keys(this.keysDOM).forEach((keyCode) => {
       this.deactivateKey(keyCode);
@@ -63,7 +63,7 @@ class Piano extends Component {
 
   componentWillUpdate (newProps) {
     this.layout = newProps.language === 'fr' ? 'azerty' : 'qwerty';
-    this.deviceType = newProps.appState.deviceType;
+    this.pointerType = newProps.appState.pointerType;
     this.synth = newProps.appState.synth;
   }
 

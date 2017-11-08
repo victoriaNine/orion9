@@ -1,7 +1,7 @@
 const eventsMap = {
-  down: { mobile: 'touchstart', desktop: 'mousedown' },
-  up: { mobile: 'touchend', desktop: 'mouseup' },
-  move: { mobile: 'touchmove', desktop: 'mousemove' },
+  down: { touch: 'touchstart', desktop: 'mousedown' },
+  up: { touch: 'touchend', desktop: 'mouseup' },
+  move: { touch: 'touchmove', desktop: 'mousemove' },
 };
 
 const langRegex = /^\/(fr|en|jp)\//;

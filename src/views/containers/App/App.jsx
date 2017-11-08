@@ -8,6 +8,7 @@ import {
 import { Helmet } from 'react-helmet';
 import { TimelineMax } from 'gsap';
 import TransitionGroup from 'react-transition-group/TransitionGroup';
+import UAParser from 'ua-parser-js';
 
 import About from 'Containers/About';
 import Canvas from 'Containers/Canvas';
@@ -42,7 +43,7 @@ class App extends Component {
 
     this.state = {
       language: 'en',
-      deviceType: 'ontouchstart' in window ? 'mobile' : 'desktop',
+      env: new UAParser().getResult(),
       aboutLanding: pageName === 'about',
       headlineMode: pageName === 'work' ? 'work' : pageName === 'about' ? 'about' : hash === 'play' ? 'piano' : 'home',
       works: worksData.sections.filter(item => item.name.match('projects|experiments')).map(section => section.items).reduce((acc, item) => [...acc, ...item], []),
@@ -57,7 +58,13 @@ class App extends Component {
       synth: this.getContext() && synth
     };
 
+    this.state.pointerType = this.state.env.device.type ? 'touch' : 'desktop';
     this.workIdsRegex = this.state.works.map(work => work.id).join('|');
+
+    // iPhone X hack
+    if (this.state.env.browser.name.match(/safari/i) && parseInt(this.state.env.browser.major, 10) >= 11) {
+      document.querySelector("meta[name=viewport]").content += ',viewport-fit=cover';
+    }
 
     const withAppState = (component) => withHocWrapper(component, { appState: this.state, setAppState: this.setAppState });
 

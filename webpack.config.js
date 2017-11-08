@@ -140,6 +140,24 @@ module.exports = {
       test: /\.(jpe?g|png|gif|svg)$/i,
     }),
 
+    new OfflinePlugin({
+      safeToUseOptionalCaches: true,
+      caches: {
+        main: [
+          'bundle.js',
+          'style.css',
+          'index.html'
+        ],
+        additional: [
+          ':rest:'
+        ]
+      },
+      AppCache: false,
+      ServiceWorker: {
+        events: true
+      }
+    }),
+
     new webpack.optimize.UglifyJsPlugin({
       uglifyOptions: {
         output: {
@@ -169,24 +187,6 @@ module.exports = {
           cascade: true,
           drop_console: true
         }
-      }
-    }),
-
-    new OfflinePlugin({
-      safeToUseOptionalCaches: true,
-      caches: {
-        main: [
-          'bundle.js',
-          'style.css',
-          'index.html'
-        ],
-        additional: [
-          ':rest:'
-        ]
-      },
-      AppCache: false,
-      ServiceWorker: {
-        events: true
       }
     })
   ] : []),

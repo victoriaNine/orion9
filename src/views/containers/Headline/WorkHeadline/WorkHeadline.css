@@ -1,6 +1,8 @@
 @import 'App/_common.css';
 
-.WorkHeadline {}
+.WorkHeadline {
+  padding-right: 50px;
+}
 
 .role {
   display: flex;

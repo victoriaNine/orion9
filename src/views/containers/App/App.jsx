@@ -44,7 +44,7 @@ class App extends Component {
       language: 'en',
       deviceType: 'ontouchstart' in window ? 'mobile' : 'desktop',
       aboutLanding: pageName === 'about',
-      headlineMode: pageName === 'work' ? 'work' : hash === 'play' ? 'piano' : 'default',
+      headlineMode: pageName === 'work' ? 'work' : pageName === 'about' ? 'about' : hash === 'play' ? 'piano' : 'home',
       works: worksData.sections.filter(item => item.name.match('projects|experiments')).map(section => section.items).reduce((acc, item) => [...acc, ...item], []),
       currentWork: null,
       visuals: null,

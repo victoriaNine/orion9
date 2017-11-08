@@ -1,34 +1,73 @@
 @import 'App/_common.css';
 
+:root {
+  --size_height1: 500px;
+  --size_height2: 390px;
+  --size_height3: 360px;
+  --size_height4: 300px;
+  --size_height5: 275px;
+  --size_height6: 225px;
+  --size_height7: 175px;
+  --number_aboutRatio: 1.5;
+}
+
 .Headline {
   margin: 100px 0 50px;
   font-family: var(--font_didot);
   text-transform: lowercase;
-  height: 500px;
+  height: var(--size_height1);
   transition: height 400ms;
 
+  &.is--about {
+    height: calc(var(--number_aboutRatio) * var(--size_height1));
+  }
+
   @media screen and (min-width: 300px) {
-    height: 420px;
+    height: var(--size_height2);
+
+    &.is--about {
+      height: calc(var(--number_aboutRatio) * var(--size_height2));
+    }
   }
 
   @media screen and (min-width: 350px) {
-    height: 360px;
+    height: var(--size_height3);
+
+    &.is--about {
+      height: calc(var(--number_aboutRatio) * var(--size_height3));
+    }
   }
 
   @media screen and (min-width: 400px) {
-    height: 300px;
+    height: var(--size_height4);
+
+    &.is--about {
+      height: calc(var(--number_aboutRatio) * var(--size_height4));
+    }
   }
 
   @media screen and (min-width: 450px) {
-    height: 275px;
+    height: var(--size_height5);
+
+    &.is--about {
+      height: calc(var(--number_aboutRatio) * var(--size_height5));
+    }
   }
 
   @media screen and (min-width: 550px) {
-    height: 250px;
+    height: var(--size_height6);
+
+    &.is--about {
+      height: calc(var(--number_aboutRatio) * var(--size_height6));
+    }
   }
 
   @media screen and (min-width: 650px)  {
-    height: 200px;
+    height: var(--size_height7);
+
+    &.is--about {
+      height: calc(var(--number_aboutRatio) * var(--size_height7));
+    }
   }
 
   &.is--piano {

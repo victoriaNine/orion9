@@ -7,6 +7,12 @@ import data from './About.data';
 import styles from './About.css';
 
 class About extends Component {
+  constructor (...args) {
+    super(...args);
+
+    this.props.setAppState({ headlineMode: 'about' });
+  }
+
   componentDidMount () {
     TweenMax.to(document.body, 0.4, { scrollTop: 0, ease: Power2.easeInOut });
   }

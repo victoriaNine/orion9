@@ -45,7 +45,7 @@ class Work extends Component {
   }
 
   componentWillUnmount () {
-    this.props.setAppState({ headlineMode: 'default', currentWork: null, visuals: null });
+    this.props.setAppState({ currentWork: null, visuals: null });
     this.historyRemoveListener();
   }
 

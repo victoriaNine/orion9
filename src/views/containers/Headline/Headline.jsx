@@ -18,7 +18,8 @@ class Headline extends Component {
   setDOM = (ref) => { this.props.setAppState({ dom: {...this.props.appState.dom, headline: ref } }); };
   setNoteDOM = (ref) => { this.props.setAppState({ dom: {...this.props.appState.dom, note: ref } }); };
   setPianoDOM = (ref) => { this.props.setAppState({ dom: {...this.props.appState.dom, piano: ref } }); };
-  setDefaultHeadlineDOM = (ref) => { this.props.setAppState({ dom: {...this.props.appState.dom, defaultHeadline: ref } }); };
+  setHomeHeadlineDOM = (ref) => { this.props.setAppState({ dom: {...this.props.appState.dom, homeHeadline: ref } }); };
+  setAboutHeadlineDOM = (ref) => { this.props.setAppState({ dom: {...this.props.appState.dom, aboutHeadline: ref } }); };
   setWorkHeadlineDOM = (ref, inst) => {
     this.props.setAppState({ dom: {...this.props.appState.dom, workHeadline: ref } });
     this.props.setAppState({ instances: {...this.props.appState.instances, workHeadline: inst } });
@@ -29,20 +30,26 @@ class Headline extends Component {
   };
 
   closePiano = () => {
-    this.props.setAppState({ headlineMode: 'default' });
+    this.props.setAppState({ headlineMode: 'home' });
     window.location.hash && window.history.pushState(null, null, window.location.pathname);
   };
 
   render () {
     const { language, currentWork, audioCtx } = this.props.appState;
 
-    let baseline1 = _$.replaceStringToJSX(data.baseline1[language], '${age}', this.age, true);
-    baseline1 = _$.replaceStringToJSX(baseline1, '${note}', audioCtx ? <Note onMount={this.setNoteDOM} onClick={this.openPiano} /> : '');
+    let homeBaseline1 = _$.replaceStringToJSX(data.home.baseline1[language], '${age}', this.age, true);
+    homeBaseline1 = _$.replaceStringToJSX(homeBaseline1, '${note}', audioCtx ? <Note onMount={this.setNoteDOM} onClick={this.openPiano} /> : '');
 
-    const defaultDOM = <DefaultHeadline
-      baseline1={baseline1}
-      baseline2={data.baseline2[language]}
-      onMount={this.setDefaultHeadlineDOM}
+    const homeDOM = <DefaultHeadline
+      baseline1={homeBaseline1}
+      baseline2={data.home.baseline2[language]}
+      onMount={this.setHomeHeadlineDOM}
+    />;
+
+    const aboutDOM = <DefaultHeadline
+      baseline1={data.about.baseline1[language]}
+      baseline2={data.about.baseline2[language]}
+      onMount={this.setAboutHeadlineDOM}
     />;
 
     const workDOM = currentWork && <WorkHeadline
@@ -69,7 +76,10 @@ class Headline extends Component {
           {this.props.mode === 'piano' && pianoDOM}
         </TransitionGroup>
         <TransitionGroup component={_$.getFirstChild}>
-          {(this.props.mode === 'default' || !this.props.mode) && defaultDOM}
+          {(this.props.mode === 'about') && aboutDOM}
+        </TransitionGroup>
+        <TransitionGroup component={_$.getFirstChild}>
+          {(this.props.mode === 'home' || !this.props.mode) && homeDOM}
         </TransitionGroup>
       </div>
     );

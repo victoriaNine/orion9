@@ -1,3 +1,6 @@
+import video_15thtriad from './assets/15thtriad.mp4';
+import video_iwtwwy from './assets/iwtwwy.mp4';
+
 const data = {
   sections: [
     {
@@ -20,7 +23,7 @@ const data = {
             }
           },
           color: "#3399cc",
-          visuals: { type: "video", url: "" }
+          visuals: { type: "video", url: video_15thtriad }
         },
         {
           id: "iwtwwy",
@@ -37,7 +40,7 @@ const data = {
             }
           },
           color: "#6233cc",
-          visuals: { type: "video", url: "" }
+          visuals: { type: "video", url: video_iwtwwy }
         },
         {
           id: "psychoCube",

@@ -11,9 +11,12 @@ class Work extends Component {
   constructor (...args) {
     super(...args);
 
+    const currentWork = this.getCurrentWorkFromPath(this.props.location.pathname);
+
     this.props.setAppState({
       headlineMode: 'work',
-      currentWork: this.getCurrentWorkFromPath(this.props.location.pathname)
+      currentWork,
+      visuals: currentWork.visuals
     });
   }
 
@@ -22,13 +25,16 @@ class Work extends Component {
 
     this.historyRemoveListener = this.props.history.listen((location) => {
       if (_$.getPageName(location.pathname) === 'work') {
+        const currentWork = this.getCurrentWorkFromPath(location.pathname);
+
         this.props.appState.instances.workHeadline.doLeave(() => {
           this.props.appState.instances.workHeadline.doEnter();
         });
 
         this.doLeave(() => {
           this.props.setAppState({
-            currentWork: this.getCurrentWorkFromPath(location.pathname)
+            currentWork,
+            visuals: currentWork.visuals
           });
 
           TweenMax.to(document.body, 0.4, { scrollTop: 0, ease: Power2.easeInOut });
@@ -39,7 +45,7 @@ class Work extends Component {
   }
 
   componentWillUnmount () {
-    this.props.setAppState({ headlineMode: 'default', currentWork: null });
+    this.props.setAppState({ headlineMode: 'default', currentWork: null, visuals: null });
     this.historyRemoveListener();
   }
 
@@ -96,12 +102,14 @@ class Work extends Component {
         title: `${data.translations.next[language]}: ${nextWork.title}`,
         url: `/work/${nextWork.id}`,
         color: nextWork.color,
+        visuals: nextWork.visuals,
         internalLink: true
       },
       {
         title: `${data.translations.previous[language]}: ${prevWork.title}`,
         url: `/work/${prevWork.id}`,
         color: prevWork.color,
+        visuals: prevWork.visuals,
         internalLink: true
       },
     ];
@@ -135,7 +143,13 @@ class Work extends Component {
           </div>
         }
         <div className={styles.section}>
-          <Section language={language} title={data.translations.more} items={navItems} />
+          <Section
+            language={language}
+            title={data.translations.more}
+            items={navItems}
+            appState={this.props.appState}
+            setAppState={this.props.setAppState}
+          />
         </div>
       </div>
     );

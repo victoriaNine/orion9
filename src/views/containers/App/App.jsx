@@ -47,6 +47,7 @@ class App extends Component {
       headlineMode: pageName === 'work' ? 'work' : hash === 'play' ? 'piano' : 'default',
       works: worksData.sections.filter(item => item.name.match('projects|experiments')).map(section => section.items).reduce((acc, item) => [...acc, ...item], []),
       currentWork: null,
+      visuals: null,
       midiStatus: false,
       midiLastNote: null,
       initialized: false,
@@ -155,7 +156,7 @@ class App extends Component {
             htmlAttributes={{ lang : _$.getLanguageCode(this.state.language) }}
             title={`orion9 // victoria nine${pageTitle}`}
           />
-          <ConnectedCanvas />
+          <ConnectedCanvas visuals={this.state.visuals} />
           <ConnectedNav />
           <div className={styles.wrapper} ref={this.setWrapperDOM}>
             <ConnectedHeadline mode={this.state.headlineMode} />

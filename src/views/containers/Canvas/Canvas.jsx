@@ -1,22 +1,13 @@
 import { h, Component } from 'preact';
-import { TweenMax, SteppedEase } from 'gsap';
+import { TweenMax, TimelineMax, SteppedEase } from 'gsap';
 
 import Seriously from 'seriously';
 import 'seriously/effects/seriously.noise';
 
 import styles from './Canvas.css';
 
-function createCanvas (width, height) {
-  const canvas  = document.createElement("canvas");
-  canvas.width  = width;
-  canvas.height = height;
-  return canvas;
-}
-
 class Canvas extends Component {
   componentDidMount () {
-    window.addEventListener("resize", this.onResize);
-
     this.bgColor             = getComputedStyle(document.body).backgroundColor;
     this.seriously           = new Seriously();
     this.reformatNode        = this.seriously.transform("reformat");
@@ -34,19 +25,157 @@ class Canvas extends Component {
     this.targetNode          = this.seriously.target(this.DOM);
     this.targetNode.source   = this.noiseNode;
 
-    this.canvas2d = createCanvas();
-    this.ctx2d = this.canvas2d.getContext("2d");
+    this.canvas2dDOM = document.createElement("canvas");
+    this.ctx2d = this.canvas2dDOM.getContext("2d");
 
+    this.videoDOM = document.createElement("video");
+    this.videoDOM.loop = true;
+    this.videoDOM.muted = true;
+
+    this.imageDOM = document.createElement("img");
+
+    this.updateVisualsTimeout = null;
+    this.visualsInfo = null;
+    this.visualsDOM = null;
+    this.visualsOpacity = 0;
+    this.overlayOpacity = 0;
+
+    window.addEventListener("resize", this.onResize);
     this.onResize();
     this.start();
   }
 
+  componentWillUpdate (newProps) {
+    // Debounce the calls to the update method
+    clearTimeout(this.updateVisualsTimeout);
+
+    this.updateVisualsTimeout = setTimeout(() => {
+      this.updateVisualsTimeout = null;
+      this.updateVisuals(newProps.visuals);
+    }, 500);
+  }
+
+  updateVisuals = (visualsInfo) => {
+    if (visualsInfo !== this.visualsInfo) {
+      this.visualsInfo = visualsInfo;
+
+      if (this.visualsInfo) {
+        this.setVisuals();
+      } else {
+        this.removeVisuals();
+      }
+    }
+  };
+
+  setVisuals () {
+    const prevVisuals = this.visualsDOM;
+    let eventName;
+
+    if (prevVisuals) {
+      this.switchingVisuals = true;
+      TweenMax.to(this, 0.2, { visualsOpacity: 0, onComplete: () => {
+        proceed.call(this);
+      }});
+    } else {
+      proceed.call(this);
+    }
+
+    function proceed () {
+      if (this.visualsInfo.url) {
+        switch (this.visualsInfo.type) {
+          case "video":
+            this.visualsDOM = this.videoDOM;
+            eventName = "canplaythrough";
+            break;
+          case "image":
+            this.visualsDOM = this.imageDOM;
+            eventName = "load";
+            break;
+        }
+
+        this.visualsDOM.addEventListener(eventName, function handler (event) {
+          event.target.removeEventListener(eventName, handler);
+
+          if (this.visualsDOM && this.visualsInfo) {
+            this.resizeVisuals(this.visualsInfo.type);
+            this.showVisuals = true;
+
+            if (this.visualsInfo.type === "video") {
+              this.visualsDOM.play().then(() => {
+                fadeIn.call(this);
+              });
+            } else {
+              fadeIn.call(this);
+            }
+          }
+        }.bind(this));
+
+        this.visualsDOM.src = this.visualsInfo.url;
+      }
+    }
+
+    function fadeIn () {
+      const tl = new TimelineMax({ onComplete: () => {
+        if (prevVisuals) {
+          this.switchingVisuals = false;
+        }
+      }});
+
+      !this.switchingVisuals && tl.fromTo(this, 0.2, { overlayOpacity: 0 }, { overlayOpacity: 1 });
+      tl.fromTo(this, 0.2, { visualsOpacity: 0 }, { visualsOpacity: 1 }, this.switchingVisuals ? 0 : 0.1);
+    }
+  }
+
+  removeVisuals () {
+    const tl = new TimelineMax({ onComplete: () => {
+      this.showVisuals = false;
+      this.visualsDOM = null;
+    }});
+    tl.to(this, 0.2, { visualsOpacity: 0 });
+    tl.to(this, 0.2, { overlayOpacity: 0 }, 0.1);
+  }
+
   onResize = () => {
-    this.DOM.width = this.canvas2d.width = this.reformatNode.width = this.noiseNode.width = this.targetNode.width = document.querySelector('html').offsetWidth;
-    this.DOM.height = this.canvas2d.height = this.reformatNode.height = this.noiseNode.height = this.targetNode.height = document.querySelector('html').offsetHeight;
+    this.DOM.width = this.canvas2dDOM.width
+      = this.reformatNode.width = this.noiseNode.width = this.targetNode.width
+      = document.querySelector('html').offsetWidth;
+
+    this.DOM.height = this.canvas2dDOM.height
+      = this.reformatNode.height = this.noiseNode.height = this.targetNode.height
+      = document.querySelector('html').offsetHeight;
+
+    if (this.showVisuals && this.visualsDOM) {
+      this.resizeVisuals(this.visualsInfo.type);
+    }
 
     if (this.reformatNode.source) { this.reformatNode.source.destroy(); }
-    this.reformatNode.source = this.seriously.source(this.canvas2d);
+    this.reformatNode.source = this.seriously.source(this.canvas2dDOM);
+  };
+
+  resizeVisuals = (visualType) => {
+    if (visualType === "video") {
+      const ratioW = this.videoDOM.videoWidth / this.DOM.width;
+      const ratioH = this.videoDOM.videoHeight / this.DOM.height;
+
+      if (ratioW >= ratioH) {
+        this.videoDOM.width = this.DOM.height * (this.videoDOM.videoWidth / this.videoDOM.videoHeight);
+        this.videoDOM.height = this.DOM.height;
+      } else {
+        this.videoDOM.width = this.DOM.width;
+        this.videoDOM.height = this.DOM.width * (this.videoDOM.videoHeight / this.videoDOM.videoWidth);
+      }
+    } else if (visualType === "image") {
+      const ratioW = this.imageDOM.naturalWidth / this.DOM.width;
+      const ratioH = this.imageDOM.naturalHeight / this.DOM.height;
+
+      if (ratioW >= ratioH) {
+        this.imageDOM.width = this.DOM.height * (this.imageDOM.naturalWidth / this.imageDOM.naturalHeight);
+        this.imageDOM.height = this.DOM.height;
+      } else {
+        this.imageDOM.width = this.DOM.width;
+        this.imageDOM.height = this.DOM.width * (this.imageDOM.naturalHeight / this.imageDOM.naturalWidth);
+      }
+    }
   };
 
   setDOM = (ref) => {
@@ -60,8 +189,25 @@ class Canvas extends Component {
 
   draw = () => {
     this.ctx2d.clearRect(0, 0, this.DOM.width, this.DOM.height);
+
     this.ctx2d.fillStyle = this.bgColor;
     this.ctx2d.fillRect(0, 0, this.DOM.width, this.DOM.height);
+
+    if (this.showVisuals && this.visualsDOM) {
+      this.ctx2d.save();
+      this.ctx2d.globalAlpha = this.visualsOpacity;
+      this.ctx2d.drawImage(
+        this.visualsDOM,
+        (this.DOM.width - this.visualsDOM.width) / 2,
+        (this.DOM.height - this.visualsDOM.height) / 2,
+        this.visualsDOM.width,
+        this.visualsDOM.height
+      );
+      this.ctx2d.restore();
+
+      this.ctx2d.fillStyle = `rgba(0, 0, 0, ${0.9 * this.overlayOpacity})`;
+      this.ctx2d.fillRect(0, 0, this.DOM.width, this.DOM.height);
+    }
 
     if (this.reformatNode.source) {
       this.reformatNode.source.update();

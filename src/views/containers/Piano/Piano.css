@@ -22,7 +22,7 @@
 }
 
 .close {
-  font-size: 14px;
+  font-size: var(--fontSize_pianoClose);
   opacity: 0.5;
   cursor: pointer;
   vertical-align: super;
@@ -51,7 +51,6 @@
   padding-bottom: 0.25em;
   transition: background 200ms;
   z-index: 0;
-  font-size: 22px;
   cursor: pointer;
 
   &:not(.is--active):hover {
@@ -79,7 +78,7 @@
 }
 
 .hint {
-  font-size: 16px;
+  font-size: var(--fontSize_pianoHint);
   display: flex;
 
   &:not(:last-of-type) {

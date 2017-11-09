@@ -7,7 +7,7 @@
 .role {
   display: flex;
   align-items: center;
-  font-size: 14px;
+  font-size: var(--fontSize_workRoles);
   font-family: var(--font_futura);
   margin-top: 1em;
 }

@@ -10,7 +10,6 @@
 }
 
 .item {
-  font-size: 22px;
   text-transform: lowercase;
   transition: transform 200ms;
   position: relative;
@@ -43,7 +42,7 @@
 }
 
 .detailsWrapper {
-  font-size: 12px;
+  font-size: var(--fontSize_listDetails);
   display: flex;
   align-items: center;
   height: 0;
@@ -69,7 +68,7 @@
   position: fixed;
   width: 256px;
   top: 100px;
-  left: calc(50% - 128px);
+  left: calc((100% - 256px) / 2);
   opacity: 0;
   transition: opacity 200ms, transform 200ms;
   transform: translateX(30px);

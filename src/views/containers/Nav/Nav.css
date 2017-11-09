@@ -26,7 +26,7 @@
 }
 
 .langNav {
-  font-size: 10px;
+  font-size: var(--fontSize_menu);
   display: flex;
   margin-left: 25px;
   font-weight: 400;
@@ -88,7 +88,7 @@
     font-family: var(--font_didot);
     transform: skewX(-15deg);
     text-transform: lowercase;
-    font-size: 12px;
+    font-size: var(--fontSize_menuHover);
     line-height: 10px;
   }
 

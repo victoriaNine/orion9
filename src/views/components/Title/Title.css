@@ -1,7 +1,7 @@
 @import 'App/_common.css';
 
 .Title {
-  font-size: 10px;
+  font-size: var(--fontSize_title);
   text-transform: uppercase;
   position: relative;
   display: inline-block;

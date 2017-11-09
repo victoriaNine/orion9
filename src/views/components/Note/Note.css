@@ -1,5 +1,7 @@
+@import 'App/_common.css';
+
 .Note {
-  font-size: 10px;
+  font-size: var(--fontSize_note);
   opacity: 0.5;
   cursor: pointer;
   vertical-align: super;
@@ -10,7 +12,7 @@
 
   &:hover {
     opacity: 1;
-    font-size: 14px;
+    font-size: var(--fontSize_note);
   }
 }
 

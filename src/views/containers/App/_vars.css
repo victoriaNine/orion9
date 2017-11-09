@@ -2,5 +2,17 @@
   --font_futura: 'Futura Std', sans-serif;
   --font_didot: 'Didot', serif;
 
+  --fontSize_main: 24px;
+  --fontSize_headline: 32px;
+  --fontSize_menu: 10px;
+  --fontSize_menuHover: 12px;
+  --fontSize_title: 10px;
+  --fontSize_listDetails: 12px;
+  --fontSize_workRoles: 14px;
+  --fontSize_note: 12px;
+  --fontSize_noteHover: 14px;
+  --fontSize_pianoClose: 14px;
+  --fontSize_pianoHint: 16px;
+
   --size_sectionBottomMargin: 25px;
 }

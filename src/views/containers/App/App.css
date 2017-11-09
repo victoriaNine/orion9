@@ -24,7 +24,7 @@ body {
   background: var(--color_neutral-grey-offblack);
   color: var(--color_neutral-grey-light);
   font-family: var(--font_futura);
-  font-size: 30px;
+  font-size: var(--fontSize_main);
   font-weight: 300;
   -webkit-font-smoothing: antialiased;
   user-select: none;
@@ -91,7 +91,7 @@ strike {
   position: relative;
 
   @media (--mq_mobile) {
-    padding-left: 50px;;
+    padding-left: 50px;
   }
 
   @media (--mq_laptop) {

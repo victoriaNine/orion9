@@ -11,6 +11,5 @@
 .text {
   max-width: 570px;
   text-transform: lowercase;
-  font-size: 22px;
   line-height: 1.5em;
 }

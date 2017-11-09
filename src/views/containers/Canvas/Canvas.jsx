@@ -77,7 +77,6 @@ class Canvas extends Component {
     let eventName;
 
     if (prevVisuals) {
-      this.switchingVisuals = true;
       TweenMax.to(this, 0.2, { visualsOpacity: 0, onComplete: () => {
         proceed.call(this);
       }});
@@ -120,13 +119,8 @@ class Canvas extends Component {
     }
 
     function fadeIn () {
-      const tl = new TimelineMax({ onComplete: () => {
-        if (prevVisuals) {
-          this.switchingVisuals = false;
-        }
-      }});
-
-      !this.switchingVisuals && tl.fromTo(this, 0.2, { overlayOpacity: 0 }, { overlayOpacity: 1 });
+      const tl = new TimelineMax();
+      !this.overlayOpacity && tl.fromTo(this, 0.2, { overlayOpacity: 0 }, { overlayOpacity: 1 });
       tl.fromTo(this, 0.2, { visualsOpacity: 0 }, { visualsOpacity: 1 }, this.switchingVisuals ? 0 : 0.1);
     }
   }

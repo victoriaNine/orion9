@@ -12,8 +12,19 @@ if (!__IS_DEV__) {
 }
 
 let root;
+let appDOM;
+let initialized = false;
+const appNode = <App ref={(ref) => { appDOM = ref.base; }}/>;
+
 function init() {
-  root = render(<App />, document.body, root);
+  if (initialized) {
+    root = render(appNode, document.body, root);
+  } else {
+    const wrapper = document.createElement("div");
+    root = render(appNode, wrapper);
+    document.body.insertBefore(appDOM, document.body.querySelector("script"));
+    initialized = true;
+  }
 }
 
 // in development, set up HMR:

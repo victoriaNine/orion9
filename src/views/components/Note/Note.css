@@ -12,7 +12,7 @@
 
   &:hover {
     opacity: 1;
-    font-size: var(--fontSize_note);
+    font-size: var(--fontSize_noteHover);
   }
 }
 

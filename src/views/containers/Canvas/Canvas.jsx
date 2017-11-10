@@ -22,7 +22,7 @@ class Canvas extends Component {
     this.noiseNode.time      = this.noiseSettings.time;
     this.noiseNode.source    = this.reformatNode;
 
-    this.targetNode          = this.seriously.target(this.DOM);
+    this.targetNode          = this.seriously.target(this.props.appState.dom.canvas);
     this.targetNode.source   = this.noiseNode;
 
     this.canvas2dDOM = document.createElement("canvas");
@@ -135,11 +135,13 @@ class Canvas extends Component {
   }
 
   onResize = () => {
-    this.DOM.width = this.canvas2dDOM.width
+    const DOM = this.props.appState.dom.canvas;
+
+    DOM.width = this.canvas2dDOM.width
       = this.reformatNode.width = this.noiseNode.width = this.targetNode.width
       = document.querySelector('html').offsetWidth;
 
-    this.DOM.height = this.canvas2dDOM.height
+    DOM.height = this.canvas2dDOM.height
       = this.reformatNode.height = this.noiseNode.height = this.targetNode.height
       = document.querySelector('html').offsetHeight;
 
@@ -152,6 +154,8 @@ class Canvas extends Component {
   };
 
   resizeVisuals = (visualType) => {
+    const DOM = this.props.appState.dom.canvas;
+
     let widthPropName;
     let heightPropName;
 
@@ -166,19 +170,19 @@ class Canvas extends Component {
         break;
     }
 
-    const ratioW = this.videoDOM[widthPropName] / this.DOM.width;
-    const ratioH = this.videoDOM[heightPropName] / this.DOM.height;
+    const ratioW = this.videoDOM[widthPropName] / DOM.width;
+    const ratioH = this.videoDOM[heightPropName] / DOM.height;
 
     if (ratioW >= ratioH) {
-      this.videoDOM.width = this.DOM.height * (this.videoDOM[widthPropName] / this.videoDOM[heightPropName]);
-      this.videoDOM.height = this.DOM.height;
+      this.videoDOM.width = DOM.height * (this.videoDOM[widthPropName] / this.videoDOM[heightPropName]);
+      this.videoDOM.height = DOM.height;
     } else {
-      this.videoDOM.width = this.DOM.width;
-      this.videoDOM.height = this.DOM.width * (this.videoDOM[heightPropName] / this.videoDOM[widthPropName]);
+      this.videoDOM.width = DOM.width;
+      this.videoDOM.height = DOM.width * (this.videoDOM[heightPropName] / this.videoDOM[widthPropName]);
     }
   };
 
-  setDOM = (ref) => { this.DOM = ref; };
+  setDOM = (ref) => { this.props.setAppState({ dom: { ...this.props.appState.dom, canvas: ref } }); };
 
   start () {
     this.seriously.go();
@@ -191,25 +195,26 @@ class Canvas extends Component {
   }
 
   draw = () => {
-    this.ctx2d.clearRect(0, 0, this.DOM.width, this.DOM.height);
+    const DOM = this.props.appState.dom.canvas;
+    this.ctx2d.clearRect(0, 0, DOM.width, DOM.height);
 
     this.ctx2d.fillStyle = this.bgColor;
-    this.ctx2d.fillRect(0, 0, this.DOM.width, this.DOM.height);
+    this.ctx2d.fillRect(0, 0, DOM.width, DOM.height);
 
     if (this.showVisuals && this.visualsDOM) {
       this.ctx2d.save();
       this.ctx2d.globalAlpha = this.visualsOpacity;
       this.ctx2d.drawImage(
         this.visualsDOM,
-        (this.DOM.width - this.visualsDOM.width) / 2,
-        (this.DOM.height - this.visualsDOM.height) / 2,
+        (DOM.width - this.visualsDOM.width) / 2,
+        (DOM.height - this.visualsDOM.height) / 2,
         this.visualsDOM.width,
         this.visualsDOM.height
       );
       this.ctx2d.restore();
 
       this.ctx2d.fillStyle = `rgba(0, 0, 0, ${0.8 * this.overlayOpacity})`;
-      this.ctx2d.fillRect(0, 0, this.DOM.width, this.DOM.height);
+      this.ctx2d.fillRect(0, 0, DOM.width, DOM.height);
     }
 
     if (this.reformatNode.source) {

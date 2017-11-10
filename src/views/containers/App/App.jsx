@@ -38,9 +38,11 @@ class App extends Component {
 
     const pageName = _$.getPageName(window.location.pathname);
     const hash = window.location.hash.slice(1);
+    const languageFromPath = _$.getLanguageFromPath(window.location.pathname) && _$.getLanguageFromPath(window.location.pathname)[1];
+    const languageFromNavigator = navigator.language.slice(0, 2).match(/^(fr|en|ja)$/) ? navigator.language.slice(0, 2) : null;
 
     this.state = {
-      language: 'en',
+      language: languageFromPath || _$.getLanguageCode(languageFromNavigator, true) || 'en',
       env: new UAParser().getResult(),
       aboutLanding: pageName === 'about',
       headlineMode: pageName === 'work' ? 'work' : pageName === 'about' ? 'about' : hash === 'play' ? 'piano' : 'home',
@@ -70,8 +72,8 @@ class App extends Component {
 
     ConnectedAbout = withAppState(About);
     ConnectedCanvas = withAppState(Canvas);
-    ConnectedHeadline = withAppState(Headline);
-    ConnectedHome = withAppState(Home);
+    ConnectedHeadline = withAppState(withRouter(Headline));
+    ConnectedHome = withAppState(withRouter(Home));
     ConnectedNav = withAppState(withRouter(Nav));
     ConnectedWork = withAppState(Work);
   }
@@ -153,7 +155,7 @@ class App extends Component {
       <Router>
         <main id="app" role="main" className={styles.App} ref={this.setDOM}>
           <Helmet
-            htmlAttributes={{ lang : _$.getLanguageCode(this.state.language) }}
+            htmlAttributes={{ lang: _$.getLanguageCode(this.state.language) }}
           />
           <ConnectedCanvas visuals={this.state.visuals} />
           <ConnectedNav />

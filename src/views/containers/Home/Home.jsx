@@ -10,7 +10,7 @@ class Home extends Component {
   constructor (...args) {
     super(...args);
 
-    const hash = window.location.hash.slice(1);
+    const hash = this.props.location.hash.slice(1);
     this.props.setAppState({ headlineMode: hash === 'play' ? 'piano' : 'home' });
   }
 

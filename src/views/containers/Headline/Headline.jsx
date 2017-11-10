@@ -54,8 +54,10 @@ class Headline extends Component {
   };
 
   closePiano = () => {
-    this.props.setAppState({ headlineMode: 'home' });
-    window.location.hash && window.history.pushState(null, null, window.location.pathname);
+    const { location, setAppState, history } = this.props;
+
+    setAppState({ headlineMode: 'home' });
+    location.hash && history.push(location.pathname);
   };
 
   onResize = () => {

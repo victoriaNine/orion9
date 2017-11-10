@@ -9,16 +9,6 @@ import * as _$ from 'utils';
 import styles from './Nav.css';
 
 class Nav extends Component {
-  componentDidMount () {
-    let languageFromPath = _$.getLanguageFromPath(this.props.location.pathname);
-    languageFromPath = languageFromPath && languageFromPath[1];
-
-    const languageFromNavigator = navigator.language.slice(0, 2).match(/^(fr|en|ja)$/) ? navigator.language.slice(0, 2) : null;
-    this.props.setAppState({
-      language: languageFromPath || languageFromNavigator || 'en',
-    });
-  }
-
   setDOM = (ref) => {
     this.props.setAppState({ dom: { ...this.props.appState.dom, nav: ref } });
   };

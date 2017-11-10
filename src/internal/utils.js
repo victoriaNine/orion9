@@ -27,10 +27,11 @@ function getWorkIdFromPath (location) {
   return locationParams[locationParams.length - 1];
 }
 
-function getLanguageCode (code) {
+function getLanguageCode (code, internalCodeLookup) {
   switch (code) {
     case 'jp':
-      return 'ja';
+    case 'ja':
+      return internalCodeLookup ? 'jp' : 'ja';
     default:
       return code;
   }

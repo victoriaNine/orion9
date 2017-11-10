@@ -39,7 +39,7 @@ class Work extends Component {
 
           // Update the headline's height for the new content
           this.props.appState.instances.headline.onResize();
-          
+
           TweenMax.to(document.body, 0.4, { scrollTop: 0, ease: Power2.easeInOut });
           this.doEnter();
         });
@@ -119,14 +119,14 @@ class Work extends Component {
 
     return (
       <div className={styles.Work} ref={this.setDOM}>
+        {
+          currentWork.details.about[language] && <div className={styles.section}>
+            <Section language={language} title={data.translations.about} text={currentWork.details.about} noLowercase />
+          </div>
+        }
         <div className={styles.section}>
           <Section language={language} title={data.translations.links} items={linkItems} />
         </div>
-        {
-          currentWork.details.about[language] && <div className={styles.section}>
-            <Section language={language} title={data.translations.about} text={currentWork.details.about} />
-          </div>
-        }
         {
           currentWork.details.client && <div className={styles.section}>
             <Section language={language} title={data.translations.client} text={currentWork.details.client} />

@@ -4,6 +4,10 @@ const eventsMap = {
   move: { touch: 'touchmove', desktop: 'mousemove' },
 };
 
+const navigatorToAppLanguageCode = {
+  ja: 'jp'
+};
+
 const langRegex = /^\/(fr|en|jp)\//;
 
 function getLanguageFromPath (location) {
@@ -27,14 +31,20 @@ function getWorkIdFromPath (location) {
   return locationParams[locationParams.length - 1];
 }
 
-function getLanguageCode (code, internalCodeLookup) {
-  switch (code) {
-    case 'jp':
-    case 'ja':
-      return internalCodeLookup ? 'jp' : 'ja';
-    default:
-      return code;
+function getLanguageCode (code, reverseLookup) {
+  const navigatorLanguageCodes = Object.keys(navigatorToAppLanguageCode);
+  const appLanguageCodes = Object.keys(navigatorToAppLanguageCode).map((key) => navigatorToAppLanguageCode[key]);
+
+  if (reverseLookup && appLanguageCodes.includes(code)) {
+    // Retrieve navigator language code for a given app language code
+    return navigatorLanguageCodes.find((key) => navigatorLanguageCodes[key] === code);
+  } else if (navigatorLanguageCodes.includes(code)) {
+    // Retrieve app language code for a given navigator language code
+    return navigatorLanguageCodes[code];
   }
+
+  // If there is no conversion to be made, return the original code
+  return code;
 }
 
 function replaceStringToJSX (string, match, jsx, join) {

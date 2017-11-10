@@ -1,3 +1,5 @@
+@import 'App/_common.css';
+
 .DefaultHeadline {
   padding-right: 50px;
 }
@@ -7,5 +9,5 @@
 }
 
 .has--maxWidth {
-  max-width: 620px;
+  max-width: var(--size_headlineMaxWidth);
 }

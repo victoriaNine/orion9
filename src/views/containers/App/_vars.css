@@ -15,4 +15,6 @@
   --fontSize_pianoHint: 16px;
 
   --size_sectionBottomMargin: 25px;
+  --size_headlineMaxWidth: 620px;
+  --size_sectionMaxWidth: 620px;
 }

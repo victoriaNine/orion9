@@ -1,3 +1,4 @@
+import classnames from 'classnames';
 import { h, Component } from 'preact';
 
 import Title from 'Components/Title';
@@ -35,7 +36,7 @@ class Section extends Component {
   };
 
   render () {
-    const { language } = this.props;
+    const { language, noLowercase } = this.props;
 
     const listDOM = this.props.items && <List
       language={language}
@@ -45,7 +46,7 @@ class Section extends Component {
     />;
 
     const textDOM = this.props.text &&
-      <p className={styles.text} onMouseEnter={this.onItemSelect} onMouseLeave={this.onItemDeselect}>
+      <p className={classnames(styles.text, { [styles.noLowercase]: noLowercase })} onMouseEnter={this.onItemSelect} onMouseLeave={this.onItemDeselect}>
         { typeof this.props.text === 'object' ? this.props.text[language] : this.props.text }
       </p>;
 

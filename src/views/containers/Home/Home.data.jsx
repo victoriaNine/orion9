@@ -17,8 +17,8 @@ const data = {
             stack: ["backbone", "webpack", "webaudio", "canvas", "webgl", "node.js", "socket.io", "couchdb"],
             github: "http://github.com/victoriaNine/xvthTriad",
             about: {
-              fr: "",
-              en: "",
+              fr: "Mon projet bac-à-sable. The Fifteenth Triad est un jeu de cartes multijoueur basé sur l'univers de Final Fantasy. Situé dans l'univers du 15ème épisode de la série, il reprend le jeu de cartes apprécié des fans du 8ème épisode, le \"Triple Triad\". The Fifteenth Triad propose un mode solo contre une IA (trois niveaux de difficulté), un mode versus pour jouer contre un ami, un salon pour discuter et défier d'autre joueurs, des classements hebdomadaires automatisés, et un tas d'autres fonctionnalités personnalisables.",
+              en: "My sandbox project. The Fifteenth Triad is a multiplayer card game based on the Final Fantasy universe. Set in the series' 15th installment's universe, it takes after the beloved card game from the 8th installment, the \"Triple Triad\". The Fifteenth Triad features a solo mode against an AI (three difficulty levels), a versus mode to play against a friend, a lounge to chat and challenge other players, automated weekly rankings, and many other customizable features.",
               jp: ""
             }
           },

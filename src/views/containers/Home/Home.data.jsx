@@ -18,8 +18,8 @@ const data = {
             github: "http://github.com/victoriaNine/xvthTriad",
             about: {
               fr: "Mon projet bac-à-sable. The Fifteenth Triad est un jeu de cartes multijoueur basé sur l'univers de Final Fantasy. Situé dans l'univers du 15ème épisode de la série, il reprend le jeu de cartes apprécié des fans du 8ème épisode, le \"Triple Triad\". The Fifteenth Triad propose un mode solo contre une IA (trois niveaux de difficulté), un mode versus pour jouer contre un ami, un salon pour discuter et défier d'autre joueurs, des classements hebdomadaires automatisés, et un tas d'autres fonctionnalités personnalisables.",
-              en: "My sandbox project. The Fifteenth Triad is a multiplayer card game based on the Final Fantasy universe. Set in the series' 15th installment's universe, it takes after the beloved card game from the 8th installment, the \"Triple Triad\". The Fifteenth Triad features a solo mode against an AI (three difficulty levels), a versus mode to play against a friend, a lounge to chat and challenge other players, automated weekly rankings, and many other customizable features.",
-              jp: ""
+              en: "My experiment sandbox project. The Fifteenth Triad is a multiplayer card game based on the Final Fantasy universe. Set in the series' 15th installment's universe, it takes up the beloved card game from the 8th installment, the \"Triple Triad\". The Fifteenth Triad features a solo mode against an AI (three difficulty levels), a versus mode to play against a friend, a lounge to chat and challenge other players, automated weekly rankings, and many other customizable features.",
+              jp: "研究のサンドボックス・プロジェクトです。「The Fifteenth Triad」は、ファイナルファンタジーの世界に基づいたマルチプレイヤーカードゲームです。シリーズの第15作目の世界の中で、第8作目からの愛された「トリプルトライド」と言うカードゲームを取り上げています。AIと対戦するソロモード（難易度レベルが3つ）、友人と対戦するバーサスモード、他のプレイヤーにチャットしてチャレンジするラウンジ、週ごとの自動化されたランキングやその他の多くのカスタマイズ可能な機能を備えています。"
             }
           },
           color: "#3399cc",
@@ -34,9 +34,9 @@ const data = {
             role: ["dev", "design", "audio", "sd"],
             stack: ["custom framework", "webaudio", "css3d", "canvas"],
             about: {
-              fr: "",
-              en: "",
-              jp: ""
+              fr: "Une lettre de motivation interactive et personnalisable, avec un sound design concocté pour l'occasion.",
+              en: "An interactive and customizable cover letter, featuring some sound design I made for the occasion.",
+              jp: "インタラクティブでカスタマイズ可能な送付状。その為に作ったサウンド・デザインも特徴です。"
             }
           },
           color: "#6233cc",
@@ -44,16 +44,16 @@ const data = {
         },
         {
           id: "psychoCube",
-          title: "Psycho-Cube",
+          title: "PSYCHO-CUBE",
           type: "project",
           url: "http://orion9.net/_demos/psychoCube",
           details: {
             role: ["dev", "design", "audio", "sd"],
             stack: ["custom framework", "webaudio", "css3d", "canvas"],
             about: {
-              fr: "",
-              en: "",
-              jp: ""
+              fr: "Un rubik's cube intégralement crée en CSS3D basé sur l'anime PSYCHO-PASS.",
+              en: "A rubik's cube game entirely generated with CSS3D based on the PSYCHO-PASS anime.",
+              jp: "「PSYCHO-PASS」と言うアニメに基づいてCSS3Dで完全に生成されたルービックキューブゲーム。"
             }
           },
           color: "#20cad9",
@@ -68,9 +68,9 @@ const data = {
             role: ["dev", "design", "audio", "music", "sd"],
             stack: ["custom framework", "webaudio", "canvas"],
             about: {
-              fr: "",
-              en: "",
-              jp: ""
+              fr: "Un jeu de rythme avec visualisation audio en temps-réel. J'ai également créé les musiques de l'expérience.",
+              en: "A rhythm game with real-time audio visualization. I've also created the music pieces featured in the game.",
+              jp: "リアルタイムのオーディオ・ビジュアリゼーションを有するリズムゲーム。ゲームの作曲も作りました。"
             }
           },
           color: "#d48930",
@@ -78,7 +78,7 @@ const data = {
         }
       ]
     },
-    {
+    /*{
       name: "experiments",
       title: { fr: "Expériences", en: "Experiments", jp: "試験" },
       items: [
@@ -91,9 +91,9 @@ const data = {
             role: ["dev", "design"],
             stack: ["vanillajs", "canvas", "svg"],
             about: {
-              fr: "",
-              en: "",
-              jp: ""
+              fr: "Une animation inspirée par un artwork de Budi Satria Kwan.",
+              en: "An animation inspired by one of Budi Satria Kwan's artworks.",
+              jp: "Budi Satria Kwanの作品の一つに触発されたアニメーション。"
             }
           },
           color: "#d44b30",
@@ -108,16 +108,16 @@ const data = {
             role: ["dev", "design", "audio", "sd"],
             stack: ["custom framework", "webaudio", "canvas"],
             about: {
-              fr: "",
-              en: "",
-              jp: ""
+              fr: "Un concept d'interface basé sur le projet Intertap d'Ilya Burakov",
+              en: "An interface concept based on Ilya Burakov's Intertap project.",
+              jp: "Ilya Burakovの「Intertap」と言うプロジェクトに基づくインターフェースの概念。"
             }
           },
           color: "#e4347a",
           visuals: { type: "video", url: "" }
         }
       ]
-    },
+    },*/
     {
       name: "clientsAgencies",
       title: { fr: "Clients & Agences", en: "Clients & Agencies", jp: "クライアントとエージェンシー" },

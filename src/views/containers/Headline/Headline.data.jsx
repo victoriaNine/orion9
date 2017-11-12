@@ -20,9 +20,9 @@ const data = {
       jp: "英国の美しいブライトンに住んでいて、フランスのパリのフリーランス・クリエーティブ・フロントエンド・デベロッパーとアーティストです。",
     },
     baseline2: {
-      fr: <span>Je travaille principalement sur des sites interactifs et expérimentaux.<br />Je suis ouverte aux collaborations, venez dire bonjour :)</span>,
-      en: <span>I mainly work on interactive and experimental websites.<br />I'm open to collabs, come say hi :)</span>,
-      jp: <span>インタラクティブで実験的なウェブサイトを主に作成します。<br />コラボは喜んで受けます。どぞよろしく:)</span>,
+      fr: <span>J'aime les sites interactifs, expérimentaux et musicaux.<br />Je suis ouverte aux collaborations, venez dire bonjour :)</span>,
+      en: <span>I love interactive, experimental and musical websites.<br />I'm open to collabs, come say hi :)</span>,
+      jp: <span>インタラクティブ、実験的で音楽的なウェブサイトが好きです。<br />コラボは喜んで受けます。どぞよろしく:)</span>,
     }
   },
   translations: {

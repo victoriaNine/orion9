@@ -73,7 +73,7 @@ class App extends Component {
     ConnectedAbout = withAppState(About);
     ConnectedCanvas = withAppState(Canvas);
     ConnectedHeadline = withAppState(withRouter(Headline));
-    ConnectedHome = withAppState(withRouter(Home));
+    ConnectedHome = withAppState(Home);
     ConnectedNav = withAppState(withRouter(Nav));
     ConnectedWork = withAppState(Work);
   }
@@ -164,11 +164,11 @@ class App extends Component {
           <div className={styles.wrapper} ref={this.setWrapperDOM}>
             <ConnectedHeadline mode={this.state.headlineMode} />
             <div className={styles.contents} ref={this.setContentsDOM}>
-              <Route exact path="/:lang?/(home|)" children={({ match }) => {
+              <Route exact path="/:lang?/(home|)" children={({ match, history, location }) => {
                 if (match) { hasMatch = true; }
                 return (
                   <TransitionGroup component={_$.getFirstChild}>
-                    {match && <ConnectedHome />}
+                    {match && <ConnectedHome history={history} location={location} />}
                   </TransitionGroup>
                 );
               }} />

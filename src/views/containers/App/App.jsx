@@ -98,6 +98,7 @@ class App extends Component {
         this.setState({ introAnimComplete: true });
       }});
 
+      tl.set(document.querySelector('body'), { overflow: 'hidden' });
       tl.from(dom.canvas, 0.8, { opacity: 0, clearProps: "opacity" });
       tl.add(this.state.instances.loading.play(), 0);
       tl.addLabel("loadingAnimDone");
@@ -109,6 +110,7 @@ class App extends Component {
       tl.from(dom.appContents, 0.4, { opacity: 0, y: 12, clearProps: "all" }, "headlineDone-=0.2");
       tl.from(dom.nav, 0.4, { opacity: 0, x: 12, clearProps: "all" }, "-=0.2");
       dom.note && tl.from(dom.note, 0.4, { opacity: 0, clearProps: "all" }, "-=0.2");
+      tl.set(document.querySelector('body'), { clearProps: 'overflow' });
 
       this.setState({ initialized: true });
     }

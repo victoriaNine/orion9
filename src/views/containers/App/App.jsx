@@ -39,10 +39,12 @@ class App extends Component {
     const pageName = _$.getPageName(window.location.pathname);
     const hash = window.location.hash.slice(1);
     const languageFromPath = _$.getLanguageFromPath(window.location.pathname) && _$.getLanguageFromPath(window.location.pathname)[1];
-    const languageFromNavigator = navigator.language.slice(0, 2).match(/^(fr|en|ja)$/) ? navigator.language.slice(0, 2) : null;
+    const languageFromNavigator = navigator.language.slice(0, 2).match(/^(fr|en|ja)$/)
+      ? _$.getLanguageCode(navigator.language.slice(0, 2), true)
+      : null;
 
     this.state = {
-      language: languageFromPath || _$.getLanguageCode(languageFromNavigator, true) || 'en',
+      language: languageFromPath || languageFromNavigator || 'en',
       env: new UAParser().getResult(),
       aboutLanding: pageName === 'about',
       headlineMode: pageName === 'work' ? 'work' : pageName === 'about' ? 'about' : hash === 'play' ? 'piano' : 'home',

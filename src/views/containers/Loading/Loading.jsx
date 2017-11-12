@@ -64,6 +64,10 @@ class Loading extends Component {
       tl.call(() => {
         this.setState({ message });
       }, [], null, !index ? 0 : tl.recent().endTime() + duration);
+
+      if (index === messages.length - 1) {
+        tl.addLabel("messagesDone");
+      }
     });
 
     tl.call(() => {
@@ -78,14 +82,16 @@ class Loading extends Component {
         "C5", "D5", "E5", "F5", "G5", "A5", "B5"
       ], "64n").start();
       sequence.loop = false;
-      Tone.Transport.schedule(() => {
+
+      // eslint-disable-next-line no-unused-vars
+      const unMute = new Tone.Event(() => {
         Tone.Master.mute = false;
-      }, "1m");
+      }).start("10 * 16n");
 
       Tone.Transport.start();
-    });
+    }, [], null, "messagesDone");
 
-    tl.set(DOM.querySelector(`.${styles.message}`), { opacity: 0 }, "+=0.2");
+    tl.set(DOM.querySelector(`.${styles.message}`), { opacity: 0 }, "messagesDone+=0.2");
     tl.set(DOM.querySelector(`.${styles.message}`), { opacity: 1, fontSize: "2em" }, "+=0.1");
     tl.set(DOM.querySelector(`.${styles.message}`), { opacity: 0 }, "+=0.1");
     tl.set(DOM.querySelector(`.${styles.message}`), { clearProps: "fontSize", opacity: 1, className: `+=${styles.didot}` }, "+=0.1");

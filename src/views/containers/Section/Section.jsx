@@ -12,19 +12,30 @@ class Section extends Component {
     color: ''
   };
 
+  itemDeselectTimeout = null;
+
   onItemSelect = (item) => {
+    // Cancel item deselection
+    clearTimeout(this.itemDeselectTimeout);
+
     this.setState({ isActive: true });
     item && item.color && this.setState({ color: item.color });
-
     item && item.visuals && this.props.setAppState({ visuals: item.visuals });
   };
 
   onItemDeselect = () => {
     const { appState, setAppState } = this.props;
-    this.setState({
-      isActive: false,
-      color: ''
-    });
+
+    // Debounce item deselection
+    clearTimeout(this.itemDeselectTimeout);
+
+    this.itemDeselectTimeout = setTimeout(() => {
+      this.itemDeselectTimeout = null;
+      this.setState({
+        isActive: false,
+        color: ''
+      });
+    }, 250);
 
     if (appState) {
       if (appState.currentWork && appState.currentWork.visuals) {

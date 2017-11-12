@@ -54,13 +54,15 @@ class Canvas extends Component {
   }
 
   componentWillReceiveProps (newProps) {
+    const duration = this.updateVisualsTimeout === null ? 0 : 250;
+
     // Debounce calls to the update method
     clearTimeout(this.updateVisualsTimeout);
 
     this.updateVisualsTimeout = setTimeout(() => {
       this.updateVisualsTimeout = null;
       this.updateVisuals(newProps.visuals);
-    }, 500);
+    }, duration);
   }
 
   updateVisuals = (visualsInfo) => {

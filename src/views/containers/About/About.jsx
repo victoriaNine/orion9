@@ -46,7 +46,7 @@ class About extends Component {
         {data.sections.map((section) => {
           return (
             <div className={styles.section}>
-              <Section language={language} {...section} />
+              <Section language={language} appState={this.props.appState} setAppState={this.props.setAppState} {...section} />
             </div>
           );
         })}

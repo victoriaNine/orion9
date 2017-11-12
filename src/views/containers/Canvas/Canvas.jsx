@@ -89,6 +89,7 @@ class Canvas extends Component {
 
     function proceed () {
       if (this.visualsInfo.url) {
+
         switch (this.visualsInfo.type) {
           case "video":
             this.visualsDOM = this.videoDOM;
@@ -100,6 +101,7 @@ class Canvas extends Component {
             break;
         }
 
+        this.visualsDOM.subtitle = this.visualsInfo.options && this.visualsInfo.options.subtitle || "";
         this.visualsDOM.addEventListener(eventName, function handler (event) {
           event.target.removeEventListener(eventName, handler);
 
@@ -149,7 +151,17 @@ class Canvas extends Component {
       = document.querySelector('html').offsetHeight;
 
     if (this.showVisuals && this.visualsDOM) {
-      this.resizeVisuals(this.visualsInfo.type);
+      let type;
+      switch (this.visualsDOM.localName) {
+        case 'video':
+          type = 'video';
+          break;
+        case 'img':
+          type = 'image';
+          break;
+      }
+
+      this.resizeVisuals(type);
     }
 
     if (this.reformatNode.source) { this.reformatNode.source.destroy(); }
@@ -213,6 +225,20 @@ class Canvas extends Component {
         this.visualsDOM.width,
         this.visualsDOM.height
       );
+
+      const ratioW = this.videoDOM.width / this.width;
+      const ratioH = this.videoDOM.height / this.height;
+
+      if (this.visualsDOM.subtitle && ratioW < ratioH) {
+        this.ctx2d.font = "600 30px 'Futura Std'";
+        this.ctx2d.fillStyle = 'white';
+        this.ctx2d.strokeStyle = 'black';
+        this.ctx2d.lineWidth = 2;
+
+        const txtSize = this.ctx2d.measureText(this.visualsDOM.subtitle);
+        this.ctx2d.fillText(this.visualsDOM.subtitle, (this.width - txtSize.width) / 2, this.height - 30);
+      }
+
       this.ctx2d.restore();
 
       this.ctx2d.fillStyle = `rgba(0, 0, 0, ${0.8 * this.overlayOpacity})`;

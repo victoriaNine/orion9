@@ -1,5 +1,11 @@
 import { h } from 'preact';
 
+import visuals_guitar from './assets/guitar.mp4';
+import visuals_finalFantasy from './assets/finalFantasy.mp4';
+import visuals_soundtrack from './assets/soundtrack.mp4';
+import visuals_ravenclaw from './assets/ravenclaw.mp4';
+import visuals_wikipedia from './assets/wikipedia.mp4';
+
 const data = {
   sections: [
     {
@@ -15,7 +21,7 @@ const data = {
             en: "I've been playing the guitar since I was 9y/o",
             jp: "9歳の頃からギターを弾いています。"
           },
-          gif: "https://media.giphy.com/media/3ov9k9lWAlJ01SdySc/giphy.gif"
+          visuals: { type: "video", url: visuals_guitar }
         },
         {
           title: {
@@ -23,7 +29,7 @@ const data = {
             en: "I've been playing Final Fantasy since I was 5y/o",
             jp: "5歳の頃からファイナルファンタジーをやっています。"
           },
-          gif: "https://media.giphy.com/media/3ohhwGqvtfynPcIDf2/giphy.gif",
+          visuals: { type: "video", url: visuals_finalFantasy }
         },
         {
           title: {
@@ -31,7 +37,7 @@ const data = {
             en: "I occasionally write soundtrack music",
             jp: "サウンドトラック音楽を時々作曲します。"
           },
-          gif: "http://3.bp.blogspot.com/-8kTgUO2OJxU/VOoh0ON6F0I/AAAAAAAAFPs/QucxppiL-1o/s1600/whiplash_writing_128.gif",
+          visuals: { type: "video", url: visuals_soundtrack }
         },
         {
           title: {
@@ -39,7 +45,7 @@ const data = {
             en: "I'm a proud Ravenclaw",
             jp: "レイブンクロー万歳！"
           },
-          gif: "https://media.giphy.com/media/O2jbWYHzSOuT6/giphy.gif",
+          visuals: { type: "video", url: visuals_ravenclaw }
         },
         {
           title: {
@@ -47,7 +53,7 @@ const data = {
             en: <span>I spend too much time on <strike>Vikipedia</strike> Wikipedia</span>,
             jp: <span><strike>Vikipedia</strike> Wikipediaで読書をしている時間が長すぎる。</span>
           },
-          gif: "https://media.giphy.com/media/xbL4LuxQAOFwI/giphy.gif"
+          visuals: { type: "video", url: visuals_wikipedia, options: { subtitle: "Wikipedia is quite useful" } }
         }
       ]
     }

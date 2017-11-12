@@ -42,7 +42,7 @@ class Loading extends Component {
       "orion9"
     ];
 
-    const tl = new TimelineMax();
+    const tl = new TimelineMax({ onComplete: () => { this.props.setAppState({ loadingAnimComplete: true }); } });
     let duration = 0.04;
     messages.forEach((message, index) => {
       if (index === 11) {

@@ -16,7 +16,7 @@ class Work extends Component {
     this.props.setAppState({
       headlineMode: 'work',
       currentWork,
-      visuals: currentWork.visuals
+      ...!this.props.appState.workLanding && { visuals: currentWork.visuals }
     });
   }
 
@@ -48,7 +48,11 @@ class Work extends Component {
   }
 
   componentWillUnmount () {
-    this.props.setAppState({ currentWork: null, visuals: null });
+    this.props.setAppState({
+      currentWork: null,
+      visuals: null,
+      ...this.props.appState.workLanding && { workLanding: false }
+    });
     this.historyRemoveListener();
   }
 
@@ -58,6 +62,14 @@ class Work extends Component {
 
   componentWillLeave (callback) {
     this.doLeave(callback);
+  }
+
+  componentWillReceiveProps (newProps) {
+    if (!newProps.appState.visuals && newProps.appState.workLanding && newProps.appState.loadingAnimComplete) {
+      this.props.setAppState({
+        visuals: newProps.appState.currentWork.visuals
+      });
+    }
   }
 
   doEnter = (callback) => {

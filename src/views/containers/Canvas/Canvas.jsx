@@ -234,48 +234,58 @@ class Canvas extends Component {
   };
 
   drawOscilloscope = (dataArray) => {
-    const nbEQband = 75;
+    const nbEQband = 175;
     const bandWidth = Math.ceil(this.width / nbEQband);
-
     const zoom = 1;
     const top = this.height + 1;
+    const layers = [
+      { color: "#00FF00", offset: 0 },
+      { color: "#FF0000", offset: -1 },
+      { color: "#0000FF", offset: 1 }
+    ];
 
-    this.ctx2d.save();
-    this.ctx2d.beginPath();
+    for (let j = 0, jj = layers.length; j < jj; j++) {
+      this.ctx2d.save();
+      this.ctx2d.beginPath();
 
-    this.ctx2d.fillStyle = this.bgColor;
-    this.ctx2d.strokeStyle = this.bgColor;
-    this.ctx2d.lineTo(0, top);
+      this.ctx2d.moveTo(0, top);
 
-    for (let i = 0; i <= nbEQband; i++) {
-      this.ctx2d.lineTo(i * bandWidth, top - dataArray[i] * zoom);
+      for (let i = 0; i <= nbEQband; i++) {
+        // const pointNb = Math.ceil(i * (dataArray.length / nbEQband));
+
+        this.ctx2d.fillStyle = layers[j].color;
+        this.ctx2d.strokeStyle = layers[j].color;
+        this.ctx2d.lineTo(i * bandWidth + layers[j].offset, top - (dataArray[i] * zoom));
+      }
+
+      this.ctx2d.lineTo(this.width, top);
+      this.ctx2d.fill();
+      this.ctx2d.stroke();
+
+      this.ctx2d.closePath();
+      this.ctx2d.restore();
     }
-
-    this.ctx2d.lineTo(this.width, top);
-    this.ctx2d.fill();
-    this.ctx2d.stroke();
-
-    this.ctx2d.closePath();
-    this.ctx2d.restore();
   };
 
   drawWaveform = (dataArray) => {
     const nbEQband = 150;
     const bandWidth = Math.ceil(this.width / nbEQband);
-
-    const zoom = 1;
+    const zoom = 1.5;
     const top = this.height + 1;
+    const dotSize = 1;
 
     this.ctx2d.save();
     this.ctx2d.globalAlpha = 0.75;
 
     for (let i = 0; i <= nbEQband; i++) {
+      // const pointNb = Math.ceil(i * (dataArray.length / nbEQband));
+
       this.ctx2d.fillStyle = "#00FF00";
-      this.ctx2d.fillRect(i * bandWidth, (top - dataArray[i]) * zoom, 1, 1);
+      this.ctx2d.fillRect(i * bandWidth, top - (dataArray[i] * zoom), dotSize, dotSize);
       this.ctx2d.fillStyle = "#FF0000";
-      this.ctx2d.fillRect(i * bandWidth - 1, (top - dataArray[i]) * zoom, 1, 1);
+      this.ctx2d.fillRect(i * bandWidth - dotSize, top - (dataArray[i] * zoom), dotSize, dotSize);
       this.ctx2d.fillStyle = "#0000FF";
-      this.ctx2d.fillRect(i * bandWidth + 1, (top - dataArray[i]) * zoom, 1, 1);
+      this.ctx2d.fillRect(i * bandWidth + dotSize, top - (dataArray[i] * zoom), dotSize, dotSize);
     }
 
     this.ctx2d.restore();

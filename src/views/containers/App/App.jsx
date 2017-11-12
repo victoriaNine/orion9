@@ -14,6 +14,7 @@ import About from 'Containers/About';
 import Canvas from 'Containers/Canvas';
 import Headline from 'Containers/Headline';
 import Home from 'Containers/Home';
+import Loading from 'Containers/Loading';
 import Nav from 'Containers/Nav';
 import Work from 'Containers/Work';
 import withHocWrapper from 'Containers/HocWrapper';
@@ -29,6 +30,7 @@ let ConnectedAbout;
 let ConnectedCanvas;
 let ConnectedHeadline;
 let ConnectedHome;
+let ConnectedLoading;
 let ConnectedNav;
 let ConnectedWork;
 
@@ -54,6 +56,7 @@ class App extends Component {
       midiStatus: false,
       midiLastNote: null,
       initialized: false,
+      introAnimComplete: false,
       dom: {},
       instances: {},
       audioCtx: this.getContext(),
@@ -76,6 +79,7 @@ class App extends Component {
     ConnectedCanvas = withAppState(Canvas);
     ConnectedHeadline = withAppState(withRouter(Headline));
     ConnectedHome = withAppState(Home);
+    ConnectedLoading = withAppState(Loading);
     ConnectedNav = withAppState(withRouter(Nav));
     ConnectedWork = withAppState(Work);
   }
@@ -88,7 +92,13 @@ class App extends Component {
     if (!this.state.initialized && this.state.headlineMode) {
       const dom = this.state.dom;
 
-      const tl = new TimelineMax({ delay: 0.5 });
+      const tl = new TimelineMax({ delay: 0.5, onComplete: () => {
+        this.setState({ introAnimComplete: true });
+      }});
+
+      tl.from(dom.canvas, 0.8, { opacity: 0, clearProps: "opacity" });
+      tl.add(this.state.instances.loading.play(), 0);
+      tl.addLabel("loadingAnimDone");
       dom.headline.querySelector('h1') && tl.from(dom.headline.querySelector('h1'), 0.4, { opacity: 0, y: -12, clearProps: "opacity,transform" });
       dom.headline.querySelector('h2') && tl.from(dom.headline.querySelector('h2'), 0.4, { opacity: 0, y: -12, clearProps: "all" }, "-=0.2");
       dom.piano && tl.from(dom.piano, 0.4, { opacity: 0, y: -12, clearProps: "all" });
@@ -161,6 +171,7 @@ class App extends Component {
           <Helmet
             htmlAttributes={{ lang: _$.getLanguageCode(this.state.language) }}
           />
+          { !this.state.introAnimComplete && <ConnectedLoading /> }
           <ConnectedCanvas visuals={this.state.visuals} />
           <ConnectedNav />
           <div className={styles.wrapper} ref={this.setWrapperDOM}>

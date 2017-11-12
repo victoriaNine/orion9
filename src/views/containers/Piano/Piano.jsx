@@ -61,7 +61,7 @@ class Piano extends Component {
     this.synth.triggerAttackRelease("A5", "8n");
   }
 
-  componentWillUpdate (newProps) {
+  componentWillReceiveProps (newProps) {
     this.layout = newProps.language === 'fr' ? 'azerty' : 'qwerty';
     this.pointerType = newProps.appState.pointerType;
     this.synth = newProps.appState.audio.synth;

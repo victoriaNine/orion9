@@ -53,7 +53,7 @@ class Canvas extends Component {
     this.stop();
   }
 
-  componentWillUpdate (newProps) {
+  componentWillReceiveProps (newProps) {
     // Debounce calls to the update method
     clearTimeout(this.updateVisualsTimeout);
 

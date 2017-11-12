@@ -27,8 +27,8 @@ class Headline extends Component {
     window.removeEventListener("resize", this.onResize);
   }
 
-  componentWillUpdate () {
-    this.onResize();
+  componentWillReceiveProps (newProps) {
+    this.onResize(null, newProps);
   }
 
   setDOM = (ref) => {
@@ -65,11 +65,11 @@ class Headline extends Component {
     location.hash && history.push(location.pathname);
   };
 
-  onResize = () => {
-    const dom = this.props.appState.dom;
+  onResize = (event, props = this.props) => {
+    const dom = props.appState.dom;
     let headlineDOM;
 
-    switch (this.props.mode) {
+    switch (props.mode) {
       case 'work':
         headlineDOM = dom.workHeadline;
         break;

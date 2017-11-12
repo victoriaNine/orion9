@@ -39,7 +39,12 @@ class Headline extends Component {
   };
 
   setNoteDOM = (ref) => { this.props.setAppState({ dom: { ...this.props.appState.dom, note: ref } }); };
-  setPianoDOM = (ref) => { this.props.setAppState({ dom: { ...this.props.appState.dom, piano: ref } }); };
+  setPianoDOM = (ref, inst) => {
+    this.props.setAppState({
+      dom: { ...this.props.appState.dom, piano: ref },
+      instances: { ...this.props.appState.instances, piano: inst }
+    });
+  };
   setHomeHeadlineDOM = (ref) => { this.props.setAppState({ dom: { ...this.props.appState.dom, homeHeadline: ref } }); };
   setAboutHeadlineDOM = (ref) => { this.props.setAppState({ dom: { ...this.props.appState.dom, aboutHeadline: ref } }); };
   setWorkHeadlineDOM = (ref, inst) => {

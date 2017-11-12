@@ -43,7 +43,7 @@
   width: 30px;
   position: absolute;
   height: 100px;
-  background: color(var(--color_neutral-grey-dark) a(25%));
+  background: color(var(--color_mono-black) a(16%));
   border-radius: 5px;
   display: flex;
   justify-content: center;
@@ -53,21 +53,21 @@
   z-index: 0;
   cursor: pointer;
 
-  &:not(.is--active):hover {
-    background: color(var(--color_neutral-grey-dark) a(80%));
+  &:hover, &.is--active {
+    background: color(var(--color_mono-black) a(40%));
   }
 
   &.isAccidental {
-    background: color(var(--color_mono-white) a(15%));
+    background: color(var(--color_mono-white) a(5%));
     z-index: 1;
 
-    &:not(.is--active):hover {
-      background: color(var(--color_mono-white) a(50%));
+    &:hover, &.is--active {
+      background: color(var(--color_mono-white) a(20%));
     }
   }
 
   &.is--active {
-    background: color(var(--color_piano-activeKey) a(80%));
+    animation: color 2s infinite;
   }
 }
 
@@ -75,6 +75,7 @@
   width: calc(var(--count_whiteKeys) * (var(--size_keyWidth) + var(--size_keyGap)));
   height: calc(var(--size_keyHeight) + (var(--size_keyHeight) * 0.33));
   position: relative;
+  font-size: var(--fontSize_pianoKeyboard);
 }
 
 .hint {
@@ -100,4 +101,12 @@
 .hintContent {
   padding-left: 2em;
   line-height: 1.25em;
+}
+
+@keyframes color {
+  0% { color: color(hsl(0, 90%, 60%) a(40%)); }
+  25% { color: color(hsl(90, 90%, 60%) a(40%)); }
+  50% { color: color(hsl(180, 90%, 60%) a(40%)); }
+  75% { color: color(hsl(270, 90%, 60%) a(40%)); }
+  100% { color: color(hsl(360, 90%, 60%) a(40%)); }
 }

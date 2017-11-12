@@ -19,7 +19,7 @@ class Piano extends Component {
   isPressing = false;
   pointerPressedKeys = [];
 
-  synth = this.props.appState.synth;
+  synth = this.props.appState.audio.synth;
   midiInput = null;
 
   componentDidMount () {
@@ -35,7 +35,7 @@ class Piano extends Component {
     navigator.requestMIDIAccess && navigator.requestMIDIAccess().then(this.onMIDIInit);
 
     this.synth.triggerAttackRelease("C6", "8n", "+0.2");
-    this.props.onMount(this.DOM);
+    this.props.onMount(this.DOM, this);
   }
 
   componentWillUnmount () {
@@ -64,17 +64,26 @@ class Piano extends Component {
   componentWillUpdate (newProps) {
     this.layout = newProps.language === 'fr' ? 'azerty' : 'qwerty';
     this.pointerType = newProps.appState.pointerType;
-    this.synth = newProps.appState.synth;
+    this.synth = newProps.appState.audio.synth;
   }
 
   componentWillEnter (callback) {
     const tl = new TimelineMax({ delay: 0.2, onComplete: () => { callback && callback(); } });
     tl.from(this.DOM, 0.2, { opacity: 0, y: -12, clearProps: "all" });
+    tl.add(this.fadeInKeys(), 0);
   }
 
   componentWillLeave (callback) {
     const tl = new TimelineMax({ onComplete: () => { callback && callback(); } });
     tl.to(this.DOM, 0.2, { opacity: 0, y: -12, clearProps: "all" });
+  }
+
+  fadeInKeys = () => {
+    const tl = new TimelineMax();
+    tl.staggerFrom(this.DOM.querySelectorAll(`.${styles.key}:not(.${styles.isAccidental})`), 0.2, { opacity: 0, y: "-=12", clearProps: "opacity" }, 0.05);
+    tl.staggerFrom(this.DOM.querySelectorAll(`.${styles.key}.${styles.isAccidental}`), 0.2, { opacity: 0, y: "-=12", clearProps: "opacity" }, 0.05, 0);
+
+    return tl;
   }
 
   setDOM = (ref) => { this.DOM = ref; };

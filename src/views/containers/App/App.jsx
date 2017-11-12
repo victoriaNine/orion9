@@ -55,7 +55,7 @@ class App extends Component {
       dom: {},
       instances: {},
       audioCtx: this.getContext(),
-      synth: this.getContext() && synth
+      audio: this.getContext() && synth
     };
 
     this.state.pointerType = this.state.env.device.type ? 'touch' : 'desktop';
@@ -78,7 +78,7 @@ class App extends Component {
     ConnectedWork = withAppState(Work);
   }
 
-  componentDidMount() {
+  componentDidMount () {
     this.rAF = requestAnimationFrame(this.paintGradient);
   }
 
@@ -90,7 +90,9 @@ class App extends Component {
       dom.headline.querySelector('h1') && tl.from(dom.headline.querySelector('h1'), 0.4, { opacity: 0, y: -12, clearProps: "opacity,transform" });
       dom.headline.querySelector('h2') && tl.from(dom.headline.querySelector('h2'), 0.4, { opacity: 0, y: -12, clearProps: "all" }, "-=0.2");
       dom.piano && tl.from(dom.piano, 0.4, { opacity: 0, y: -12, clearProps: "all" });
-      tl.from(dom.appContents, 0.4, { opacity: 0, y: 12, clearProps: "all" }, "-=0.2");
+      tl.addLabel("headlineDone");
+      dom.piano && tl.add(this.state.instances.piano.fadeInKeys(), "headlineDone-=0.4");
+      tl.from(dom.appContents, 0.4, { opacity: 0, y: 12, clearProps: "all" }, "headlineDone-=0.2");
       tl.from(dom.nav, 0.4, { opacity: 0, x: 12, clearProps: "all" }, "-=0.2");
       dom.note && tl.from(dom.note, 0.4, { opacity: 0, clearProps: "all" }, "-=0.2");
 

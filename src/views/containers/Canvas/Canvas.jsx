@@ -9,6 +9,9 @@ import styles from './Canvas.css';
 class Canvas extends Component {
   componentDidMount () {
     this.bgColor             = getComputedStyle(document.body).backgroundColor;
+    this.width               = null;
+    this.height              = null;
+
     this.seriously           = new Seriously();
     this.reformatNode        = this.seriously.transform("reformat");
     this.reformatNode.mode   = "none";
@@ -137,11 +140,11 @@ class Canvas extends Component {
   onResize = () => {
     const DOM = this.props.appState.dom.canvas;
 
-    DOM.width = this.canvas2dDOM.width
+    this.width = DOM.width = this.canvas2dDOM.width
       = this.reformatNode.width = this.noiseNode.width = this.targetNode.width
       = document.querySelector('html').offsetWidth;
 
-    DOM.height = this.canvas2dDOM.height
+    this.height = DOM.height = this.canvas2dDOM.height
       = this.reformatNode.height = this.noiseNode.height = this.targetNode.height
       = document.querySelector('html').offsetHeight;
 
@@ -154,8 +157,6 @@ class Canvas extends Component {
   };
 
   resizeVisuals = (visualType) => {
-    const DOM = this.props.appState.dom.canvas;
-
     let widthPropName;
     let heightPropName;
 
@@ -170,19 +171,21 @@ class Canvas extends Component {
         break;
     }
 
-    const ratioW = this.videoDOM[widthPropName] / DOM.width;
-    const ratioH = this.videoDOM[heightPropName] / DOM.height;
+    const ratioW = this.videoDOM[widthPropName] / this.width;
+    const ratioH = this.videoDOM[heightPropName] / this.height;
 
     if (ratioW >= ratioH) {
-      this.videoDOM.width = DOM.height * (this.videoDOM[widthPropName] / this.videoDOM[heightPropName]);
-      this.videoDOM.height = DOM.height;
+      this.videoDOM.width = this.height * (this.videoDOM[widthPropName] / this.videoDOM[heightPropName]);
+      this.videoDOM.height = this.height;
     } else {
-      this.videoDOM.width = DOM.width;
-      this.videoDOM.height = DOM.width * (this.videoDOM[heightPropName] / this.videoDOM[widthPropName]);
+      this.videoDOM.width = this.width;
+      this.videoDOM.height = this.width * (this.videoDOM[heightPropName] / this.videoDOM[widthPropName]);
     }
   };
 
-  setDOM = (ref) => { this.props.setAppState({ dom: { ...this.props.appState.dom, canvas: ref } }); };
+  setDOM = (ref) => {
+    this.props.setAppState({ dom: { ...this.props.appState.dom, canvas: ref } });
+  };
 
   start () {
     this.seriously.go();
@@ -195,27 +198,32 @@ class Canvas extends Component {
   }
 
   draw = () => {
-    const DOM = this.props.appState.dom.canvas;
-    this.ctx2d.clearRect(0, 0, DOM.width, DOM.height);
+    this.ctx2d.clearRect(0, 0, this.width, this.height);
 
     this.ctx2d.fillStyle = this.bgColor;
-    this.ctx2d.fillRect(0, 0, DOM.width, DOM.height);
+    this.ctx2d.fillRect(0, 0, this.width, this.height);
 
     if (this.showVisuals && this.visualsDOM) {
       this.ctx2d.save();
       this.ctx2d.globalAlpha = this.visualsOpacity;
       this.ctx2d.drawImage(
         this.visualsDOM,
-        (DOM.width - this.visualsDOM.width) / 2,
-        (DOM.height - this.visualsDOM.height) / 2,
+        (this.width - this.visualsDOM.width) / 2,
+        (this.height - this.visualsDOM.height) / 2,
         this.visualsDOM.width,
         this.visualsDOM.height
       );
       this.ctx2d.restore();
 
       this.ctx2d.fillStyle = `rgba(0, 0, 0, ${0.8 * this.overlayOpacity})`;
-      this.ctx2d.fillRect(0, 0, DOM.width, DOM.height);
+      this.ctx2d.fillRect(0, 0, this.width, this.height);
     }
+
+    const analyser = this.props.appState.audio.analyser;
+    const dataArray = new Uint8Array(analyser.output.frequencyBinCount);
+	  analyser.output.getByteFrequencyData(dataArray);
+
+    this.drawWaveform(dataArray);
 
     if (this.reformatNode.source) {
       this.reformatNode.source.update();
@@ -223,6 +231,85 @@ class Canvas extends Component {
 
     this.noiseNode.time = this.noiseSettings.time;
     this.rAF            = requestAnimationFrame(this.draw);
+  };
+
+  drawOscilloscope = (dataArray) => {
+    const nbEQband = 75;
+    const bandWidth = Math.ceil(this.width / nbEQband);
+
+    const zoom = 1;
+    const top = this.height + 1;
+
+    this.ctx2d.save();
+    this.ctx2d.beginPath();
+
+    this.ctx2d.fillStyle = this.bgColor;
+    this.ctx2d.strokeStyle = this.bgColor;
+    this.ctx2d.lineTo(0, top);
+
+    for (let i = 0; i <= nbEQband; i++) {
+      this.ctx2d.lineTo(i * bandWidth, top - dataArray[i] * zoom);
+    }
+
+    this.ctx2d.lineTo(this.width, top);
+    this.ctx2d.fill();
+    this.ctx2d.stroke();
+
+    this.ctx2d.closePath();
+    this.ctx2d.restore();
+  };
+
+  drawWaveform = (dataArray) => {
+    const nbEQband = 150;
+    const bandWidth = Math.ceil(this.width / nbEQband);
+
+    const zoom = 1;
+    const top = this.height + 1;
+
+    this.ctx2d.save();
+    this.ctx2d.globalAlpha = 0.75;
+
+    for (let i = 0; i <= nbEQband; i++) {
+      this.ctx2d.fillStyle = "#00FF00";
+      this.ctx2d.fillRect(i * bandWidth, (top - dataArray[i]) * zoom, 1, 1);
+      this.ctx2d.fillStyle = "#FF0000";
+      this.ctx2d.fillRect(i * bandWidth - 1, (top - dataArray[i]) * zoom, 1, 1);
+      this.ctx2d.fillStyle = "#0000FF";
+      this.ctx2d.fillRect(i * bandWidth + 1, (top - dataArray[i]) * zoom, 1, 1);
+    }
+
+    this.ctx2d.restore();
+  };
+
+  drawDiagonalLines = (dataArray) => {
+    const nbEQband = 75;
+    const bandWidth = Math.round(this.width / nbEQband);
+
+    this.ctx2d.save();
+    this.ctx2d.lineWidth = 1;
+
+    for (let i = 0; i <= nbEQband; i++) {
+      this.ctx2d.moveTo(i * bandWidth + dataArray[i], dataArray[i]);
+      this.ctx2d.lineTo(-dataArray[i] + 500, -i * 1 - dataArray[i] + 500);
+    }
+
+    this.ctx2d.stroke();
+    this.ctx2d.restore();
+  };
+
+  drawHorizontalLines = (dataArray) => {
+    const nbEQband = 100;
+
+    this.ctx2d.save();
+    this.ctx2d.lineWidth = 1;
+
+    for (let i = 0; i <= nbEQband; i++) {
+      this.ctx2d.moveTo(1e3 * dataArray[i], 2 * dataArray[i]);
+      this.ctx2d.lineTo(1e3 * -dataArray[i], -1 * dataArray[i]);
+    }
+
+    this.ctx2d.stroke();
+    this.ctx2d.restore();
   };
 
   render () {

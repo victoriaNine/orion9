@@ -58,9 +58,11 @@ function getSynth () {
   autoFilter.min = 1800;
   autoFilter.filter.type = "lowpass";
 
+  const analyser = new Tone.Analyser("waveform");
+
   const synth = new Tone.PolySynth(10, Tone.DuoSynth).set(settings)
     .connect(filter).connect(chorus).connect(autoFilter)
-    .toMaster();
+    .connect(analyser).toMaster();
 
   if (__IS_DEV__) {
     const oscillatorTypes = [
@@ -120,7 +122,7 @@ function getSynth () {
     });
   }
 
-  return synth;
+  return { synth, analyser };
 }
 
 export default getSynth();

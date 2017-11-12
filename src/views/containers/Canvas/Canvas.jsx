@@ -230,7 +230,7 @@ class Canvas extends Component {
       const ratioH = this.videoDOM.height / this.height;
 
       if (this.visualsDOM.subtitle && ratioW < ratioH) {
-        this.ctx2d.font = "600 30px 'Futura Std'";
+        this.ctx2d.font = "900 30px 'Futura Std'";
         this.ctx2d.fillStyle = 'white';
         this.ctx2d.strokeStyle = 'black';
         this.ctx2d.lineWidth = 2;

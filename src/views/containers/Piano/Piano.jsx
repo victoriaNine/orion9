@@ -80,8 +80,8 @@ class Piano extends Component {
 
   fadeInKeys = () => {
     const tl = new TimelineMax();
-    tl.staggerFrom(this.DOM.querySelectorAll(`.${styles.key}:not(.${styles.isAccidental})`), 0.2, { opacity: 0, y: "-=12", clearProps: "opacity" }, 0.05);
-    tl.staggerFrom(this.DOM.querySelectorAll(`.${styles.key}.${styles.isAccidental}`), 0.2, { opacity: 0, y: "-=12", clearProps: "opacity" }, 0.05, 0);
+    tl.staggerFrom(this.DOM.querySelectorAll(`.${styles.key}:not(.${styles.isAccidental})`), 0.2, { opacity: 0, y: "-=12", clearProps: "opacity" }, 0.04);
+    tl.staggerFrom(this.DOM.querySelectorAll(`.${styles.key}.${styles.isAccidental}`), 0.2, { opacity: 0, y: "-=12", clearProps: "opacity" }, 0.04, 0);
 
     return tl;
   }

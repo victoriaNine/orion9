@@ -1,4 +1,27 @@
 @import './_colors.css';
 @import './_mq.css';
 @import './_vars.css';
-@import './_mixins.css';
+
+.dash {
+  width: 2em;
+  position: relative;
+
+  display: inline-block;
+  margin-right: 0.5em;
+
+  &:after {
+    content: "";
+    position: absolute;
+    height: 1px;
+    width: 100%;
+    background: currentColor;
+  }
+}
+
+.didot {
+  font-family: var(--font_didot);
+}
+
+.futura {
+  font-family: var(--font_futura);
+}

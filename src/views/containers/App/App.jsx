@@ -6,7 +6,7 @@ import {
   Route
 } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
-import { TimelineMax } from 'gsap';
+import { TimelineMax, TweenMax } from 'gsap';
 import TransitionGroup from 'react-transition-group/TransitionGroup';
 import UAParser from 'ua-parser-js';
 
@@ -69,6 +69,7 @@ class App extends Component {
     this.workIdsRegex = this.state.works.map(work => work.id).join('|');
     this.rAF = null;
     this.prevScrollTop = null;
+    this.currentScrollRatio = 0;
 
     // iPhone X hack
     if (this.state.env.browser.name.match(/safari/i) && parseInt(this.state.env.browser.major, 10) >= 11) {
@@ -116,14 +117,17 @@ class App extends Component {
     }
   }
 
-  updateGradient () {
+  updateGradient = () => {
     const scrollRatio = this.getScrollRatio();
     const gradientOffset = document.body.scrollTop - (this.state.dom.appWrapper.offsetTop + this.state.dom.app.offsetTop);
-    const string = `to bottom, rgba(0,0,0,1) ${gradientOffset}px, rgba(0,0,0,1) calc(60vh + ${gradientOffset}px), rgba(0,0,0,${scrollRatio}) calc(95vh + ${gradientOffset}px)`;
 
-    this.state.dom.appWrapper.style.webkitMaskImage = `linear-gradient(${string})`;
-    this.state.dom.appWrapper.style.maskImage = `linear-gradient(${string})`;
-  }
+    TweenMax.to(this, 0.2, { currentScrollRatio: scrollRatio, onUpdate: () => {
+      const string = `to bottom, rgba(0,0,0,1) ${gradientOffset}px, rgba(0,0,0,1) calc(60vh + ${gradientOffset}px), rgba(0,0,0,${this.currentScrollRatio}) calc(95vh + ${gradientOffset}px)`;
+
+      this.state.dom.appWrapper.style.webkitMaskImage = `linear-gradient(${string})`;
+      this.state.dom.appWrapper.style.maskImage = `linear-gradient(${string})`;
+    }});
+  };
 
   paintGradient = () => {
     this.rAF = requestAnimationFrame(this.paintGradient);
@@ -134,7 +138,7 @@ class App extends Component {
     }
   };
 
-  getScrollRatio () {
+  getScrollRatio = () => {
     // https://stackoverflow.com/questions/2387136/cross-browser-method-to-determine-vertical-scroll-percentage-in-javascript
     const h = document.documentElement;
     const b = document.body;
@@ -146,9 +150,9 @@ class App extends Component {
     }
 
     return (b[st] / (b[sh] - h.clientHeight));
-  }
+  };
 
-  getContext () {
+  getContext = () => {
     if (typeof AudioContext !== "undefined") {
       return new window.AudioContext();
     } else if (typeof webkitAudioContext !== "undefined") {
@@ -158,13 +162,13 @@ class App extends Component {
     }
 
     __IS_DEV__ && console.error("No AudioContext available");
-  }
+  };
 
   setDOM = (ref) => { this.setState({ dom: { ...this.state.dom, app: ref } }); };
   setWrapperDOM = (ref) => { this.setState({ dom: { ...this.state.dom, appWrapper: ref } }); };
   setContentsDOM = (ref) => { this.setState({ dom: { ...this.state.dom, appContents: ref } }); };
 
-  setAppState = (updater) => { this.setState(updater); };
+  setAppState = (updater) => this.setState(updater);
 
   render () {
     let hasMatch = false;

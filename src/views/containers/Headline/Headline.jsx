@@ -84,7 +84,11 @@ class Headline extends Component {
         headlineDOM = dom.homeHeadline;
     }
 
-    this.setState({ contentsHeight: headlineDOM && `${headlineDOM.clientHeight}px` || '' });
+    const contentsHeight = headlineDOM && `${headlineDOM.clientHeight}px` || '';
+
+    if (contentsHeight !== this.state.contentsHeight) {
+      this.setState({ contentsHeight: headlineDOM && `${headlineDOM.clientHeight}px` || '' });
+    }
   };
 
   render () {

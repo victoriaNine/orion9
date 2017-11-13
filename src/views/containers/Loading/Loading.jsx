@@ -10,14 +10,13 @@ class Loading extends Component {
   };
 
   setDOM = (ref) => {
+    this.DOM = ref;
     this.props.setAppState({
-      dom: { ...this.props.appState.dom, loading: ref },
       instances: { ...this.props.appState.instances, loading: this }
     });
   };
 
   play = () => {
-    const DOM = this.props.appState.dom.loading;
     const messages = [
       "|",
       "| |",
@@ -48,16 +47,16 @@ class Loading extends Component {
     messages.forEach((message, index) => {
       if (index === 11) {
         duration = 0.06;
-        tl.set(DOM.querySelector(`.${styles.message}`), { fontSize: "2em" });
-        tl.set(DOM.querySelector(`.${styles.message}`), { clearProps: "fontSize" }, `+=${duration}`);
+        tl.set(this.DOM.querySelector(`.${styles.message}`), { fontSize: "2em" });
+        tl.set(this.DOM.querySelector(`.${styles.message}`), { clearProps: "fontSize" }, `+=${duration}`);
       } else if (index === 13) {
         duration = 0.08;
-        tl.set(DOM.querySelector(`.${styles.message}`), { fontSize: "4em", className: `+=${styles.didot}` });
-        tl.set(DOM.querySelector(`.${styles.message}`), { clearProps: "fontSize", className: `-=${styles.didot}` }, `+=${duration}`);
+        tl.set(this.DOM.querySelector(`.${styles.message}`), { fontSize: "4em", className: `+=${styles.didot}` });
+        tl.set(this.DOM.querySelector(`.${styles.message}`), { clearProps: "fontSize", className: `-=${styles.didot}` }, `+=${duration}`);
       } else if (index === 15) {
         duration = 0.08;
-        tl.set(DOM.querySelector(`.${styles.message}`), { fontSize: "2em", className: `+=${styles.didot}` });
-        tl.set(DOM.querySelector(`.${styles.message}`), { clearProps: "fontSize", className: `-=${styles.didot}` }, `+=${duration}`);
+        tl.set(this.DOM.querySelector(`.${styles.message}`), { fontSize: "2em", className: `+=${styles.didot}` });
+        tl.set(this.DOM.querySelector(`.${styles.message}`), { clearProps: "fontSize", className: `-=${styles.didot}` }, `+=${duration}`);
       } else {
         duration = 0.04;
       }
@@ -71,7 +70,7 @@ class Loading extends Component {
       }
     });
 
-    tl.call(() => {
+    this.props.appState.audioCtx && tl.call(() => {
       Tone.Master.mute = true;
 
       const sequence = new Tone.Sequence((time, note) => {
@@ -92,12 +91,12 @@ class Loading extends Component {
       Tone.Transport.start();
     }, [], null, "messagesDone");
 
-    tl.set(DOM.querySelector(`.${styles.message}`), { opacity: 0 }, "messagesDone+=0.2");
-    tl.set(DOM.querySelector(`.${styles.message}`), { opacity: 1, fontSize: "2em" }, "+=0.1");
-    tl.set(DOM.querySelector(`.${styles.message}`), { opacity: 0 }, "+=0.1");
-    tl.set(DOM.querySelector(`.${styles.message}`), { clearProps: "fontSize", opacity: 1, className: `+=${styles.didot}` }, "+=0.1");
-    tl.set(DOM.querySelector(`.${styles.message}`), { className: `+=${styles.skew}` });
-    tl.to(DOM.querySelector(`.${styles.message}`), 0.4, { opacity: 0 }, "+=0.4");
+    tl.set(this.DOM.querySelector(`.${styles.message}`), { opacity: 0 }, "messagesDone+=0.2");
+    tl.set(this.DOM.querySelector(`.${styles.message}`), { opacity: 1, fontSize: "2em" }, "+=0.1");
+    tl.set(this.DOM.querySelector(`.${styles.message}`), { opacity: 0 }, "+=0.1");
+    tl.set(this.DOM.querySelector(`.${styles.message}`), { clearProps: "fontSize", opacity: 1, className: `+=${styles.didot}` }, "+=0.1");
+    tl.set(this.DOM.querySelector(`.${styles.message}`), { className: `+=${styles.skew}` });
+    tl.to(this.DOM.querySelector(`.${styles.message}`), 0.4, { opacity: 0 }, "+=0.4");
 
     return tl;
   };

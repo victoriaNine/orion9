@@ -1,5 +1,7 @@
 import video_15thtriad from './assets/15thtriad.mp4';
 import video_iwtwwy from './assets/iwtwwy.mp4';
+import video_psychoCube from './assets/psychoCube.mp4';
+import video_waltzRevolution from './assets/waltzRevolution.mp4';
 
 const data = {
   sections: [
@@ -49,7 +51,7 @@ const data = {
           url: "http://orion9.net/_demos/psychoCube",
           details: {
             role: ["dev", "design", "audio", "sd"],
-            stack: ["custom framework", "webaudio", "css3d", "canvas"],
+            stack: ["custom framework", "webaudio", "css3d", "tridiv", "canvas"],
             about: {
               fr: "Un rubik's cube intégralement crée en CSS3D basé sur l'anime PSYCHO-PASS.",
               en: "A rubik's cube game entirely generated with CSS3D based on the PSYCHO-PASS anime.",
@@ -57,10 +59,10 @@ const data = {
             }
           },
           color: "#20cad9",
-          visuals: { type: "video", url: "" }
+          visuals: { type: "video", url: video_psychoCube }
         },
         {
-          id: "waltz",
+          id: "waltzRevolution",
           title: "Waltz Waltz Revolution",
           type: "project",
           url: "http://orion9.net/_demos/waltzRevolution",
@@ -68,13 +70,13 @@ const data = {
             role: ["dev", "design", "audio", "music", "sd"],
             stack: ["custom framework", "webaudio", "canvas"],
             about: {
-              fr: "Un jeu de rythme avec visualisation audio en temps-réel. J'ai également créé les musiques de l'expérience.",
+              fr: "Un jeu de rythme avec visualisation audio en temps réel. J'ai également créé les musiques de l'expérience.",
               en: "A rhythm game with real-time audio visualization. I've also created the music pieces featured in the game.",
               jp: "リアルタイムのオーディオ・ビジュアリゼーションを有するリズムゲーム。ゲームの作曲も作りました。"
             }
           },
-          color: "#d48930",
-          visuals: { type: "video", url: "" }
+          color: "#e5672d",
+          visuals: { type: "video", url: video_waltzRevolution }
         }
       ]
     },

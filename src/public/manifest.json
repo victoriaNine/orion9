@@ -3,7 +3,7 @@
   "short_name": "orion9",
   "start_url": "./",
   "display": "standalone",
-  "orientation": "portrait",
+  "orientation": "landscape",
   "background_color": "#111111",
   "theme_color": "#111111",
   "icons": [{

@@ -34,6 +34,7 @@ class Loading extends Component {
       "nine",
       "I X",
       "九",
+      "I X",
       "9",
       "n9",
       "on9",

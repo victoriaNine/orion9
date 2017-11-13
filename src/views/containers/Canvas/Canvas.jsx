@@ -54,7 +54,7 @@ class Canvas extends Component {
   }
 
   componentWillReceiveProps (newProps) {
-    const duration = this.updateVisualsTimeout === null ? 0 : 250;
+    const duration = this.updateVisualsTimeout === null ? 0 : 500;
 
     // Debounce calls to the update method
     clearTimeout(this.updateVisualsTimeout);
@@ -243,7 +243,7 @@ class Canvas extends Component {
 
       this.ctx2d.restore();
 
-      this.ctx2d.fillStyle = `rgba(0, 0, 0, ${0.8 * this.overlayOpacity})`;
+      this.ctx2d.fillStyle = `rgba(0, 0, 0, ${0.9 * this.overlayOpacity})`;
       this.ctx2d.fillRect(0, 0, this.width, this.height);
     }
 

@@ -14,10 +14,13 @@
 }
 
 html, body {
+  overflow-x: hidden;
+}
+
+html {
   width: 100%;
   height: 100%;
   position: absolute;
-  overflow-x: hidden;
 }
 
 body {
@@ -28,6 +31,7 @@ body {
   font-weight: 300;
   -webkit-font-smoothing: antialiased;
   user-select: none;
+  position: relative;
 }
 
 :global html.scrollingLocked body {

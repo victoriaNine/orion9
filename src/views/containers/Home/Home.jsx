@@ -15,7 +15,7 @@ class Home extends Component {
   }
 
   componentDidMount () {
-    TweenMax.to(document.body, 0.4, { scrollTop: 0, ease: Power2.easeInOut });
+    TweenMax.to(this.props.appState.getScrollingElement(), 0.4, { scrollTop: 0, ease: Power2.easeInOut });
   }
 
   componentWillEnter (callback) {

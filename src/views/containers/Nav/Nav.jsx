@@ -16,7 +16,11 @@ class Nav extends Component {
   clickOnActiveLink = (event) => {
     event.preventDefault();
 
-    const clickedElement = event.path.find((element) => element.classList.contains(styles.linkWrapper));
+    let clickedElement = event.target;
+    while (clickedElement && !clickedElement.classList.contains(styles.linkWrapper)) {
+      clickedElement = clickedElement.parentNode;
+    }
+
     const activeLink = Array.from(clickedElement.querySelectorAll(`.${styles.link}`)).find((link) => !link.classList.contains(styles['is--inactive']));
     activeLink.click();
   };

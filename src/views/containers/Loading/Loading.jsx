@@ -1,13 +1,22 @@
 import { h, Component } from 'preact';
 import { TimelineMax } from 'gsap';
-import * as Tone from 'tone';
+
+let Tone;
 
 import styles from './Loading.css';
 
 class Loading extends Component {
-  state = {
-    message: ''
-  };
+  constructor (...args) {
+    super(...args);
+
+    this.state = {
+      message: ''
+    };
+
+    if (this.props.appState.audioCtx) {
+      Tone = require('tone');
+    }
+  }
 
   setDOM = (ref) => {
     this.DOM = ref;
@@ -64,11 +73,9 @@ class Loading extends Component {
       tl.call(() => {
         this.setState({ message });
       }, [], null, !index ? 0 : tl.recent().endTime() + duration);
-
-      if (index === messages.length - 1) {
-        tl.addLabel("messagesDone");
-      }
     });
+
+    tl.addLabel("messagesDone");
 
     this.props.appState.audioCtx && tl.call(() => {
       Tone.Master.mute = true;
@@ -82,11 +89,6 @@ class Loading extends Component {
         "C5", "D5", "E5", "F5", "G5", "A5", "B5"
       ], "64n").start();
       sequence.loop = false;
-
-      // eslint-disable-next-line no-unused-vars
-      const unMute = new Tone.Event(() => {
-        Tone.Master.mute = false;
-      }).start("10 * 16n");
 
       Tone.Transport.start();
     }, [], null, "messagesDone");

@@ -9,8 +9,8 @@ class Canvas extends Component {
     super(...args);
 
     const env = this.props.appState.env;
-
     const isDesktop = !env.device.type || env.device.type === "desktop";
+    
     this.isDisabled = false;
     this.addVideo = !this.isDisabled;
     this.addNoise = !this.isDisabled && isDesktop && !env.browser.name.match(/(ie|edge|opera)/i);

@@ -33,6 +33,7 @@ class Piano extends Component {
     window.addEventListener(_$.eventsMap.up[this.pointerType], this.onPointerUp);
 
     navigator.requestMIDIAccess && navigator.requestMIDIAccess().then(this.onMIDIInit);
+    Tone.Master.mute = false;
 
     this.synth.triggerAttackRelease("C6", "8n", "+0.2");
     this.props.onMount(this.DOM, this);

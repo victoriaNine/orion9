@@ -1,8 +1,9 @@
 import * as Tone from 'tone';
+import StartAudioContext from 'startaudiocontext';
 import * as dat from './dat.gui';
 
 function getSynth () {
-  const settings = {
+  /*const settings = {
     vibratoAmount: 0.3,
     vibratoRate: 4,
     harmonicity: 1,
@@ -44,24 +45,38 @@ function getSynth () {
         release: 0.01
       }
     }
+  };*/
+
+  const settings = {
+    oscillator  : {
+      type: "amsine",
+      harmonicity: 1,
+    },
+    envelope: {
+      attack: 0.01,
+      decay: 0.1,
+      sustain: 1,
+      release: 0.5
+    }
   };
 
-  const bitCrusher = new Tone.BitCrusher(6).toMaster();
+  const bitCrusher = new Tone.BitCrusher(6);
   bitCrusher.wet.value = 0.02;
 
-  const filter = new Tone.Filter(4000, "highpass").toMaster();
-  filter.Q.value = 0.1;
+  //const filter = new Tone.Filter(7000, "highpass").toMaster();
+  //filter.Q.value = 0.1;
+  //filter.gain.value = -4.5;
 
-  const chorus = new Tone.Chorus("8n", 1.5, 0.25).toMaster();
+  const chorus = new Tone.Chorus("8n", 1.5, 0.35).toMaster();
 
-  const autoFilter = new Tone.AutoFilter("4n").toMaster().start();
+  const autoFilter = new Tone.AutoFilter("1m").start().toMaster();
   autoFilter.min = 1800;
   autoFilter.filter.type = "lowpass";
 
   const analyser = new Tone.Analyser("waveform");
 
-  const synth = new Tone.PolySynth(10, Tone.DuoSynth).set(settings)
-    .connect(filter).connect(chorus).connect(autoFilter)
+  const synth = new Tone.PolySynth(10, Tone.Synth).set(settings)
+    .connect(chorus).connect(autoFilter)
     .connect(analyser).toMaster();
 
   if (__IS_DEV__) {
@@ -76,7 +91,7 @@ function getSynth () {
     const gui = new dat.GUI();
     gui.domElement.parentNode.style.zIndex = "1000";
 
-    const c1 = gui.add(settings, 'vibratoAmount', 0);
+    /*const c1 = gui.add(settings, 'vibratoAmount', 0);
     const c2 = gui.add(settings, 'vibratoRate', 0);
     const c3 = gui.add(settings, 'harmonicity', 0);
 
@@ -114,13 +129,21 @@ function getSynth () {
     const c25 = f2f2.add(settings.voice1.envelope, 'release', 0);
     f2.open();
     f2f1.open();
-    f2f2.open();
+    f2f2.open();*/
+
+    const c1 = gui.add(settings.oscillator, 'type', oscillatorTypes);
+    const c2 = gui.add(settings.envelope, 'attack', 0.01);
+    const c3 = gui.add(settings.envelope, 'decay', 0);
+    const c4 = gui.add(settings.envelope, 'sustain', 0, 1);
+    const c5 = gui.add(settings.envelope, 'release', 0);
     gui.close();
 
-    [c1, c2, c3, c4, c5, c6, c7, c8, c9, c10, c11, c12, c13, c14, c15, c16, c17, c18, c19, c20, c21, c22, c23, c24, c25].forEach((controller) => {
+    [c1, c2, c3, c4, c5/*, c6, c7, c8, c9, c10, c11, c12, c13, c14, c15, c16, c17, c18, c19, c20, c21, c22, c23, c24, c25*/].forEach((controller) => {
       controller.onChange(() => { synth.set(settings); });
     });
   }
+
+  StartAudioContext(synth._context._context);
 
   return { synth, analyser };
 }

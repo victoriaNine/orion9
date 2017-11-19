@@ -1,12 +1,26 @@
 import { h, Component } from 'preact';
 import { TweenMax, TimelineMax, SteppedEase } from 'gsap';
-
 import Seriously from 'seriously';
-import 'seriously/effects/seriously.noise';
 
 import styles from './Canvas.css';
 
 class Canvas extends Component {
+  constructor (...args) {
+    super(...args);
+
+    const env = this.props.appState.env;
+
+    const isDesktop = !env.device.type || env.device.type === "desktop";
+    this.isDisabled = false;
+    this.addVideo = !this.isDisabled;
+    this.addNoise = !this.isDisabled && isDesktop && !env.browser.name.match(/(ie|edge|opera)/i);
+    this.hasAudio = !!this.props.appState.audioCtx;
+
+    if (this.addNoise) {
+      require('seriously/effects/seriously.noise');
+    }
+  }
+
   componentDidMount () {
     this.bgColor             = getComputedStyle(document.body).backgroundColor;
     this.width               = null;
@@ -19,14 +33,14 @@ class Canvas extends Component {
     this.noiseSettings       = { time: 1 };
     this.noiseSettings.tween = TweenMax.to(this.noiseSettings, 1, { time: 0.9, repeat: -1, yoyo: true, ease: SteppedEase.config(15) });
 
-    this.noiseNode           = this.seriously.effect("noise");
+    this.noiseNode           = this.addNoise ? this.seriously.effect("noise") : {};
     this.noiseNode.overlay   = false;
     this.noiseNode.amount    = 0.04;
     this.noiseNode.time      = this.noiseSettings.time;
     this.noiseNode.source    = this.reformatNode;
 
     this.targetNode          = this.seriously.target(this.props.appState.dom.canvas);
-    this.targetNode.source   = this.noiseNode;
+    this.targetNode.source   = this.addNoise ? this.noiseNode : this.reformatNode;
 
     this.canvas2dDOM = document.createElement("canvas");
     this.ctx2d = this.canvas2dDOM.getContext("2d");
@@ -66,7 +80,7 @@ class Canvas extends Component {
   }
 
   updateVisuals = (visualsInfo) => {
-    if (visualsInfo !== this.visualsInfo) {
+    if (this.addVideo && visualsInfo !== this.visualsInfo) {
       this.visualsInfo = visualsInfo;
 
       if (this.visualsInfo) {
@@ -77,7 +91,7 @@ class Canvas extends Component {
     }
   };
 
-  setVisuals () {
+  setVisuals = () => {
     const prevVisuals = this.visualsDOM;
     let eventName;
 
@@ -112,9 +126,15 @@ class Canvas extends Component {
             this.showVisuals = true;
 
             if (this.visualsInfo.type === "video") {
-              this.visualsDOM.play().then(() => {
+              try {
+                this.visualsDOM.play().then(() => {
+                  fadeIn.call(this);
+                });
+              } catch (e) {
+                // Fallback for non-promise based play method
+                this.visualsDOM.play();
                 fadeIn.call(this);
-              });
+              }
             } else {
               fadeIn.call(this);
             }
@@ -130,31 +150,31 @@ class Canvas extends Component {
       !this.overlayOpacity && tl.fromTo(this, 0.2, { overlayOpacity: 0 }, { overlayOpacity: 1 });
       tl.fromTo(this, 0.2, { visualsOpacity: 0 }, { visualsOpacity: 1 }, this.switchingVisuals ? 0 : 0.1);
     }
-  }
+  };
 
-  removeVisuals () {
+  removeVisuals = () => {
     const tl = new TimelineMax({ onComplete: () => {
       this.showVisuals = false;
       this.visualsDOM = null;
     }});
     tl.to(this, 0.2, { visualsOpacity: 0 });
     tl.to(this, 0.2, { overlayOpacity: 0 }, 0.1);
-  }
+  };
 
   onResize = () => {
     const DOM = this.props.appState.dom.canvas;
 
     this.width = DOM.width = this.canvas2dDOM.width
       = this.reformatNode.width = this.noiseNode.width = this.targetNode.width
-      = document.querySelector('html').offsetWidth;
+      = window.innerWidth;
 
     this.height = DOM.height = this.canvas2dDOM.height
       = this.reformatNode.height = this.noiseNode.height = this.targetNode.height
-      = document.querySelector('html').offsetHeight;
+      = window.innerHeight;
 
     if (this.showVisuals && this.visualsDOM) {
       let type;
-      switch (this.visualsDOM.localName) {
+      switch (this.visualsDOM.tagName.toLowerCase()) {
         case 'video':
           type = 'video';
           break;
@@ -201,15 +221,19 @@ class Canvas extends Component {
     this.props.setAppState({ dom: { ...this.props.appState.dom, canvas: ref } });
   };
 
-  start () {
-    this.seriously.go();
-    this.rAF = requestAnimationFrame(this.draw);
-  }
+  start = () => {
+    if (!this.isDisabled) {
+      this.seriously.go();
+      this.rAF = requestAnimationFrame(this.draw);
+    }
+  };
 
-  stop () {
-    cancelAnimationFrame(this.rAF);
-    this.seriously.stop();
-  }
+  stop = () => {
+    if (!this.isDisabled) {
+      cancelAnimationFrame(this.rAF);
+      this.seriously.stop();
+    }
+  };
 
   draw = () => {
     this.ctx2d.clearRect(0, 0, this.width, this.height);
@@ -243,22 +267,27 @@ class Canvas extends Component {
 
       this.ctx2d.restore();
 
-      this.ctx2d.fillStyle = `rgba(0, 0, 0, ${0.9 * this.overlayOpacity})`;
+      this.ctx2d.fillStyle = `rgba(0, 0, 0, ${0.85 * this.overlayOpacity})`;
       this.ctx2d.fillRect(0, 0, this.width, this.height);
     }
 
-    const analyser = this.props.appState.audio.analyser;
-    const dataArray = new Uint8Array(analyser.output.frequencyBinCount);
-	  analyser.output.getByteFrequencyData(dataArray);
+    if (this.hasAudio) {
+      const analyser = this.props.appState.audio.analyser;
+      const dataArray = new Uint8Array(analyser.output.frequencyBinCount);
+      analyser.output.getByteFrequencyData(dataArray);
 
-    this.drawWaveform(dataArray);
+      this.drawWaveform(dataArray);
+    }
 
     if (this.reformatNode.source) {
       this.reformatNode.source.update();
     }
 
-    this.noiseNode.time = this.noiseSettings.time;
-    this.rAF            = requestAnimationFrame(this.draw);
+    if (this.addNoise) {
+      this.noiseNode.time = this.noiseSettings.time;
+    }
+
+    this.rAF = requestAnimationFrame(this.draw);
   };
 
   drawOscilloscope = (dataArray) => {

@@ -1,13 +1,22 @@
 import { h, Component } from 'preact';
 import { TimelineMax } from 'gsap';
-import * as Tone from 'tone';
+
+let Tone;
 
 import styles from './Loading.css';
 
 class Loading extends Component {
-  state = {
-    message: ''
-  };
+  constructor (...args) {
+    super(...args);
+
+    this.state = {
+      message: ''
+    };
+
+    if (this.props.appState.audioCtx) {
+      Tone = require('tone');
+    }
+  }
 
   setDOM = (ref) => {
     this.DOM = ref;
@@ -17,6 +26,8 @@ class Loading extends Component {
   };
 
   play = () => {
+    const { audioCtx, env, audio } = this.props.appState;
+
     const messages = [
       "|",
       "| |",
@@ -42,19 +53,25 @@ class Loading extends Component {
       "orion9"
     ];
 
-    const tl = new TimelineMax({ onComplete: () => { this.props.setAppState({ loadingAnimComplete: true }); } });
+    const tl = new TimelineMax({ onComplete: () => {
+      this.props.setAppState({ loadingAnimComplete: true }); }
+    });
+
     let duration = 0.04;
     messages.forEach((message, index) => {
       if (index === 11) {
         duration = 0.06;
+
         tl.set(this.DOM.querySelector(`.${styles.message}`), { fontSize: "2em" });
         tl.set(this.DOM.querySelector(`.${styles.message}`), { clearProps: "fontSize" }, `+=${duration}`);
       } else if (index === 13) {
         duration = 0.08;
+
         tl.set(this.DOM.querySelector(`.${styles.message}`), { fontSize: "4em", className: `+=${styles.didot}` });
         tl.set(this.DOM.querySelector(`.${styles.message}`), { clearProps: "fontSize", className: `-=${styles.didot}` }, `+=${duration}`);
       } else if (index === 15) {
         duration = 0.08;
+
         tl.set(this.DOM.querySelector(`.${styles.message}`), { fontSize: "2em", className: `+=${styles.didot}` });
         tl.set(this.DOM.querySelector(`.${styles.message}`), { clearProps: "fontSize", className: `-=${styles.didot}` }, `+=${duration}`);
       } else {
@@ -64,17 +81,15 @@ class Loading extends Component {
       tl.call(() => {
         this.setState({ message });
       }, [], null, !index ? 0 : tl.recent().endTime() + duration);
-
-      if (index === messages.length - 1) {
-        tl.addLabel("messagesDone");
-      }
     });
 
-    this.props.appState.audioCtx && tl.call(() => {
+    tl.addLabel("messagesDone");
+
+    audioCtx && (!env.device.type || env.device.type === "desktop") && tl.call(() => {
       Tone.Master.mute = true;
 
       const sequence = new Tone.Sequence((time, note) => {
-        this.props.appState.audio.synth.triggerAttackRelease(note, "16n");
+        audio.synth.triggerAttackRelease(note, "16n");
       }, [
         "C2", "D2", "E2", "F2", "G2", "A2", "B2",
         "C3", "D3", "E3", "F3", "G3", "A3", "B3",
@@ -82,11 +97,6 @@ class Loading extends Component {
         "C5", "D5", "E5", "F5", "G5", "A5", "B5"
       ], "64n").start();
       sequence.loop = false;
-
-      // eslint-disable-next-line no-unused-vars
-      const unMute = new Tone.Event(() => {
-        Tone.Master.mute = false;
-      }).start("10 * 16n");
 
       Tone.Transport.start();
     }, [], null, "messagesDone");

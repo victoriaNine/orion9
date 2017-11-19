@@ -20,7 +20,6 @@ import Work from 'Containers/Work';
 import withHocWrapper from 'Containers/HocWrapper';
 import worksData from 'Containers/Home/Home.data';
 import * as _$ from 'utils';
-import synth from 'Internal/synth';
 
 import './reset.global.css';
 import './font-awesome.global.css';
@@ -42,7 +41,7 @@ class App extends Component {
     const hash = window.location.hash.slice(1);
     const languageFromPath = _$.getLanguageFromPath(window.location.pathname) && _$.getLanguageFromPath(window.location.pathname)[1];
     const languageFromNavigator = navigator.language.slice(0, 2).match(/^(fr|en|ja)$/)
-      ? _$.getLanguageCode(navigator.language.slice(0, 2), true)
+      ? _$.getLanguageCode(navigator.language.slice(0, 2))
       : null;
 
     this.state = {
@@ -62,7 +61,8 @@ class App extends Component {
       dom: {},
       instances: {},
       audioCtx: this.getContext(),
-      audio: this.getContext() && synth
+      audio: this.getContext() && require('Internal/synth').default,
+      getScrollingElement: this.getScrollingElement
     };
 
     this.state.pointerType = this.state.env.device.type ? 'touch' : 'desktop';
@@ -88,7 +88,9 @@ class App extends Component {
   }
 
   componentDidMount () {
-    this.rAF = requestAnimationFrame(this.paintGradient);
+    if (!this.state.env.device.type || !this.state.env.device.type.match("mobile|tablet")) {
+      this.rAF = requestAnimationFrame(this.paintGradient);
+    }
   }
 
   componentDidUpdate () {
@@ -119,7 +121,7 @@ class App extends Component {
 
   updateGradient = () => {
     const scrollRatio = this.getScrollRatio();
-    const gradientOffset = document.body.scrollTop - (this.state.dom.appWrapper.offsetTop + this.state.dom.app.offsetTop);
+    const gradientOffset = this.getScrollingElement().scrollTop - (this.state.dom.appWrapper.offsetTop + this.state.dom.app.offsetTop);
 
     TweenMax.to(this, 0.2, { currentScrollRatio: scrollRatio, onUpdate: () => {
       const string = `to bottom, rgba(0,0,0,1) ${gradientOffset}px, rgba(0,0,0,1) calc(60vh + ${gradientOffset}px), rgba(0,0,0,${this.currentScrollRatio}) calc(95vh + ${gradientOffset}px)`;
@@ -132,25 +134,27 @@ class App extends Component {
   paintGradient = () => {
     this.rAF = requestAnimationFrame(this.paintGradient);
 
-    if (this.prevScrollTop !== document.body.scrollTop) {
+    if (this.prevScrollTop !== this.getScrollingElement().scrollTop) {
       this.updateGradient();
-      this.prevScrollTop = document.body.scrollTop;
+      this.prevScrollTop = this.getScrollingElement().scrollTop;
     }
   };
 
   getScrollRatio = () => {
     // https://stackoverflow.com/questions/2387136/cross-browser-method-to-determine-vertical-scroll-percentage-in-javascript
-    const h = document.documentElement;
-    const b = document.body;
+    const h = this.getScrollingElement();
+    //const b = document.body;
     const st = 'scrollTop';
     const sh = 'scrollHeight';
 
-    if (b[sh] - h.clientHeight <= 0) {
+    if (h[sh] - h.clientHeight <= 0) {
       return 1;
     }
 
-    return (b[st] / (b[sh] - h.clientHeight));
+    return (h[st] / (h[sh] - h.clientHeight));
   };
+
+  getScrollingElement = () => document.scrollingElement || document.documentElement;
 
   getContext = () => {
     if (typeof AudioContext !== "undefined") {

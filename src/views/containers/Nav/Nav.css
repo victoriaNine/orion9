@@ -12,7 +12,10 @@
 
   @media (--mq_mobile) {
     padding: 50px;
-    background: color(var(--color_mono-black) a(0));
+  }
+
+  @media (--mq_laptop) {
+    background: none;
   }
 }
 

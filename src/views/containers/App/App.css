@@ -14,10 +14,13 @@
 }
 
 html, body {
+  overflow-x: hidden;
+}
+
+html {
   width: 100%;
   height: 100%;
   position: absolute;
-  overflow-x: hidden;
 }
 
 body {
@@ -28,14 +31,7 @@ body {
   font-weight: 300;
   -webkit-font-smoothing: antialiased;
   user-select: none;
-}
-
-:global html.scrollingLocked body {
-  overflow-y: hidden;
-
-  @media (--mq_minPianoWidth) {
-    overflow-y: inherit;
-  }
+  position: relative;
 
   &:after {
     content: "";
@@ -47,6 +43,21 @@ body {
     background: color(var(--color_mono-black) a(85%)) url('./assets/img/rotateDevice.png') no-repeat 50% 50%;
     z-index: 9999;
     transition: opacity 200ms;
+    opacity: 0;
+    pointer-events: none;
+  }
+}
+
+:global html.scrollingLocked body {
+  overflow-y: hidden;
+
+  @media (--mq_minPianoWidth) {
+    overflow-y: inherit;
+  }
+
+  &:after {
+    opacity: 1;
+    pointer-events: auto;
 
     @media (--mq_minPianoWidth) {
       opacity: 0;

@@ -37,10 +37,10 @@ function getLanguageCode (code, reverseLookup) {
 
   if (reverseLookup && appLanguageCodes.includes(code)) {
     // Retrieve navigator language code for a given app language code
-    return navigatorLanguageCodes.find((key) => navigatorLanguageCodes[key] === code);
+    return navigatorLanguageCodes.find((key) => navigatorToAppLanguageCode[key] === code);
   } else if (navigatorLanguageCodes.includes(code)) {
     // Retrieve app language code for a given navigator language code
-    return navigatorLanguageCodes[code];
+    return navigatorToAppLanguageCode[code];
   }
 
   // If there is no conversion to be made, return the original code

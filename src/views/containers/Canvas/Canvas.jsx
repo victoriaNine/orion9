@@ -10,8 +10,10 @@ class Canvas extends Component {
 
     const env = this.props.appState.env;
 
-    this.disabled = typeof env.device.type !== "undefined" && env.device.type !== "desktop";
-    this.addNoise = !this.disabled && !env.browser.name.match(/(ie|edge|firefox)/i);
+    const isDesktop = !env.device.type || env.device.type === "desktop";
+    this.isDisabled = false;
+    this.addVideo = !this.isDisabled;
+    this.addNoise = !this.isDisabled && isDesktop && !env.browser.name.match(/(ie|edge|opera)/i);
     this.hasAudio = !!this.props.appState.audioCtx;
 
     if (this.addNoise) {
@@ -78,7 +80,7 @@ class Canvas extends Component {
   }
 
   updateVisuals = (visualsInfo) => {
-    if (!this.disabled && visualsInfo !== this.visualsInfo) {
+    if (this.addVideo && visualsInfo !== this.visualsInfo) {
       this.visualsInfo = visualsInfo;
 
       if (this.visualsInfo) {
@@ -220,14 +222,14 @@ class Canvas extends Component {
   };
 
   start = () => {
-    if (!this.disabled) {
+    if (!this.isDisabled) {
       this.seriously.go();
       this.rAF = requestAnimationFrame(this.draw);
     }
   };
 
   stop = () => {
-    if (!this.disabled) {
+    if (!this.isDisabled) {
       cancelAnimationFrame(this.rAF);
       this.seriously.stop();
     }

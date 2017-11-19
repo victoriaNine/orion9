@@ -32,14 +32,6 @@ body {
   -webkit-font-smoothing: antialiased;
   user-select: none;
   position: relative;
-}
-
-:global html.scrollingLocked body {
-  overflow-y: hidden;
-
-  @media (--mq_minPianoWidth) {
-    overflow-y: inherit;
-  }
 
   &:after {
     content: "";
@@ -51,6 +43,21 @@ body {
     background: color(var(--color_mono-black) a(85%)) url('./assets/img/rotateDevice.png') no-repeat 50% 50%;
     z-index: 9999;
     transition: opacity 200ms;
+    opacity: 0;
+    pointer-events: none;
+  }
+}
+
+:global html.scrollingLocked body {
+  overflow-y: hidden;
+
+  @media (--mq_minPianoWidth) {
+    overflow-y: inherit;
+  }
+
+  &:after {
+    opacity: 1;
+    pointer-events: auto;
 
     @media (--mq_minPianoWidth) {
       opacity: 0;

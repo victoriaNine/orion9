@@ -26,6 +26,8 @@ class Loading extends Component {
   };
 
   play = () => {
+    const { audioCtx, env, audio } = this.props.appState;
+
     const messages = [
       "|",
       "| |",
@@ -51,19 +53,25 @@ class Loading extends Component {
       "orion9"
     ];
 
-    const tl = new TimelineMax({ onComplete: () => { this.props.setAppState({ loadingAnimComplete: true }); } });
+    const tl = new TimelineMax({ onComplete: () => {
+      this.props.setAppState({ loadingAnimComplete: true }); }
+    });
+
     let duration = 0.04;
     messages.forEach((message, index) => {
       if (index === 11) {
         duration = 0.06;
+
         tl.set(this.DOM.querySelector(`.${styles.message}`), { fontSize: "2em" });
         tl.set(this.DOM.querySelector(`.${styles.message}`), { clearProps: "fontSize" }, `+=${duration}`);
       } else if (index === 13) {
         duration = 0.08;
+
         tl.set(this.DOM.querySelector(`.${styles.message}`), { fontSize: "4em", className: `+=${styles.didot}` });
         tl.set(this.DOM.querySelector(`.${styles.message}`), { clearProps: "fontSize", className: `-=${styles.didot}` }, `+=${duration}`);
       } else if (index === 15) {
         duration = 0.08;
+
         tl.set(this.DOM.querySelector(`.${styles.message}`), { fontSize: "2em", className: `+=${styles.didot}` });
         tl.set(this.DOM.querySelector(`.${styles.message}`), { clearProps: "fontSize", className: `-=${styles.didot}` }, `+=${duration}`);
       } else {
@@ -77,11 +85,11 @@ class Loading extends Component {
 
     tl.addLabel("messagesDone");
 
-    this.props.appState.audioCtx && tl.call(() => {
+    audioCtx && (!env.device.type || env.device.type === "desktop") && tl.call(() => {
       Tone.Master.mute = true;
 
       const sequence = new Tone.Sequence((time, note) => {
-        this.props.appState.audio.synth.triggerAttackRelease(note, "16n");
+        audio.synth.triggerAttackRelease(note, "16n");
       }, [
         "C2", "D2", "E2", "F2", "G2", "A2", "B2",
         "C3", "D3", "E3", "F3", "G3", "A3", "B3",

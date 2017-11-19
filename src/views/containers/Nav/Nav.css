@@ -12,6 +12,9 @@
 
   @media (--mq_mobile) {
     padding: 50px;
+  }
+
+  @media (--mq_laptop) {
     background: none;
   }
 }

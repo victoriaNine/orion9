@@ -10,7 +10,7 @@ class Canvas extends Component {
 
     const env = this.props.appState.env;
     const isDesktop = !env.device.type || env.device.type === "desktop";
-    
+
     this.isDisabled = false;
     this.addVideo = !this.isDisabled;
     this.addNoise = !this.isDisabled && isDesktop && !env.browser.name.match(/(ie|edge|opera)/i);
@@ -267,7 +267,7 @@ class Canvas extends Component {
 
       this.ctx2d.restore();
 
-      this.ctx2d.fillStyle = `rgba(0, 0, 0, ${0.85 * this.overlayOpacity})`;
+      this.ctx2d.fillStyle = `rgba(0, 0, 0, ${0.8 * this.overlayOpacity})`;
       this.ctx2d.fillRect(0, 0, this.width, this.height);
     }
 

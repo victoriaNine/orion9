@@ -5,7 +5,7 @@
   width: 100%;
   top: 0;
   left: 0;
-  background: linear-gradient(to bottom, color(var(--color_mono-black) a(85%)) 50%, color(var(--color_mono-black) a(0)) 100%);
+  background: linear-gradient(to bottom, color(var(--color_mono-black) a(80%)) 50%, color(var(--color_mono-black) a(0)) 100%);
   z-index: 99;
   padding: 25px;
   pointer-events: none;

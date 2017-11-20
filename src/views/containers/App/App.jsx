@@ -44,6 +44,8 @@ class App extends Component {
       ? _$.getLanguageCode(navigator.language.slice(0, 2))
       : null;
 
+    const audioCtx = this.getContext();
+
     this.state = {
       language: languageFromPath || languageFromNavigator || 'en',
       env: new UAParser().getResult(),
@@ -60,8 +62,8 @@ class App extends Component {
       loadingAnimComplete: false,
       dom: {},
       instances: {},
-      audioCtx: this.getContext(),
-      audio: this.getContext() && require('Internal/synth').default,
+      audioCtx,
+      audio: audioCtx && require('Internal/synth').default,
       getScrollingElement: this.getScrollingElement
     };
 

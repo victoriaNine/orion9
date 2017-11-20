@@ -15,9 +15,9 @@ const data = {
   },
   about: {
     baseline1: {
-      fr: "Je suis une creative front-end developer et artiste freelance originaire de Paris vivant à Brighton, en Angleterre.",
-      en: "I'm a freelance creative front-end developer and artist from Paris, France, living in beautiful Brighton, UK.",
-      jp: "英国の美しいブライトンに住んでいて、フランスのパリのフリーランス・クリエーティブ・フロントエンド・デベロッパーとアーティストです。",
+      fr: "Je suis une creative front-end developer et artiste freelance originaire de Paris.",
+      en: "I'm a freelance creative front-end developer and artist from Paris, France.",
+      jp: "フランスのパリのフリーランス・クリエーティブ・フロントエンド・デベロッパーとアーティストです。",
     },
     baseline2: {
       fr: <span>J'aime les sites interactifs, expérimentaux et musicaux.<br />Je suis ouverte aux collaborations, venez dire bonjour :)</span>,

@@ -23,6 +23,9 @@
   50% { color: hsl(180, 90%, 60%); transform: translateY(0); }
   75% { color: hsl(270, 90%, 60%); transform: translateY(4px); }
   80% { transform: scale(1) rotate(0); }
-  85% { transform: scale(1.5) rotate(15deg); }
+  82% { transform: scale(1.15) rotate(15deg); }
+  84% { transform: scale(1.2) rotate(-15deg); }
+  85% { transform: scale(1.25); }
+  86% { transform: scale(1.2) rotate(15deg); }
   100% { color: hsl(360, 90%, 60%); transform: translateY(0) scale(1) rotate(0); }
 }

@@ -104,8 +104,7 @@ class Canvas extends Component {
     }
 
     function proceed () {
-      if (this.visualsInfo.url) {
-
+      if (this.visualsInfo && this.visualsInfo.url) {
         switch (this.visualsInfo.type) {
           case "video":
             this.visualsDOM = this.videoDOM;

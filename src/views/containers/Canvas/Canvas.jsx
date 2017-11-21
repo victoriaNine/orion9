@@ -258,7 +258,7 @@ class Canvas extends Component {
     this.ctx2d.fillRect(0, 0, this.width, this.height);
 
     this.ctx2d.font = `${this.bgTextSize}px 'Didot'`;
-    this.ctx2d.fillStyle = `rgba(16, 16, 16, ${this.bgTextOpacity})`;
+    this.ctx2d.fillStyle = `rgba(15, 15, 15, ${this.bgTextOpacity})`;
     this.ctx2d.textAlign = "center";
     this.ctx2d.fillText(this.bgText, this.width / 2, this.height);
 

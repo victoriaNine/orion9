@@ -41,13 +41,13 @@ class App extends Component {
     const hash = window.location.hash.slice(1);
     const languageFromPath = _$.getLanguageFromPath(window.location.pathname) && _$.getLanguageFromPath(window.location.pathname)[1];
     const languageFromNavigator = navigator.language.slice(0, 2).match(/^(fr|en|ja)$/)
-      ? _$.getLanguageCode(navigator.language.slice(0, 2))
+      ? _$.getAppLanguageCode(navigator.language.slice(0, 2))
       : null;
 
     const audioCtx = this.getContext();
 
     this.state = {
-      language: languageFromPath || languageFromNavigator || 'en',
+      language: languageFromPath || languageFromNavigator || _$.getDefaultLanguageCode(),
       env: new UAParser().getResult(),
       aboutLanding: pageName === 'about',
       workLanding: pageName === 'work',
@@ -69,6 +69,7 @@ class App extends Component {
 
     this.state.pointerType = this.state.env.device.type ? 'touch' : 'desktop';
     this.workIdsRegex = this.state.works.map(work => work.id).join('|');
+    this.languageCodesRegex = _$.getAppLanguageList().join('|');
     this.rAF = null;
     this.prevScrollTop = null;
     this.currentScrollRatio = 0;
@@ -183,7 +184,7 @@ class App extends Component {
       <Router>
         <main id="app" role="main" className={styles.App} ref={this.setDOM}>
           <Helmet
-            htmlAttributes={{ lang: _$.getLanguageCode(this.state.language) }}
+            htmlAttributes={{ lang: _$.getAppLanguageCode(this.state.language) }}
           />
           { !this.state.introAnimComplete && <ConnectedLoading /> }
           <ConnectedCanvas visuals={this.state.visuals} />
@@ -191,32 +192,35 @@ class App extends Component {
           <div className={styles.wrapper} ref={this.setWrapperDOM}>
             <ConnectedHeadline mode={this.state.headlineMode} />
             <div className={styles.contents} ref={this.setContentsDOM}>
-              <Route exact path="/:lang?/(home|)" children={({ match, history, location }) => {
-                if (match) { hasMatch = true; }
+              <Route exact path={`/:lang(${this.languageCodesRegex})?/(home|)`} children={({ match, history, location }) => {
+                if (!hasMatch) hasMatch = !!match;
+
                 return (
                   <TransitionGroup component={_$.getFirstChild}>
                     {match && <ConnectedHome history={history} location={location} />}
                   </TransitionGroup>
                 );
               }} />
-              <Route exact path="/:lang?/about" children={({ match }) => {
-                if (match) { hasMatch = true; }
+              <Route exact path={`/:lang(${this.languageCodesRegex})?/about`} children={({ match }) => {
+                if (!hasMatch) hasMatch = !!match;
+
                 return (
                   <TransitionGroup component={_$.getFirstChild}>
                     {match && <ConnectedAbout />}
                   </TransitionGroup>
                 );
               }} />
-              <Route exact path={`/:lang?/work/(${this.workIdsRegex})`} children={({ match, history, location }) => {
-                if (match) { hasMatch = true; }
+              <Route exact path={`/:lang(${this.languageCodesRegex})?/work/(${this.workIdsRegex})`} children={({ match, history, location }) => {
+                if (!hasMatch) hasMatch = !!match;
+
                 return (
                   <TransitionGroup component={_$.getFirstChild}>
                     {match && <ConnectedWork history={history} location={location} />}
                   </TransitionGroup>
                 );
               }} />
-              <Route path="/:lang?/*" render={({ match }) => !hasMatch
-                ? <Redirect to={`${match.params.lang && _$.getLanguageFromPath(`/${match.params.lang}/`) ? `/${match.params.lang}` : ''}/home`} />
+              <Route path={`/:lang(${this.languageCodesRegex})?/*`} render={({ match }) => !hasMatch
+                ? <Redirect to={`${match.params.lang ? `/${match.params.lang}` : ''}/home`} />
                 : null
               } />
             </div>

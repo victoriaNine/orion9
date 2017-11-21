@@ -9,6 +9,8 @@ import * as _$ from 'utils';
 import styles from './Nav.css';
 
 class Nav extends Component {
+  languageList = _$.getAppLanguageList();
+
   setDOM = (ref) => {
     this.props.setAppState({ dom: { ...this.props.appState.dom, nav: ref } });
   };
@@ -63,15 +65,13 @@ class Nav extends Component {
             </Title>
           </div>
           <ul className={styles.langNav}>
-            <li className={styles.langItem}>
-              <a href={`/fr${locationWithoutLang}`} className={classnames(styles.langLink, { [styles['is--active']] : language === 'fr' })}>FR</a>
-            </li>
-            <li className={styles.langItem}>
-              <a href={`/en${locationWithoutLang}`} className={classnames(styles.langLink, { [styles['is--active']] : language === 'en' })}>EN</a>
-            </li>
-            <li className={styles.langItem}>
-              <a href={`/jp${locationWithoutLang}`} className={classnames(styles.langLink, { [styles['is--active']] : language === 'jp' })}>JP</a>
-            </li>
+            {
+              this.languageList.map((languageCode) => (
+                <li className={styles.langItem}>
+                  <a href={`/${languageCode}${locationWithoutLang}`} className={classnames(styles.langLink, { [styles['is--active']] : language === languageCode })}>{languageCode.toUpperCase()}</a>
+                </li>
+              ))
+            }
           </ul>
         </nav>
       </div>

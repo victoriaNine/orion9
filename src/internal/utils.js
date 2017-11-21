@@ -5,10 +5,12 @@ const eventsMap = {
 };
 
 const navigatorToAppLanguageCode = {
+  fr: 'fr',
+  en: 'en',
   ja: 'jp'
 };
 
-const langRegex = /^\/(fr|en|jp)\//;
+const langRegex = new RegExp(`^/(${getAppLanguageList().join('|')})/`);
 
 function getLanguageFromPath (location) {
   return location.match(langRegex);
@@ -31,16 +33,37 @@ function getWorkIdFromPath (location) {
   return locationParams[locationParams.length - 1];
 }
 
-function getLanguageCode (code, reverseLookup) {
-  const navigatorLanguageCodes = Object.keys(navigatorToAppLanguageCode);
-  const appLanguageCodes = Object.keys(navigatorToAppLanguageCode).map((key) => navigatorToAppLanguageCode[key]);
+function getNavigatorLanguageList () {
+  return Object.keys(navigatorToAppLanguageCode);
+}
 
-  if (reverseLookup && appLanguageCodes.includes(code)) {
-    // Retrieve navigator language code for a given app language code
-    return navigatorLanguageCodes.find((key) => navigatorToAppLanguageCode[key] === code);
-  } else if (navigatorLanguageCodes.includes(code)) {
+function getAppLanguageList () {
+  return Object.keys(navigatorToAppLanguageCode).map((key) => navigatorToAppLanguageCode[key]);
+}
+
+function getDefaultLanguageCode () {
+  return getAppLanguageList()[1];
+}
+
+function getAppLanguageCode (code) {
+  const navigatorLanguageList = getNavigatorLanguageList();
+
+  if (navigatorLanguageList.includes(code)) {
     // Retrieve app language code for a given navigator language code
     return navigatorToAppLanguageCode[code];
+  }
+
+  // If there is no conversion to be made, return the original code
+  return code;
+}
+
+function getNavigatorLanguageCode (code) {
+  const navigatorLanguageList = getNavigatorLanguageList();
+  const appLanguageList = getAppLanguageList();
+
+  if (appLanguageList.includes(code)) {
+    // Retrieve navigator language code for a given app language code
+    return navigatorLanguageList.find((key) => navigatorToAppLanguageCode[key] === code);
   }
 
   // If there is no conversion to be made, return the original code
@@ -64,13 +87,16 @@ function getFirstChild (props) {
 
 export {
   eventsMap,
-  langRegex,
   getLanguageFromPath,
   getLocationWithoutLang,
   getLocationParams,
   getPageName,
   getWorkIdFromPath,
-  getLanguageCode,
+  getNavigatorLanguageList,
+  getAppLanguageList,
+  getAppLanguageCode,
+  getNavigatorLanguageCode,
+  getDefaultLanguageCode,
   replaceStringToJSX,
   getFirstChild,
 };

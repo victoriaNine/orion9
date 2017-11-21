@@ -28,7 +28,10 @@ class Work extends Component {
         const currentWork = this.getCurrentWorkFromPath(location.pathname);
 
         this.props.appState.instances.workHeadline.doLeave(() => {
-          this.props.appState.instances.workHeadline.doEnter();
+          this.props.appState.instances.workHeadline.doEnter(() => {
+            // Update the headline's height for the new content
+            this.props.appState.instances.headline.onResize();
+          });
         });
 
         this.doLeave(() => {
@@ -36,9 +39,6 @@ class Work extends Component {
             currentWork,
             visuals: currentWork.visuals
           });
-
-          // Update the headline's height for the new content
-          this.props.appState.instances.headline.onResize();
 
           TweenMax.to(this.props.appState.getScrollingElement(), 0.4, { scrollTop: 0, ease: Power2.easeInOut });
           this.doEnter();

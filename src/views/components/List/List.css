@@ -9,12 +9,17 @@
   }
 }
 
+.wrapper {
+  display: table;
+}
+
 .item {
   text-transform: lowercase;
   transition: transform 200ms;
   position: relative;
   padding-bottom: 0.25em;
   cursor: pointer;
+  display: table;
 
   &:hover {
     transform: translateX(18px);
@@ -91,7 +96,6 @@
   box-shadow: 4px 4px 8px color(var(--color_mono-black) a(50%));
 }
 
-.wrapper {}
 .gifWrapper {
   pointer-events: none;
 }

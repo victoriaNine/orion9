@@ -56,6 +56,10 @@ class Canvas extends Component {
     this.visualsDOM = null;
     this.visualsOpacity = 0;
     this.overlayOpacity = 0;
+    this.bgTextOpacity = 0;
+    this.showBgText = false;
+    this.bgTextSize = 0;
+    this.bgText = "orion9";
 
     window.addEventListener("resize", this.onResize);
     this.onResize();
@@ -68,6 +72,11 @@ class Canvas extends Component {
   }
 
   componentWillReceiveProps (newProps) {
+    if (!this.showBgText && newProps.appState.loadingAnimComplete) {
+      this.showBgText = true;
+      TweenMax.to(this, 0.8, { bgTextOpacity: 1 });
+    }
+
     const duration = this.updateVisualsTimeout === null ? 0 : 500;
 
     // Debounce calls to the update method
@@ -171,6 +180,14 @@ class Canvas extends Component {
       = this.reformatNode.height = this.noiseNode.height = this.targetNode.height
       = window.innerHeight;
 
+    this.bgTextSize = 0;
+    this.ctx2d.save();
+    this.ctx2d.font = `${this.bgTextSize}px 'Didot'`;
+    while (Math.floor(this.ctx2d.measureText(this.bgText).width) < this.width * 1.05) {
+      this.ctx2d.font = `${this.bgTextSize++}px 'Didot'`;
+    }
+    this.ctx2d.restore();
+
     if (this.showVisuals && this.visualsDOM) {
       let type;
       switch (this.visualsDOM.tagName.toLowerCase()) {
@@ -240,6 +257,11 @@ class Canvas extends Component {
     this.ctx2d.fillStyle = this.bgColor;
     this.ctx2d.fillRect(0, 0, this.width, this.height);
 
+    this.ctx2d.font = `${this.bgTextSize}px 'Didot'`;
+    this.ctx2d.fillStyle = `rgba(16, 16, 16, ${this.bgTextOpacity})`;
+    this.ctx2d.textAlign = "center";
+    this.ctx2d.fillText(this.bgText, this.width / 2, this.height);
+
     if (this.showVisuals && this.visualsDOM) {
       this.ctx2d.save();
       this.ctx2d.globalAlpha = this.visualsOpacity;
@@ -255,13 +277,11 @@ class Canvas extends Component {
       const ratioH = this.videoDOM.height / this.height;
 
       if (this.visualsDOM.subtitle && ratioW < ratioH) {
-        this.ctx2d.font = "900 30px 'Futura Std'";
+        this.ctx2d.font = "bold 24px 'Futura Std'";
         this.ctx2d.fillStyle = 'white';
         this.ctx2d.strokeStyle = 'black';
         this.ctx2d.lineWidth = 2;
-
-        const txtSize = this.ctx2d.measureText(this.visualsDOM.subtitle);
-        this.ctx2d.fillText(this.visualsDOM.subtitle, (this.width - txtSize.width) / 2, this.height - 30);
+        this.ctx2d.fillText(this.visualsDOM.subtitle, this.width / 2, this.height - 30);
       }
 
       this.ctx2d.restore();

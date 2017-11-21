@@ -126,7 +126,7 @@ class App extends Component {
     const scrollRatio = this.getScrollRatio();
     const gradientOffset = this.getScrollingElement().scrollTop - (this.state.dom.appWrapper.offsetTop + this.state.dom.app.offsetTop);
 
-    TweenMax.to(this, 0.2, { currentScrollRatio: scrollRatio, onUpdate: () => {
+    TweenMax.to(this, 0.4, { currentScrollRatio: scrollRatio, onUpdate: () => {
       const string = `to bottom, rgba(0,0,0,1) ${gradientOffset}px, rgba(0,0,0,1) calc(60vh + ${gradientOffset}px), rgba(0,0,0,${this.currentScrollRatio}) calc(95vh + ${gradientOffset}px)`;
 
       this.state.dom.appWrapper.style.webkitMaskImage = `linear-gradient(${string})`;

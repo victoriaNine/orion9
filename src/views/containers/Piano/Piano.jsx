@@ -32,7 +32,10 @@ class Piano extends Component {
     window.addEventListener(_$.eventsMap.move[this.pointerType], this.onPointerMove);
     window.addEventListener(_$.eventsMap.up[this.pointerType], this.onPointerUp);
 
-    navigator.requestMIDIAccess && navigator.requestMIDIAccess().then(this.onMIDIInit);
+    navigator.requestMIDIAccess && navigator.requestMIDIAccess().then(this.onMIDIInit).catch(error => {
+      __IS_DEV__ && console.error("MIDI initialization failed", error);
+    });
+
     Tone.Master.mute = false;
 
     this.synth.triggerAttackRelease("C6", "8n", "+0.2");

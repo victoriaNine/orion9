@@ -53,8 +53,12 @@ class Loading extends Component {
       "orion9"
     ];
 
-    const tl = new TimelineMax({ onComplete: () => {
-      this.props.setAppState({ loadingAnimComplete: true }); }
+    const tl = new TimelineMax({
+      onComplete: () => {
+        setTimeout(() => {
+          this.props.setAppState({ loadingAnimComplete: true });
+        }, 100);
+      }
     });
 
     let duration = 0.04;

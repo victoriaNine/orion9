@@ -51,6 +51,7 @@ class App extends Component {
       env: new UAParser().getResult(),
       aboutLanding: pageName === 'about',
       workLanding: pageName === 'work',
+      pianoLanding: hash === 'play',
       headlineMode: pageName === 'work' ? 'work' : pageName === 'about' ? 'about' : hash === 'play' ? 'piano' : 'home',
       works: worksData.sections.filter(item => item.name.match('projects|experiments')).map(section => section.items).reduce((acc, item) => [...acc, ...item], []),
       currentWork: null,

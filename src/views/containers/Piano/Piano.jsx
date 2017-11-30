@@ -38,9 +38,8 @@ class Piano extends Component {
       __IS_DEV__ && console.error("MIDI initialization failed", error);
     });
 
-    Tone.Master.mute = false;
+    !this.props.appState.pianoLanding && this.enable();
 
-    this.synth.triggerAttackRelease("C6", "8n", "+0.2");
     this.props.onMount(this.DOM, this);
   }
 
@@ -64,13 +63,23 @@ class Piano extends Component {
       this.midiInput.value.close();
     }
 
+    this.props.appState.pianoLanding && this.props.setAppState({ pianoLanding: false });
+
     this.synth.triggerAttackRelease("A5", "8n");
+    this.props.setAppState({ isPianoPlaying: true });
+    setTimeout(() => {
+      this.props.setAppState({ isPianoPlaying: false });
+    }, Tone.Time("8n").toSeconds() * 1000);
   }
 
   componentWillReceiveProps (newProps) {
     this.layout = newProps.language === 'fr' ? 'azerty' : 'qwerty';
     this.pointerType = newProps.appState.pointerType;
     this.synth = newProps.appState.audio.synth;
+
+    if (Tone.Master.mute && this.props.appState.pianoLanding && newProps.appState.loadingAnimComplete) {
+      this.enable();
+    }
   }
 
   componentWillEnter (callback) {
@@ -91,6 +100,18 @@ class Piano extends Component {
 
     return tl;
   }
+
+  enable = () => {
+    Tone.Master.mute = false;
+    this.synth.triggerAttackRelease("C6", "8n", "+0.2");
+
+    setTimeout(() => {
+      this.props.setAppState({ isPianoPlaying: true });
+      setTimeout(() => {
+        this.props.setAppState({ isPianoPlaying: false });
+      }, Tone.Time("8n").toSeconds() * 1000);
+    }, 200);
+  };
 
   setDOM = (ref) => { this.DOM = ref; };
 
@@ -233,7 +254,7 @@ class Piano extends Component {
   };
 
   buildKeyboard = () => {
-    const whiteKeys = data.keys.filter((key) => !key.note.match("#")).map((key, index) => {
+    const whiteKeys = data.keys.filter((key) => !key.note.match(/(#|b)/)).map((key, index) => {
       return (
         <div
           className={styles.key}

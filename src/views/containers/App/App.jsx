@@ -64,7 +64,8 @@ class App extends Component {
       instances: {},
       audioCtx,
       audio: audioCtx && require('Internal/synth').default,
-      getScrollingElement: this.getScrollingElement
+      getScrollingElement: this.getScrollingElement,
+      scrollRatio: 0,
     };
 
     this.state.pointerType = this.state.env.device.type ? 'touch' : 'desktop';
@@ -125,6 +126,7 @@ class App extends Component {
   updateGradient = () => {
     const scrollRatio = this.getScrollRatio();
     const gradientOffset = this.getScrollingElement().scrollTop - (this.state.dom.appWrapper.offsetTop + this.state.dom.app.offsetTop);
+    this.setState({ scrollRatio });
 
     TweenMax.to(this, 0.4, { currentScrollRatio: scrollRatio, onUpdate: () => {
       const string = `to bottom, rgba(0,0,0,1) ${gradientOffset}px, rgba(0,0,0,1) calc(60vh + ${gradientOffset}px), rgba(0,0,0,${this.currentScrollRatio}) calc(95vh + ${gradientOffset}px)`;
@@ -187,7 +189,7 @@ class App extends Component {
             htmlAttributes={{ lang: _$.getAppLanguageCode(this.state.language) }}
           />
           { !this.state.introAnimComplete && <ConnectedLoading /> }
-          <ConnectedCanvas visuals={this.state.visuals} />
+          <ConnectedCanvas visuals={this.state.visuals} scrollRatio={this.state.scrollRatio} />
           <ConnectedNav />
           <div className={styles.wrapper} ref={this.setWrapperDOM}>
             <ConnectedHeadline mode={this.state.headlineMode} />

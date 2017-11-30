@@ -5777,6 +5777,10 @@ pinkie@^2.0.0:
   version "2.0.4"
   resolved "https://registry.yarnpkg.com/pinkie/-/pinkie-2.0.4.tgz#72556b80cfa0d48a974e80e77248e80ed4f7f870"
 
+pixi-filters@^2.3.1:
+  version "2.3.1"
+  resolved "https://registry.yarnpkg.com/pixi-filters/-/pixi-filters-2.3.1.tgz#edcaf9f9eed2e2f76912a9980f28e3db9474ddb1"
+
 pixi-gl-core@^1.0.3:
   version "1.1.4"
   resolved "https://registry.yarnpkg.com/pixi-gl-core/-/pixi-gl-core-1.1.4.tgz#8b4b5c433b31e419bc379dc565ce1b835a91b372"

@@ -1,6 +1,9 @@
 import { h, Component } from 'preact';
-import { TweenMax, TimelineMax } from 'gsap';
+import { TweenMax, TimelineMax, Power0, RoughEase } from 'gsap';
 import * as PIXI from 'pixi.js';
+import 'pixi-filters';
+
+import displacementTexture from './assets/displacementTexture.png';
 
 import styles from './Canvas.css';
 
@@ -86,11 +89,50 @@ class Canvas extends Component {
 
     // Noise effect
     this.noiseFilter = new PIXI.filters.NoiseFilter();
-    this.noiseFilter.noise = 0.025;
+    this.noiseFilter.noise = 0.0275;
     this.noiseFilter.seed = 0.1;
     TweenMax.to(this.noiseFilter, 1, { seed: 0.24, repeat: -1, yoyo: true });
 
     this.stage.filters = [this.noiseFilter];
+
+    // Text distortion effect
+    const displacementSprite = new PIXI.Sprite.fromImage(displacementTexture);
+    displacementSprite.texture.baseTexture.wrapMode = PIXI.WRAP_MODES.REPEAT;
+    this.displacementFilter = new PIXI.filters.DisplacementFilter(displacementSprite);
+    this.displacementFilter.scale.x = 1;
+
+    this.displacementTl = new TimelineMax({ paused: true, repeat: -1, yoyo: true });
+    this.displacementTl.to(this.displacementFilter.scale, 0.05, {
+      x: 50,
+    });
+    this.displacementTl.to(this.displacementFilter.scale, 0.05, {
+      x: 1,
+    });
+    this.displacementTl.to(this.displacementFilter.scale, 0.1, {
+      x: 100,
+      repeat: 1,
+      yoyo: true,
+      ease: RoughEase.ease.config({
+        template: Power0.easeNone,
+        strength: 1,
+        points: 20,
+        taper: "none",
+        randomize: true,
+        clamp: false
+      })
+    });
+
+    this.rgbSplitFilter = new PIXI.filters.RGBSplitFilter();
+    this.rgbSplitFilter.enabled = false;
+    this.rgbSplitFilter.red[0] = -1;
+    this.rgbSplitFilter.red[1] = 0;
+    this.rgbSplitFilter.green[0] = 0;
+    this.rgbSplitFilter.green[1] = 0;
+    this.rgbSplitFilter.blue[0] = 1;
+    this.rgbSplitFilter.blue[1] = 0;
+
+    this.bgText.filters = [this.displacementFilter, this.rgbSplitFilter];
+    this.isWavingText = false;
 
     // Resize handler
     this.onResizeTimeout = null;
@@ -123,6 +165,11 @@ class Canvas extends Component {
     if (newProps.scrollRatio !== this.scrollRatio) {
       this.scrollRatio = newProps.scrollRatio;
       !this.showingVisuals && this.moveText();
+    }
+
+    if (newProps.isWavingText !== this.isWavingText) {
+      this.isWavingText = newProps.isWavingText;
+      this.waveText();
     }
 
     // Debounce calls to the update method
@@ -324,6 +371,17 @@ class Canvas extends Component {
     tl.to(this.bgText.skew, 0.4, { x: 0 }, "-=0.2");
 
     function degToRad (deg) { return (deg * Math.PI) / 180; }
+  };
+
+  waveText = () => {
+    if (this.isWavingText) {
+      this.displacementTl.play();
+    } else {
+      this.displacementTl.stop();
+      TweenMax.to(this.displacementFilter.scale, 0.1, { x: 1 });
+    }
+
+    this.rgbSplitFilter.enabled = this.isWavingText;
   };
 
   drawOverlay = () => {

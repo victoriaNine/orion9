@@ -334,23 +334,23 @@ class Canvas extends Component {
     const nbEQband = 150;
     const bandWidth = Math.ceil(this.width / nbEQband);
     const zoom = 1.5;
-    const top = this.height + 1;
-    const dotSize = 1;
+    const pointSize = 1;
+    const top = this.height + pointSize;
 
     this.visualizer.clear();
     for (let i = 0; i <= nbEQband; i++) {
       // const pointNb = Math.ceil(i * (dataArray.length / nbEQband));
 
-      this.visualizer.beginFill(0x00FF00);
-      this.visualizer.drawRect(i * bandWidth, top - (dataArray[i] * zoom), dotSize, dotSize);
+      this.visualizer.beginFill(0xFF0000);
+      this.visualizer.drawRect(i * bandWidth - pointSize, top - (dataArray[i] * zoom), pointSize, pointSize);
       this.visualizer.endFill();
 
-      this.visualizer.beginFill(0xFF0000);
-      this.visualizer.drawRect(i * bandWidth - dotSize, top - (dataArray[i] * zoom), dotSize, dotSize);
+      this.visualizer.beginFill(0x00FF00);
+      this.visualizer.drawRect(i * bandWidth, top - (dataArray[i] * zoom), pointSize, pointSize);
       this.visualizer.endFill();
 
       this.visualizer.beginFill(0x0000FF);
-      this.visualizer.drawRect(i * bandWidth + dotSize, top - (dataArray[i] * zoom), dotSize, dotSize);
+      this.visualizer.drawRect(i * bandWidth + pointSize, top - (dataArray[i] * zoom), pointSize, pointSize);
       this.visualizer.endFill();
     }
   };

@@ -127,9 +127,9 @@ class App extends Component {
 
   updateGradient = () => {
     const scrollRatio = this.getScrollRatio();
-    const gradientOffset = this.getScrollingElement().scrollTop - (this.state.dom.appWrapper.offsetTop + this.state.dom.app.offsetTop);
     this.setState({ scrollRatio });
 
+    const gradientOffset = this.getScrollingElement().scrollTop - (this.state.dom.appWrapper.offsetTop + this.state.dom.app.offsetTop);
     TweenMax.to(this, 0.4, { currentScrollRatio: scrollRatio, onUpdate: () => {
       const string = `to bottom, rgba(0,0,0,1) ${gradientOffset}px, rgba(0,0,0,1) calc(60vh + ${gradientOffset}px), rgba(0,0,0,${this.currentScrollRatio}) calc(95vh + ${gradientOffset}px)`;
 
@@ -149,16 +149,16 @@ class App extends Component {
 
   getScrollRatio = () => {
     // https://stackoverflow.com/questions/2387136/cross-browser-method-to-determine-vertical-scroll-percentage-in-javascript
-    const h = this.getScrollingElement();
-    //const b = document.body;
+    const se = this.getScrollingElement();
+    const h = document.querySelector('html');
     const st = 'scrollTop';
     const sh = 'scrollHeight';
 
-    if (h[sh] - h.clientHeight <= 0) {
+    if (se[sh] - h.clientHeight <= 0) {
       return 1;
     }
 
-    return (h[st] / (h[sh] - h.clientHeight));
+    return (se[st] / (se[sh] - h.clientHeight));
   };
 
   getScrollingElement = () => document.scrollingElement || document.documentElement;

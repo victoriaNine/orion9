@@ -19,7 +19,8 @@ class Canvas extends Component {
 
     // WebGL renderer and stage
     this.renderer = new PIXI.WebGLRenderer(this.width, this.height, {
-      antialias: true,
+      legacy: true,
+      antialias: false,
       transparent: true,
       resolution: 1,
       view: this.props.appState.dom.canvas,
@@ -188,8 +189,8 @@ class Canvas extends Component {
       if (this.visualsInfo) {
         this.setVisuals();
       } else {
+        this.moveText(true);
         this.removeVisuals();
-        this.moveText();
       }
     }
   };
@@ -355,7 +356,13 @@ class Canvas extends Component {
     this.bgText.y = this.height - Math.floor(textMetrics.fontProperties.ascent);
   };
 
-  moveText = () => {
+  moveText = (skipAnim) => {
+    if (skipAnim) {
+      this.currentScrollRatio = this.scrollRatio;
+      this.bgText.x = getNewX.call(this, this.currentScrollRatio);
+      return;
+    }
+
     TweenMax.killTweensOf(this, { currentScrollRatio: true });
     TweenMax.killTweensOf(this.bgText.skew, { x: true });
     const direction = this.scrollRatio > this.currentScrollRatio ? -1 : 1;
@@ -365,12 +372,15 @@ class Canvas extends Component {
     tl.to(this, 0.4, {
       currentScrollRatio: this.scrollRatio,
       onUpdate: () => {
-        this.bgText.x = -1 * ((this.bgText.width / 2) * this.currentScrollRatio) - (this.width * this.bgTextWidthBleedRatio / 4);
+        this.bgText.x = getNewX.call(this, this.currentScrollRatio);
       }
     }, 0);
     tl.to(this.bgText.skew, 0.4, { x: 0 }, "-=0.2");
 
     function degToRad (deg) { return (deg * Math.PI) / 180; }
+    function getNewX (scrollRatio) {
+      return -1 * ((this.bgText.width / 2) * scrollRatio) - (this.width * this.bgTextWidthBleedRatio / 4);
+    }
   };
 
   waveText = () => {

@@ -9,7 +9,7 @@ class Canvas extends Component {
   hasAudio = !!this.props.appState.audioCtx;
 
   componentDidMount () {
-    this.width  = window.innerWidth;
+    this.width = window.innerWidth;
     this.height = window.innerHeight;
     this.canvas2d = document.createElement("canvas");
     this.showingVisuals = false;
@@ -40,6 +40,8 @@ class Canvas extends Component {
 
     // Background text
     this.bgTextString = "orion9";
+    this.bgTextWidthRatio = 1.75;
+    this.bgTextWidthBleedRatio = 0.2;
     this.bgTextStyle = new PIXI.TextStyle({
       fontFamily: 'Didot, serif',
       fontSize: 1,
@@ -296,7 +298,7 @@ class Canvas extends Component {
 
     context.save();
     context.font = `${this.bgTextStyle.fontSize}px 'Didot, serif'`;
-    while (Math.floor(context.measureText(this.bgTextString).width) < this.width * 1.75) {
+    while (Math.floor(context.measureText(this.bgTextString).width) < this.width * (this.bgTextWidthRatio + this.bgTextWidthBleedRatio)) {
       context.font = `${this.bgTextStyle.fontSize++}px 'Didot, serif'`;
     }
     context.restore();
@@ -309,13 +311,14 @@ class Canvas extends Component {
   moveText = () => {
     TweenMax.killTweensOf(this, { currentScrollRatio: true });
     TweenMax.killTweensOf(this.bgText.skew, { x: true });
+    const direction = this.scrollRatio > this.currentScrollRatio ? -1 : 1;
 
     const tl = new TimelineMax();
-    tl.to(this.bgText.skew, 0.4, { x: degToRad(-15) }, 0);
+    tl.to(this.bgText.skew, 0.4, { x: degToRad(direction * 15) }, 0);
     tl.to(this, 0.4, {
       currentScrollRatio: this.scrollRatio,
       onUpdate: () => {
-        this.bgText.x = -1 * (this.width * this.currentScrollRatio);
+        this.bgText.x = -1 * ((this.bgText.width / 2) * this.currentScrollRatio) - (this.width * this.bgTextWidthBleedRatio / 4);
       }
     }, 0);
     tl.to(this.bgText.skew, 0.4, { x: 0 }, "-=0.2");
@@ -389,6 +392,7 @@ class Canvas extends Component {
 
     this.drawBackground();
     this.drawText();
+    this.moveText();
     this.showingVisuals && this.visualsTexture && this.resizeVisuals();
     this.drawOverlay();
   };

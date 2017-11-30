@@ -44,7 +44,7 @@ class App extends Component {
       ? _$.getAppLanguageCode(navigator.language.slice(0, 2))
       : null;
 
-    const audioCtx = this.getContext();
+    const audioCtx = this.getAudioContext();
 
     this.state = {
       language: languageFromPath || languageFromNavigator || _$.getDefaultLanguageCode(),
@@ -161,7 +161,7 @@ class App extends Component {
 
   getScrollingElement = () => document.scrollingElement || document.documentElement;
 
-  getContext = () => {
+  getAudioContext = () => {
     if (typeof AudioContext !== "undefined") {
       return new window.AudioContext();
     } else if (typeof webkitAudioContext !== "undefined") {

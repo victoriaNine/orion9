@@ -10,7 +10,7 @@ const data = {
   sections: [
     {
       title: { fr: "Compétences & Outils", en: "Skills & Tools", jp: "スキルとツール" },
-      text: "HTML5, CSS3, ES2017+, PostCSS, SASS, Greensock, Canvas, SeriouslyJS, WebAudio API, Tone.js, Gamepad API, jQuery, React, Preact, Backbone, Webpack, RequireJS, Grunt, lodash, Jest, Enzyme, Socket.io, CouchDB, Node.js, Git, Homemade framework development, Photoshop, Illustrator, Premiere Pro, Design, Audio"
+      text: "HTML5, CSS3, ES2017+, PostCSS, SASS, Greensock, Canvas, PixiJS, SeriouslyJS, WebAudio API, Tone.js, Gamepad API, jQuery, React, Preact, Backbone, Webpack, RequireJS, Grunt, lodash, Jest, Enzyme, Socket.io, CouchDB, Node.js, Git, Homemade framework development, Photoshop, Illustrator, Premiere Pro, Design, Audio"
     },
     {
       title: { fr: "Divers", en: "Trivia", jp: "豆知識" },

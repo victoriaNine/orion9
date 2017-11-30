@@ -1,83 +1,127 @@
 import { h, Component } from 'preact';
-import { TweenMax, TimelineMax, SteppedEase } from 'gsap';
-import Seriously from 'seriously';
+import { TweenMax, TimelineMax } from 'gsap';
+import * as PIXI from 'pixi.js';
 
 import styles from './Canvas.css';
 
 class Canvas extends Component {
-  constructor (...args) {
-    super(...args);
-
-    const env = this.props.appState.env;
-    const isDesktop = !env.device.type || env.device.type === "desktop";
-
-    this.isDisabled = false;
-    this.addVideo = !this.isDisabled;
-    this.addNoise = !this.isDisabled && isDesktop && !env.browser.name.match(/(ie|edge|opera)/i);
-    this.hasAudio = !!this.props.appState.audioCtx;
-
-    if (this.addNoise) {
-      require('seriously/effects/seriously.noise');
-    }
-  }
+  isDisabled = false;
+  hasAudio = !!this.props.appState.audioCtx;
 
   componentDidMount () {
-    this.bgColor             = getComputedStyle(document.body).backgroundColor;
-    this.width               = null;
-    this.height              = null;
+    this.width  = window.innerWidth;
+    this.height = window.innerHeight;
+    this.canvas2d = document.createElement("canvas");
+    this.showingVisuals = false;
 
-    this.seriously           = new Seriously();
-    this.reformatNode        = this.seriously.transform("reformat");
-    this.reformatNode.mode   = "none";
+    // WebGL renderer and stage
+    this.renderer = new PIXI.WebGLRenderer(this.width, this.height, {
+      antialias: true,
+      transparent: true,
+      resolution: 1,
+      view: this.props.appState.dom.canvas,
+    });
 
-    this.noiseSettings       = { time: 1 };
-    this.noiseSettings.tween = TweenMax.to(this.noiseSettings, 1, { time: 0.9, repeat: -1, yoyo: true, ease: SteppedEase.config(15) });
+    this.stage = new PIXI.Container();
 
-    this.noiseNode           = this.addNoise ? this.seriously.effect("noise") : {};
-    this.noiseNode.overlay   = false;
-    this.noiseNode.amount    = 0.04;
-    this.noiseNode.time      = this.noiseSettings.time;
-    this.noiseNode.source    = this.reformatNode;
+    /* Composition (background to foreground):
+      - Background
+      - Background text
+      - Visuals
+      - Subtitle
+      - Overlay
+      - Audio visualizer
+    */
 
-    this.targetNode          = this.seriously.target(this.props.appState.dom.canvas);
-    this.targetNode.source   = this.addNoise ? this.noiseNode : this.reformatNode;
+    // Background
+    this.background = new PIXI.Graphics();
+    this.background.zIndex = 0;
+    this.addToStage(this.background);
 
-    this.canvas2dDOM = document.createElement("canvas");
-    this.ctx2d = this.canvas2dDOM.getContext("2d");
+    // Background text
+    this.bgTextString = "orion9";
+    this.bgTextStyle = new PIXI.TextStyle({
+      fontFamily: 'Didot, serif',
+      fontSize: 1,
+      fill: 0x0F0F0F,
+    });
 
-    this.videoDOM = document.createElement("video");
-    this.videoDOM.loop = true;
-    this.videoDOM.muted = true;
+    this.bgText = new PIXI.Text(this.bgTextString, this.bgTextStyle);
+    this.bgText.alpha = 0;
+    this.bgText.zIndex = 1;
+    this.addToStage(this.bgText);
 
-    this.imageDOM = document.createElement("img");
+    this.scrollRatio = 0;
+    this.currentScrollRatio = 0;
 
+    // Visuals
     this.updateVisualsTimeout = null;
     this.visualsInfo = null;
-    this.visualsDOM = null;
-    this.visualsOpacity = 0;
-    this.overlayOpacity = 0;
-    this.bgTextOpacity = 0;
-    this.showBgText = false;
-    this.bgTextSize = 0;
-    this.bgText = "orion9";
 
-    window.addEventListener("resize", this.onResize);
+    this.visualsTexture = null;
+    this.visualsTextureSprite = null;
+
+    // Subtitle
+    this.subtitleText = null;
+    this.subtitleTextStyle = new PIXI.TextStyle({
+      fontFamily: 'Futura Std, sans-serif',
+      fontSize: 24,
+      fontWeight: 'bold',
+      fill: 0xFFFFFF,
+    });
+
+    // Overlay
+    this.overlay = new PIXI.Graphics();
+    this.overlay.alpha = 0;
+    this.overlay.zIndex = 4;
+    this.addToStage(this.overlay);
+
+    // Audio visualizer
+    this.visualizer = new PIXI.Graphics();
+    this.visualizer.alpha = 0.75;
+    this.visualizer.zIndex = 5;
+    this.addToStage(this.visualizer);
+
+    // Noise effect
+    this.noiseFilter = new PIXI.filters.NoiseFilter();
+    this.noiseFilter.noise = 0.025;
+    this.noiseFilter.seed = 0.1;
+    TweenMax.to(this.noiseFilter, 1, { seed: 0.24, repeat: -1, yoyo: true });
+
+    this.stage.filters = [this.noiseFilter];
+
+    // Resize handler
+    this.onResizeTimeout = null;
+    this.debouncedResize = () => {
+      // Debounce calls to the resize handler
+      clearTimeout(this.onResizeTimeout);
+
+      this.onResizeTimeout = setTimeout(() => {
+        this.onResizeTimeout = null;
+        this.onResize();
+      }, this.onResizeTimeout === null ? 0 : 500);
+    };
+
+    window.addEventListener("resize", this.debouncedResize);
     this.onResize();
     this.start();
   }
 
   componentWillUnmount () {
-    window.removeEventListener("resize", this.onResize);
+    window.removeEventListener("resize", this.debouncedResize);
     this.stop();
   }
 
   componentWillReceiveProps (newProps) {
     if (!this.showBgText && newProps.appState.loadingAnimComplete) {
       this.showBgText = true;
-      TweenMax.to(this, 0.8, { bgTextOpacity: 1 });
+      TweenMax.to(this.bgText, 0.8, { alpha: 1 });
     }
 
-    const duration = this.updateVisualsTimeout === null ? 0 : 500;
+    if (newProps.scrollRatio !== this.scrollRatio) {
+      this.scrollRatio = newProps.scrollRatio;
+      !this.showingVisuals && this.moveText();
+    }
 
     // Debounce calls to the update method
     clearTimeout(this.updateVisualsTimeout);
@@ -85,27 +129,42 @@ class Canvas extends Component {
     this.updateVisualsTimeout = setTimeout(() => {
       this.updateVisualsTimeout = null;
       this.updateVisuals(newProps.visuals);
-    }, duration);
+    }, this.updateVisualsTimeout === null ? 0 : 500);
   }
 
   updateVisuals = (visualsInfo) => {
-    if (this.addVideo && visualsInfo !== this.visualsInfo) {
+    if (visualsInfo !== this.visualsInfo) {
       this.visualsInfo = visualsInfo;
 
       if (this.visualsInfo) {
         this.setVisuals();
       } else {
         this.removeVisuals();
+        this.moveText();
       }
     }
   };
 
   setVisuals = () => {
-    const prevVisuals = this.visualsDOM;
-    let eventName;
+    const prevTexture = this.visualsTexture;
+    const prevSprite = this.visualsTextureSprite;
+    const subtitle = this.visualsInfo.options && this.visualsInfo.options.subtitle || "";
+    let switchingVisuals = false;
 
-    if (prevVisuals) {
-      TweenMax.to(this, 0.2, { visualsOpacity: 0, onComplete: () => {
+    if (prevTexture) {
+      switchingVisuals = true;
+
+      TweenMax.to([prevSprite, this.subtitleText], 0.2, { alpha: 0, onComplete: () => {
+        if (this.subtitleText && !subtitle) {
+          this.removeFromStage(this.subtitleText);
+          this.subtitleText = null;
+        }
+
+        this.removeFromStage(prevSprite);
+        prevTexture.baseTexture.dispose();
+        prevTexture.baseTexture.destroy();
+        PIXI.BaseTexture.removeFromCache(prevTexture.baseTexture);
+
         proceed.call(this);
       }});
     } else {
@@ -114,233 +173,161 @@ class Canvas extends Component {
 
     function proceed () {
       if (this.visualsInfo && this.visualsInfo.url) {
-        switch (this.visualsInfo.type) {
-          case "video":
-            this.visualsDOM = this.videoDOM;
-            eventName = "canplaythrough";
-            break;
-          case "image":
-            this.visualsDOM = this.imageDOM;
-            eventName = "load";
-            break;
+        this.visualsTexture = this.visualsInfo.type === "video"
+          ? PIXI.Texture.fromVideo(this.visualsInfo.url)
+          : PIXI.Texture.fromImage(this.visualsInfo.url);
+
+        if (this.visualsInfo.type === "video") {
+          this.visualsTexture.baseTexture.source.muted = true;
+          this.visualsTexture.baseTexture.source.loop = true;
         }
 
-        this.visualsDOM.subtitle = this.visualsInfo.options && this.visualsInfo.options.subtitle || "";
-        this.visualsDOM.addEventListener(eventName, function handler (event) {
-          event.target.removeEventListener(eventName, handler);
+        if (subtitle) {
+          this.subtitleText = new PIXI.Text(subtitle, this.subtitleTextStyle);
+          this.subtitleText.alpha = 0;
+          this.subtitleText.zIndex = 3;
+          this.addToStage(this.subtitleText);
+        }
 
-          if (this.visualsDOM && this.visualsInfo) {
-            this.resizeVisuals(this.visualsInfo.type);
-            this.showVisuals = true;
-
-            if (this.visualsInfo.type === "video") {
-              try {
-                this.visualsDOM.play().then(() => {
-                  fadeIn.call(this);
-                });
-              } catch (e) {
-                // Fallback for non-promise based play method
-                this.visualsDOM.play();
-                fadeIn.call(this);
-              }
-            } else {
-              fadeIn.call(this);
-            }
+        this.visualsTexture.baseTexture.once("loaded", () => {
+          // Abort if the visuals have been removed in the meantime
+          if (!this.visualsTexture) {
+            return;
           }
-        }.bind(this));
 
-        this.visualsDOM.src = this.visualsInfo.url;
+          this.resizeVisuals();
+          this.addToStage(this.visualsTextureSprite);
+          this.showingVisuals = true;
+
+          const tl = new TimelineMax();
+          !switchingVisuals && tl.fromTo(this.overlay, 0.2, { alpha: 0 }, { alpha: 1 });
+          tl.fromTo([this.visualsTextureSprite, this.subtitleText], 0.2, { alpha: 0 }, { alpha: 1 }, switchingVisuals ? 0 : 0.1);
+        });
+
+        this.visualsTextureSprite = new PIXI.Sprite.from(this.visualsTexture);
+        this.visualsTextureSprite.zIndex = 2;
       }
-    }
-
-    function fadeIn () {
-      const tl = new TimelineMax();
-      !this.overlayOpacity && tl.fromTo(this, 0.2, { overlayOpacity: 0 }, { overlayOpacity: 1 });
-      tl.fromTo(this, 0.2, { visualsOpacity: 0 }, { visualsOpacity: 1 }, this.switchingVisuals ? 0 : 0.1);
     }
   };
 
   removeVisuals = () => {
     const tl = new TimelineMax({ onComplete: () => {
-      this.showVisuals = false;
-      this.visualsDOM = null;
+      this.visualsTexture && this.disposeVisuals();
+      this.showingVisuals = false;
     }});
-    tl.to(this, 0.2, { visualsOpacity: 0 });
-    tl.to(this, 0.2, { overlayOpacity: 0 }, 0.1);
+
+    tl.to([this.visualsTextureSprite, this.subtitleText], 0.2, { alpha: 0 });
+    tl.to(this.overlay, 0.2, { alpha: 0 }, 0.1);
   };
 
-  onResize = () => {
-    const DOM = this.props.appState.dom.canvas;
-
-    this.width = DOM.width = this.canvas2dDOM.width
-      = this.reformatNode.width = this.noiseNode.width = this.targetNode.width
-      = window.innerWidth;
-
-    this.height = DOM.height = this.canvas2dDOM.height
-      = this.reformatNode.height = this.noiseNode.height = this.targetNode.height
-      = window.innerHeight;
-
-    this.bgTextSize = 0;
-    this.ctx2d.save();
-    this.ctx2d.font = `${this.bgTextSize}px 'Didot'`;
-    while (Math.floor(this.ctx2d.measureText(this.bgText).width) < this.width * 1.05) {
-      this.ctx2d.font = `${this.bgTextSize++}px 'Didot'`;
-    }
-    this.ctx2d.restore();
-
-    if (this.showVisuals && this.visualsDOM) {
-      let type;
-      switch (this.visualsDOM.tagName.toLowerCase()) {
-        case 'video':
-          type = 'video';
-          break;
-        case 'img':
-          type = 'image';
-          break;
-      }
-
-      this.resizeVisuals(type);
+  disposeVisuals = () => {
+    if (this.subtitleText) {
+      this.removeFromStage(this.subtitleText);
+      this.subtitleText = null;
     }
 
-    if (this.reformatNode.source) { this.reformatNode.source.destroy(); }
-    this.reformatNode.source = this.seriously.source(this.canvas2dDOM);
+    this.removeFromStage(this.visualsTextureSprite);
+    this.visualsTexture.baseTexture.dispose();
+    this.visualsTexture.baseTexture.destroy();
+    PIXI.BaseTexture.removeFromCache(this.visualsTexture.baseTexture);
+    this.visualsTextureSprite = null;
+    this.visualsTexture = null;
   };
 
-  resizeVisuals = (visualType) => {
+  resizeVisuals = () => {
+    const source = this.visualsTexture.baseTexture.source;
+    const type = source.tagName.toLowerCase();
     let widthPropName;
     let heightPropName;
 
-    switch (visualType) {
+    switch (type) {
       case "video":
         widthPropName = "videoWidth";
         heightPropName = "videoHeight";
         break;
-      case "image":
+      case "img":
         widthPropName = "naturalWidth";
         heightPropName = "naturalHeight";
         break;
     }
 
-    const ratioW = this.videoDOM[widthPropName] / this.width;
-    const ratioH = this.videoDOM[heightPropName] / this.height;
+    const ratioW = source[widthPropName] / this.width;
+    const ratioH = source[heightPropName] / this.height;
 
     if (ratioW >= ratioH) {
-      this.videoDOM.width = this.height * (this.videoDOM[widthPropName] / this.videoDOM[heightPropName]);
-      this.videoDOM.height = this.height;
+      this.visualsTextureSprite.width = this.height * (source[widthPropName] / source[heightPropName]);
+      this.visualsTextureSprite.height = this.height;
     } else {
-      this.videoDOM.width = this.width;
-      this.videoDOM.height = this.width * (this.videoDOM[heightPropName] / this.videoDOM[widthPropName]);
+      this.visualsTextureSprite.width = this.width;
+      this.visualsTextureSprite.height = this.width * (source[heightPropName] / source[widthPropName]);
+    }
+
+    this.visualsTextureSprite.x = (this.width - this.visualsTextureSprite.width) / 2;
+    this.visualsTextureSprite.y = (this.height - this.visualsTextureSprite.height) / 2;
+
+    if (this.subtitleText) {
+      const textMetrics = PIXI.TextMetrics.measureText(this.subtitleText.text, this.subtitleTextStyle);
+      this.subtitleText.x = (this.width - Math.floor(textMetrics.width)) / 2;
+      this.subtitleText.y = this.height - (1.5 * Math.floor(textMetrics.height));
     }
   };
 
-  setDOM = (ref) => {
-    this.props.setAppState({ dom: { ...this.props.appState.dom, canvas: ref } });
+  addToStage = (child) => {
+    this.stage.addChild(child);
+    this.stage.children.sort((a, b) => a.zIndex > b.zIndex);
   };
 
-  start = () => {
-    if (!this.isDisabled) {
-      this.seriously.go();
-      this.rAF = requestAnimationFrame(this.draw);
+  removeFromStage = (child) => {
+    this.stage.removeChild(child);
+    this.stage.children.sort((a, b) => a.zIndex > b.zIndex);
+  }
+
+  drawBackground = () => {
+    this.background.clear();
+    this.background.beginFill(0x111111);
+    this.background.drawRect(0, 0, this.width, this.height);
+    this.background.endFill();
+  }
+
+  drawText = () => {
+    this.bgTextStyle.fontSize = 1;
+
+    const context = this.canvas2d.getContext('2d');
+
+    context.save();
+    context.font = `${this.bgTextStyle.fontSize}px 'Didot, serif'`;
+    while (Math.floor(context.measureText(this.bgTextString).width) < this.width * 1.75) {
+      context.font = `${this.bgTextStyle.fontSize++}px 'Didot, serif'`;
     }
+    context.restore();
+
+    const textMetrics = PIXI.TextMetrics.measureText(this.bgTextString, this.bgTextStyle);
+    this.bgText.style = this.bgTextStyle;
+    this.bgText.y = this.height - Math.floor(textMetrics.fontProperties.ascent);
   };
 
-  stop = () => {
-    if (!this.isDisabled) {
-      cancelAnimationFrame(this.rAF);
-      this.seriously.stop();
-    }
-  };
+  moveText = () => {
+    TweenMax.killTweensOf(this, { currentScrollRatio: true });
+    TweenMax.killTweensOf(this.bgText.skew, { x: true });
 
-  draw = () => {
-    this.ctx2d.clearRect(0, 0, this.width, this.height);
-
-    this.ctx2d.fillStyle = this.bgColor;
-    this.ctx2d.fillRect(0, 0, this.width, this.height);
-
-    this.ctx2d.font = `${this.bgTextSize}px 'Didot'`;
-    this.ctx2d.fillStyle = `rgba(15, 15, 15, ${this.bgTextOpacity})`;
-    this.ctx2d.textAlign = "center";
-    this.ctx2d.fillText(this.bgText, this.width / 2, this.height);
-
-    if (this.showVisuals && this.visualsDOM) {
-      this.ctx2d.save();
-      this.ctx2d.globalAlpha = this.visualsOpacity;
-      this.ctx2d.drawImage(
-        this.visualsDOM,
-        (this.width - this.visualsDOM.width) / 2,
-        (this.height - this.visualsDOM.height) / 2,
-        this.visualsDOM.width,
-        this.visualsDOM.height
-      );
-
-      const ratioW = this.videoDOM.width / this.width;
-      const ratioH = this.videoDOM.height / this.height;
-
-      if (this.visualsDOM.subtitle && ratioW < ratioH) {
-        this.ctx2d.font = "bold 24px 'Futura Std'";
-        this.ctx2d.fillStyle = 'white';
-        this.ctx2d.strokeStyle = 'black';
-        this.ctx2d.lineWidth = 2;
-        this.ctx2d.fillText(this.visualsDOM.subtitle, this.width / 2, this.height - 30);
+    const tl = new TimelineMax();
+    tl.to(this.bgText.skew, 0.4, { x: degToRad(-15) }, 0);
+    tl.to(this, 0.4, {
+      currentScrollRatio: this.scrollRatio,
+      onUpdate: () => {
+        this.bgText.x = -1 * (this.width * this.currentScrollRatio);
       }
+    }, 0);
+    tl.to(this.bgText.skew, 0.4, { x: 0 }, "-=0.2");
 
-      this.ctx2d.restore();
-
-      this.ctx2d.fillStyle = `rgba(0, 0, 0, ${0.8 * this.overlayOpacity})`;
-      this.ctx2d.fillRect(0, 0, this.width, this.height);
-    }
-
-    if (this.hasAudio) {
-      const analyser = this.props.appState.audio.analyser;
-      const dataArray = new Uint8Array(analyser.output.frequencyBinCount);
-      analyser.output.getByteFrequencyData(dataArray);
-
-      this.drawWaveform(dataArray);
-    }
-
-    if (this.reformatNode.source) {
-      this.reformatNode.source.update();
-    }
-
-    if (this.addNoise) {
-      this.noiseNode.time = this.noiseSettings.time;
-    }
-
-    this.rAF = requestAnimationFrame(this.draw);
+    function degToRad (deg) { return (deg * Math.PI) / 180; }
   };
 
-  drawOscilloscope = (dataArray) => {
-    const nbEQband = 175;
-    const bandWidth = Math.ceil(this.width / nbEQband);
-    const zoom = 1;
-    const top = this.height + 1;
-    const layers = [
-      { color: "#00FF00", offset: 0 },
-      { color: "#FF0000", offset: -1 },
-      { color: "#0000FF", offset: 1 }
-    ];
-
-    for (let j = 0, jj = layers.length; j < jj; j++) {
-      this.ctx2d.save();
-      this.ctx2d.beginPath();
-
-      this.ctx2d.moveTo(0, top);
-
-      for (let i = 0; i <= nbEQband; i++) {
-        // const pointNb = Math.ceil(i * (dataArray.length / nbEQband));
-
-        this.ctx2d.fillStyle = layers[j].color;
-        this.ctx2d.strokeStyle = layers[j].color;
-        this.ctx2d.lineTo(i * bandWidth + layers[j].offset, top - (dataArray[i] * zoom));
-      }
-
-      this.ctx2d.lineTo(this.width, top);
-      this.ctx2d.fill();
-      this.ctx2d.stroke();
-
-      this.ctx2d.closePath();
-      this.ctx2d.restore();
-    }
+  drawOverlay = () => {
+    this.overlay.clear();
+    this.overlay.beginFill(0x000000, 0.85);
+    this.overlay.drawRect(0, 0, this.width, this.height);
+    this.overlay.endFill();
   };
 
   drawWaveform = (dataArray) => {
@@ -350,52 +337,64 @@ class Canvas extends Component {
     const top = this.height + 1;
     const dotSize = 1;
 
-    this.ctx2d.save();
-    this.ctx2d.globalAlpha = 0.75;
-
+    this.visualizer.clear();
     for (let i = 0; i <= nbEQband; i++) {
       // const pointNb = Math.ceil(i * (dataArray.length / nbEQband));
 
-      this.ctx2d.fillStyle = "#00FF00";
-      this.ctx2d.fillRect(i * bandWidth, top - (dataArray[i] * zoom), dotSize, dotSize);
-      this.ctx2d.fillStyle = "#FF0000";
-      this.ctx2d.fillRect(i * bandWidth - dotSize, top - (dataArray[i] * zoom), dotSize, dotSize);
-      this.ctx2d.fillStyle = "#0000FF";
-      this.ctx2d.fillRect(i * bandWidth + dotSize, top - (dataArray[i] * zoom), dotSize, dotSize);
-    }
+      this.visualizer.beginFill(0x00FF00);
+      this.visualizer.drawRect(i * bandWidth, top - (dataArray[i] * zoom), dotSize, dotSize);
+      this.visualizer.endFill();
 
-    this.ctx2d.restore();
+      this.visualizer.beginFill(0xFF0000);
+      this.visualizer.drawRect(i * bandWidth - dotSize, top - (dataArray[i] * zoom), dotSize, dotSize);
+      this.visualizer.endFill();
+
+      this.visualizer.beginFill(0x0000FF);
+      this.visualizer.drawRect(i * bandWidth + dotSize, top - (dataArray[i] * zoom), dotSize, dotSize);
+      this.visualizer.endFill();
+    }
   };
 
-  drawDiagonalLines = (dataArray) => {
-    const nbEQband = 75;
-    const bandWidth = Math.round(this.width / nbEQband);
+  draw = () => {
+    if (this.hasAudio) {
+      const analyser = this.props.appState.audio.analyser;
+      const dataArray = new Uint8Array(analyser.output.frequencyBinCount);
+      analyser.output.getByteFrequencyData(dataArray);
 
-    this.ctx2d.save();
-    this.ctx2d.lineWidth = 1;
-
-    for (let i = 0; i <= nbEQband; i++) {
-      this.ctx2d.moveTo(i * bandWidth + dataArray[i], dataArray[i]);
-      this.ctx2d.lineTo(-dataArray[i] + 500, -i * 1 - dataArray[i] + 500);
+      this.drawWaveform(dataArray);
     }
 
-    this.ctx2d.stroke();
-    this.ctx2d.restore();
+    this.renderer.render(this.stage);
+    this.rAF = requestAnimationFrame(this.draw);
   };
 
-  drawHorizontalLines = (dataArray) => {
-    const nbEQband = 100;
-
-    this.ctx2d.save();
-    this.ctx2d.lineWidth = 1;
-
-    for (let i = 0; i <= nbEQband; i++) {
-      this.ctx2d.moveTo(1e3 * dataArray[i], 2 * dataArray[i]);
-      this.ctx2d.lineTo(1e3 * -dataArray[i], -1 * dataArray[i]);
+  start = () => {
+    if (!this.isDisabled) {
+      this.rAF = requestAnimationFrame(this.draw);
     }
+  };
 
-    this.ctx2d.stroke();
-    this.ctx2d.restore();
+  stop = () => {
+    if (!this.isDisabled) {
+      cancelAnimationFrame(this.rAF);
+    }
+  };
+
+  onResize = () => {
+    const DOM = this.props.appState.dom.canvas;
+
+    this.width = DOM.width = window.innerWidth;
+    this.height = DOM.height = window.innerHeight;
+    this.renderer.resize(this.width, this.height);
+
+    this.drawBackground();
+    this.drawText();
+    this.showingVisuals && this.visualsTexture && this.resizeVisuals();
+    this.drawOverlay();
+  };
+
+  setDOM = (ref) => {
+    this.props.setAppState({ dom: { ...this.props.appState.dom, canvas: ref } });
   };
 
   render () {

@@ -2,7 +2,8 @@
   "sourceMaps": true,
   "presets": [
     "env",
-    "stage-0"
+    "stage-0",
+    "es2015",
   ],
   "plugins": [
     "babel-plugin-transform-es2015-spread",

@@ -64,6 +64,7 @@ class App extends Component {
       instances: {},
       audioCtx,
       audio: audioCtx && require('Internal/synth').default,
+      isPianoPlaying: false,
       getScrollingElement: this.getScrollingElement,
       scrollRatio: 0,
     };
@@ -189,7 +190,7 @@ class App extends Component {
             htmlAttributes={{ lang: _$.getAppLanguageCode(this.state.language) }}
           />
           { !this.state.introAnimComplete && <ConnectedLoading /> }
-          <ConnectedCanvas visuals={this.state.visuals} scrollRatio={this.state.scrollRatio} />
+          <ConnectedCanvas visuals={this.state.visuals} scrollRatio={this.state.scrollRatio} isWavingText={this.state.isPianoPlaying} />
           <ConnectedNav />
           <div className={styles.wrapper} ref={this.setWrapperDOM}>
             <ConnectedHeadline mode={this.state.headlineMode} />

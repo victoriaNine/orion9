@@ -19,6 +19,8 @@ class Piano extends Component {
   isPressing = false;
   pointerPressedKeys = [];
 
+  isPlaying = false;
+
   synth = this.props.appState.audio.synth;
   midiInput = null;
 
@@ -190,30 +192,44 @@ class Piano extends Component {
 
   activateKey = (keyCode, velocity = 1) => {
     const key = data.keys.find((key) => key.code === keyCode);
+    let stateChange = false;
 
     if (!key.pressed) {
       this.keysDOM[keyCode].classList.add(styles['is--active']);
       key.pressed = true;
       this.synth.triggerAttack(key.note, null, velocity);
 
-      return true;
+      stateChange = true;
     }
 
-    return false;
+    const isPlaying = data.keys.some((key) => key.pressed);
+    if (isPlaying !== this.isPlaying) {
+      this.isPlaying = isPlaying;
+      this.props.setAppState({ isPianoPlaying: this.isPlaying });
+    }
+
+    return stateChange;
   };
 
   deactivateKey = (keyCode) => {
     const key = data.keys.find((key) => key.code === keyCode);
+    let stateChange = false;
 
     if (key.pressed) {
       this.keysDOM[keyCode].classList.remove(styles['is--active']);
       key.pressed = false;
       this.synth.triggerRelease(key.note);
 
-      return true;
+      stateChange = true;
     }
 
-    return false;
+    const isPlaying = data.keys.some((key) => key.pressed);
+    if (isPlaying !== this.isPlaying) {
+      this.isPlaying = isPlaying;
+      this.props.setAppState({ isPianoPlaying: this.isPlaying });
+    }
+
+    return stateChange;
   };
 
   buildKeyboard = () => {

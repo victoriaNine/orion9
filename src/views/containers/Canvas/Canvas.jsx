@@ -13,9 +13,9 @@ class Canvas extends Component {
     super(...args);
 
     const env = this.props.appState.env;
-    const isDesktop = !env.device.type || env.device.type === "desktop";
 
-    this.isDisabled = !isDesktop || env.browser.name.match(/(ie|edge)/i);
+    this.isEnabled = !env.browser.name.match(/(ie|edge)/i);
+    this.hasVisuals = !env.os.name.match(/ios/i);
     this.hasAudio = !!this.props.appState.audioCtx;
   }
 
@@ -73,6 +73,7 @@ class Canvas extends Component {
     this.visualsTextureSprite = null;
 
     // Subtitle
+    this.subtitleMinRatioH = 1.2;
     this.subtitleText = null;
     this.subtitleTextStyle = new PIXI.TextStyle({
       fontFamily: 'Futura Std, sans-serif',
@@ -160,32 +161,32 @@ class Canvas extends Component {
   }
 
   componentWillReceiveProps (newProps) {
-    if (this.isDisabled) {
-      return;
+    if (this.isEnabled) {
+      if (!this.showBgText && newProps.appState.loadingAnimComplete) {
+        this.showBgText = true;
+        TweenMax.to(this.bgText, 0.8, { alpha: 1 });
+      }
+
+      if (newProps.scrollRatio !== this.scrollRatio) {
+        this.scrollRatio = newProps.scrollRatio;
+        !this.showingVisuals && this.moveText();
+      }
+
+      if (newProps.isWavingText !== this.isWavingText) {
+        this.isWavingText = newProps.isWavingText;
+        this.waveText();
+      }
+
+      if (this.hasVisuals) {
+        // Debounce calls to the update method
+        clearTimeout(this.updateVisualsTimeout);
+
+        this.updateVisualsTimeout = setTimeout(() => {
+          this.updateVisualsTimeout = null;
+          this.updateVisuals(newProps.visuals);
+        }, this.updateVisualsTimeout === null ? 0 : 500);
+      }
     }
-
-    if (!this.showBgText && newProps.appState.loadingAnimComplete) {
-      this.showBgText = true;
-      TweenMax.to(this.bgText, 0.8, { alpha: 1 });
-    }
-
-    if (newProps.scrollRatio !== this.scrollRatio) {
-      this.scrollRatio = newProps.scrollRatio;
-      !this.showingVisuals && this.moveText();
-    }
-
-    if (newProps.isWavingText !== this.isWavingText) {
-      this.isWavingText = newProps.isWavingText;
-      this.waveText();
-    }
-
-    // Debounce calls to the update method
-    clearTimeout(this.updateVisualsTimeout);
-
-    this.updateVisualsTimeout = setTimeout(() => {
-      this.updateVisualsTimeout = null;
-      this.updateVisuals(newProps.visuals);
-    }, this.updateVisualsTimeout === null ? 0 : 500);
   }
 
   updateVisuals = (visualsInfo) => {
@@ -229,20 +230,16 @@ class Canvas extends Component {
 
     function proceed () {
       if (this.visualsInfo && this.visualsInfo.url) {
-        this.visualsTexture = this.visualsInfo.type === "video"
+        const isVideo = this.visualsInfo.type === "video";
+        this.visualsTexture = isVideo
           ? PIXI.Texture.fromVideo(this.visualsInfo.url)
           : PIXI.Texture.fromImage(this.visualsInfo.url);
 
-        if (this.visualsInfo.type === "video") {
-          this.visualsTexture.baseTexture.source.muted = true;
-          this.visualsTexture.baseTexture.source.loop = true;
-        }
+        const source = this.visualsTexture.baseTexture.source;
 
-        if (subtitle) {
-          this.subtitleText = new PIXI.Text(subtitle, this.subtitleTextStyle);
-          this.subtitleText.alpha = 0;
-          this.subtitleText.zIndex = 3;
-          this.addToStage(this.subtitleText);
+        if (isVideo) {
+          source.muted = true;
+          source.loop = true;
         }
 
         this.visualsTexture.baseTexture.once("loaded", () => {
@@ -254,11 +251,20 @@ class Canvas extends Component {
 
           this.resizeVisuals();
           this.addToStage(this.visualsTextureSprite);
+
+          const ratioH = this.visualsTextureSprite.height / this.height;
+          this.subtitleText = new PIXI.Text(subtitle, this.subtitleTextStyle);
+          this.subtitleText.alpha = 0;
+          this.subtitleText.zIndex = 3;
+
+          this.resizeSubtitle();
+          this.addToStage(this.subtitleText);
+
           this.showingVisuals = true;
 
           const tl = new TimelineMax();
           !switchingVisuals && tl.fromTo(this.overlay, 0.2, { alpha: 0 }, { alpha: 0.85 });
-          tl.fromTo([this.visualsTextureSprite, this.subtitleText], 0.2, { alpha: 0 }, { alpha: 1 }, switchingVisuals ? 0 : 0.1);
+          tl.fromTo([this.visualsTextureSprite, (ratioH >= this.subtitleMinRatioH) ? this.subtitleText : null], 0.2, { alpha: 0 }, { alpha: 1 }, switchingVisuals ? 0 : 0.1);
         });
 
         this.visualsTextureSprite = new PIXI.Sprite.from(this.visualsTexture);
@@ -321,13 +327,18 @@ class Canvas extends Component {
 
     this.visualsTextureSprite.x = (this.width - this.visualsTextureSprite.width) / 2;
     this.visualsTextureSprite.y = (this.height - this.visualsTextureSprite.height) / 2;
-
-    if (this.subtitleText) {
-      const textMetrics = PIXI.TextMetrics.measureText(this.subtitleText.text, this.subtitleTextStyle);
-      this.subtitleText.x = (this.width - Math.floor(textMetrics.width)) / 2;
-      this.subtitleText.y = this.height - (1.5 * Math.floor(textMetrics.height));
-    }
   };
+
+  resizeSubtitle = (checkAlpha) => {
+    const textMetrics = PIXI.TextMetrics.measureText(this.subtitleText.text, this.subtitleTextStyle);
+    this.subtitleText.x = (this.width - Math.floor(textMetrics.width)) / 2;
+    this.subtitleText.y = this.height - (1.5 * Math.floor(textMetrics.height));
+
+    if (checkAlpha) {
+      const ratioH = this.visualsTextureSprite && this.visualsTextureSprite.height / this.height;
+      this.subtitleText.alpha = this.visualsTextureSprite && ratioH >= this.subtitleMinRatioH ? 1 : 0;
+    }
+  }
 
   addToStage = (child) => {
     this.stage.addChild(child);
@@ -437,13 +448,13 @@ class Canvas extends Component {
   };
 
   start = () => {
-    if (!this.isDisabled) {
+    if (this.isEnabled) {
       this.rAF = requestAnimationFrame(this.draw);
     }
   };
 
   stop = () => {
-    if (!this.isDisabled) {
+    if (this.isEnabled) {
       cancelAnimationFrame(this.rAF);
     }
   };
@@ -459,7 +470,12 @@ class Canvas extends Component {
     this.drawBackground();
     this.drawText();
     this.moveText();
-    this.showingVisuals && this.visualsTexture && this.resizeVisuals();
+
+    if (this.showingVisuals) {
+      this.visualsTexture && this.resizeVisuals();
+      this.subtitleText && this.resizeSubtitle(true);
+    }
+
     this.drawOverlay();
   };
 

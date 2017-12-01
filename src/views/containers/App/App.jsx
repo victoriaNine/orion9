@@ -75,12 +75,18 @@ class App extends Component {
     this.workIdsRegex = this.state.works.map(work => work.id).join('|');
     this.languageCodesRegex = _$.getAppLanguageList().join('|');
     this.rAF = null;
-    this.prevScrollTop = null;
+    this.scrollRatio = null;
     this.currentScrollRatio = 0;
 
-    // iPhone X hack
-    if (this.state.env.browser.name.match(/safari/i) && parseInt(this.state.env.browser.major, 10) >= 11) {
-      document.querySelector("meta[name=viewport]").content += ',viewport-fit=cover';
+    if (this.state.env.browser.name.match(/safari/i)) {
+      if (parseInt(this.state.env.browser.major, 10) >= 9) {
+        document.querySelector("meta[name=viewport]").content += ',shrink-to-fit=no';
+      }
+
+      // iPhone X hack
+      if (parseInt(this.state.env.browser.major, 10) >= 11) {
+        document.querySelector("meta[name=viewport]").content += ',viewport-fit=cover';
+      }
     }
 
     const withAppState = (component) => withHocWrapper(component, { appState: this.state, setAppState: this.setAppState });
@@ -95,9 +101,7 @@ class App extends Component {
   }
 
   componentDidMount () {
-    if (!this.state.env.device.type || !this.state.env.device.type.match("mobile|tablet")) {
-      this.rAF = requestAnimationFrame(this.paintGradient);
-    }
+    this.rAF = requestAnimationFrame(this.updateScrollRatio);
   }
 
   componentDidUpdate () {
@@ -127,11 +131,8 @@ class App extends Component {
   }
 
   updateGradient = () => {
-    const scrollRatio = this.getScrollRatio();
-    this.setState({ scrollRatio });
-
     const gradientOffset = this.getScrollingElement().scrollTop - (this.state.dom.appWrapper.offsetTop + this.state.dom.app.offsetTop);
-    TweenMax.to(this, 0.4, { currentScrollRatio: scrollRatio, onUpdate: () => {
+    TweenMax.to(this, 0.4, { currentScrollRatio: this.scrollRatio, onUpdate: () => {
       const string = `to bottom, rgba(0,0,0,1) ${gradientOffset}px, rgba(0,0,0,1) calc(60vh + ${gradientOffset}px), rgba(0,0,0,${this.currentScrollRatio}) calc(95vh + ${gradientOffset}px)`;
 
       this.state.dom.appWrapper.style.webkitMaskImage = `linear-gradient(${string})`;
@@ -139,12 +140,16 @@ class App extends Component {
     }});
   };
 
-  paintGradient = () => {
-    this.rAF = requestAnimationFrame(this.paintGradient);
+  updateScrollRatio = () => {
+    this.rAF = requestAnimationFrame(this.updateScrollRatio);
 
-    if (this.prevScrollTop !== this.getScrollingElement().scrollTop) {
-      this.updateGradient();
-      this.prevScrollTop = this.getScrollingElement().scrollTop;
+    if (this.scrollRatio !== this.getScrollRatio()) {
+      this.scrollRatio = this.getScrollRatio();
+      this.setState({ scrollRatio: this.scrollRatio });
+
+      if (!this.state.env.device.type || !this.state.env.device.type.match("mobile|tablet")) {
+        this.updateGradient();
+      }
     }
   };
 
@@ -152,6 +157,7 @@ class App extends Component {
     // https://stackoverflow.com/questions/2387136/cross-browser-method-to-determine-vertical-scroll-percentage-in-javascript
     const se = this.getScrollingElement();
     const h = document.querySelector('html');
+    const b = document.body;
     const st = 'scrollTop';
     const sh = 'scrollHeight';
 
@@ -159,7 +165,11 @@ class App extends Component {
       return 1;
     }
 
-    return (se[st] / (se[sh] - h.clientHeight));
+    const scrollTop = ((se[st] || b[st]) / (se[sh] - h.clientHeight));
+
+    return scrollTop > 1
+      ? 1 : scrollTop < 0
+        ? 0 : scrollTop;
   };
 
   getScrollingElement = () => document.scrollingElement || document.documentElement;

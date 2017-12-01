@@ -363,7 +363,7 @@ class Canvas extends Component {
 
     this.bgText.width = width;
     this.bgText.height = width * (source.naturalHeight / source.naturalWidth);
-    this.bgText.y = this.height - this.bgText.height;
+    TweenMax.to(this.bgText, 0.2, { y: this.height - this.bgText.height });
   };
 
   moveText = (skipAnim) => {

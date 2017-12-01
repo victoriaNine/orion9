@@ -40,8 +40,9 @@ class App extends Component {
     const pageName = _$.getPageName(window.location.pathname);
     const hash = window.location.hash.slice(1);
     const languageFromPath = _$.getLanguageFromPath(window.location.pathname) && _$.getLanguageFromPath(window.location.pathname)[1];
-    const languageFromNavigator = navigator.language.slice(0, 2).match(/^(fr|en|ja)$/)
-      ? _$.getAppLanguageCode(navigator.language.slice(0, 2))
+    const navigatorLanguage = navigator.language || navigator.browserLanguage;
+    const languageFromNavigator = navigatorLanguage.slice(0, 2).match(/^(fr|en|ja)$/)
+      ? _$.getAppLanguageCode(navigatorLanguage.slice(0, 2))
       : null;
 
     const audioCtx = this.getAudioContext();

@@ -8,7 +8,7 @@ const data = {
       jp: "こんにちは — Victoria Nineと言います。フランスのクリエーティブ・フロントエンド・デベロッパーと音楽家${note}です。",
     },
     baseline2: {
-      fr: <span>contente que vous soyez là !<br />une idée à partager ? contactez-moi</span>,
+      fr: <span>contente que vous soyez là !<br />une idée à partager ? contactez-moi</span>,
       en: <span>i'm glad you're stopping by!<br />have an idea to share? get in touch</span>,
       jp: <span>ここまで来てくれたよかった！<br />アイデアを共有したい場合は是非連絡してください。</span>,
     }

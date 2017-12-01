@@ -160,6 +160,10 @@ class Canvas extends Component {
   }
 
   componentWillReceiveProps (newProps) {
+    if (this.isDisabled) {
+      return;
+    }
+
     if (!this.showBgText && newProps.appState.loadingAnimComplete) {
       this.showBgText = true;
       TweenMax.to(this.bgText, 0.8, { alpha: 1 });

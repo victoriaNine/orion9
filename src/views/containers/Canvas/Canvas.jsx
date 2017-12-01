@@ -3,18 +3,25 @@ import { TweenMax, TimelineMax, Power0, RoughEase } from 'gsap';
 import * as PIXI from 'pixi.js';
 import 'pixi-filters';
 
+import logo from './assets/logo.png';
 import displacementTexture from './assets/displacementTexture.png';
 
 import styles from './Canvas.css';
 
 class Canvas extends Component {
-  isDisabled = false;
-  hasAudio = !!this.props.appState.audioCtx;
+  constructor (...args) {
+    super(...args);
+
+    const env = this.props.appState.env;
+    const isDesktop = !env.device.type || env.device.type === "desktop";
+
+    this.isDisabled = !isDesktop || env.browser.name.match(/(ie|edge)/i);
+    this.hasAudio = !!this.props.appState.audioCtx;
+  }
 
   componentDidMount () {
     this.width = window.innerWidth;
     this.height = window.innerHeight;
-    this.canvas2d = document.createElement("canvas");
     this.showingVisuals = false;
 
     // WebGL renderer and stage
@@ -38,21 +45,19 @@ class Canvas extends Component {
     */
 
     // Background
-    this.background = new PIXI.Graphics();
+    this.background = new PIXI.Sprite(PIXI.Texture.WHITE);
+    this.background.tint = 0x111111;
     this.background.zIndex = 0;
     this.addToStage(this.background);
 
     // Background text
-    this.bgTextString = "orion9";
-    this.bgTextWidthRatio = 1.75;
-    this.bgTextWidthBleedRatio = 0.2;
-    this.bgTextStyle = new PIXI.TextStyle({
-      fontFamily: 'Didot, serif',
-      fontSize: 1,
-      fill: 0x0F0F0F,
-    });
+    this.bgTextWidthRatio = 2;
 
-    this.bgText = new PIXI.Text(this.bgTextString, this.bgTextStyle);
+    const logoTexture = new PIXI.Texture.fromImage(logo);
+    logoTexture.baseTexture.once('loaded', () => {
+      this.drawText();
+    });
+    this.bgText = new PIXI.Sprite(logoTexture);
     this.bgText.alpha = 0;
     this.bgText.zIndex = 1;
     this.addToStage(this.bgText);
@@ -77,7 +82,8 @@ class Canvas extends Component {
     });
 
     // Overlay
-    this.overlay = new PIXI.Graphics();
+    this.overlay = new PIXI.Sprite(PIXI.Texture.WHITE);
+    this.overlay.tint = 0x000000;
     this.overlay.alpha = 0;
     this.overlay.zIndex = 4;
     this.addToStage(this.overlay);
@@ -103,12 +109,8 @@ class Canvas extends Component {
     this.displacementFilter.scale.x = 1;
 
     this.displacementTl = new TimelineMax({ paused: true, repeat: -1, yoyo: true });
-    this.displacementTl.to(this.displacementFilter.scale, 0.05, {
-      x: 50,
-    });
-    this.displacementTl.to(this.displacementFilter.scale, 0.05, {
-      x: 1,
-    });
+    this.displacementTl.to(this.displacementFilter.scale, 0.05, { x: 50 });
+    this.displacementTl.to(this.displacementFilter.scale, 0.05, { x: 1 });
     this.displacementTl.to(this.displacementFilter.scale, 0.1, {
       x: 100,
       repeat: 1,
@@ -250,7 +252,7 @@ class Canvas extends Component {
           this.showingVisuals = true;
 
           const tl = new TimelineMax();
-          !switchingVisuals && tl.fromTo(this.overlay, 0.2, { alpha: 0 }, { alpha: 1 });
+          !switchingVisuals && tl.fromTo(this.overlay, 0.2, { alpha: 0 }, { alpha: 0.85 });
           tl.fromTo([this.visualsTextureSprite, this.subtitleText], 0.2, { alpha: 0 }, { alpha: 1 }, switchingVisuals ? 0 : 0.1);
         });
 
@@ -333,27 +335,19 @@ class Canvas extends Component {
   }
 
   drawBackground = () => {
-    this.background.clear();
-    this.background.beginFill(0x111111);
-    this.background.drawRect(0, 0, this.width, this.height);
-    this.background.endFill();
+    this.background.cacheAsBitmap = false;
+    this.background.width = this.width;
+    this.background.height = this.height;
+    this.background.cacheAsBitmap = true;
   }
 
   drawText = () => {
-    this.bgTextStyle.fontSize = 1;
+    const width = this.width * this.bgTextWidthRatio;
+    const source = this.bgText.texture.baseTexture.source;
 
-    const context = this.canvas2d.getContext('2d');
-
-    context.save();
-    context.font = `${this.bgTextStyle.fontSize}px 'Didot, serif'`;
-    while (Math.floor(context.measureText(this.bgTextString).width) < this.width * (this.bgTextWidthRatio + this.bgTextWidthBleedRatio)) {
-      context.font = `${this.bgTextStyle.fontSize++}px 'Didot, serif'`;
-    }
-    context.restore();
-
-    const textMetrics = PIXI.TextMetrics.measureText(this.bgTextString, this.bgTextStyle);
-    this.bgText.style = this.bgTextStyle;
-    this.bgText.y = this.height - Math.floor(textMetrics.fontProperties.ascent);
+    this.bgText.width = width;
+    this.bgText.height = width * (source.naturalHeight / source.naturalWidth);
+    this.bgText.y = this.height - this.bgText.height;
   };
 
   moveText = (skipAnim) => {
@@ -379,7 +373,7 @@ class Canvas extends Component {
 
     function degToRad (deg) { return (deg * Math.PI) / 180; }
     function getNewX (scrollRatio) {
-      return -1 * ((this.bgText.width / 2) * scrollRatio) - (this.width * this.bgTextWidthBleedRatio / 4);
+      return -1 * ((this.bgText.width / 2) * scrollRatio);
     }
   };
 
@@ -395,10 +389,8 @@ class Canvas extends Component {
   };
 
   drawOverlay = () => {
-    this.overlay.clear();
-    this.overlay.beginFill(0x000000, 0.85);
-    this.overlay.drawRect(0, 0, this.width, this.height);
-    this.overlay.endFill();
+    this.overlay.width = this.width;
+    this.overlay.height = this.height;
   };
 
   drawWaveform = (dataArray) => {
@@ -457,6 +449,7 @@ class Canvas extends Component {
     this.width = DOM.width = window.innerWidth;
     this.height = DOM.height = window.innerHeight;
     this.renderer.resize(this.width, this.height);
+    this.stage.filterArea = new PIXI.Rectangle(0, 0, this.width, this.height);
 
     this.drawBackground();
     this.drawText();

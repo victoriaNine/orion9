@@ -248,6 +248,7 @@ class Canvas extends Component {
         this.visualsTexture.baseTexture.once("loaded", () => {
           // Abort if the visuals have been removed in the meantime
           if (!this.visualsTexture) {
+            this.removeVisuals();
             return;
           }
 

@@ -3,23 +3,31 @@ import { TweenMax, TimelineMax, Power0, RoughEase } from 'gsap';
 import * as PIXI from 'pixi.js';
 import 'pixi-filters';
 
+import logo from './assets/logo.png';
 import displacementTexture from './assets/displacementTexture.png';
 
 import styles from './Canvas.css';
 
 class Canvas extends Component {
-  isDisabled = false;
-  hasAudio = !!this.props.appState.audioCtx;
+  constructor (...args) {
+    super(...args);
+
+    const env = this.props.appState.env;
+
+    this.isEnabled = !env.browser.name.match(/(ie|edge)/i);
+    this.hasVisuals = !env.os.name.match(/ios/i);
+    this.hasAudio = !!this.props.appState.audioCtx;
+  }
 
   componentDidMount () {
     this.width = window.innerWidth;
     this.height = window.innerHeight;
-    this.canvas2d = document.createElement("canvas");
     this.showingVisuals = false;
 
     // WebGL renderer and stage
     this.renderer = new PIXI.WebGLRenderer(this.width, this.height, {
-      antialias: true,
+      legacy: true,
+      antialias: false,
       transparent: true,
       resolution: 1,
       view: this.props.appState.dom.canvas,
@@ -37,21 +45,19 @@ class Canvas extends Component {
     */
 
     // Background
-    this.background = new PIXI.Graphics();
+    this.background = new PIXI.Sprite(PIXI.Texture.WHITE);
+    this.background.tint = 0x111111;
     this.background.zIndex = 0;
     this.addToStage(this.background);
 
     // Background text
-    this.bgTextString = "orion9";
-    this.bgTextWidthRatio = 1.75;
-    this.bgTextWidthBleedRatio = 0.2;
-    this.bgTextStyle = new PIXI.TextStyle({
-      fontFamily: 'Didot, serif',
-      fontSize: 1,
-      fill: 0x0F0F0F,
-    });
+    this.bgTextWidthRatio = 2;
 
-    this.bgText = new PIXI.Text(this.bgTextString, this.bgTextStyle);
+    const logoTexture = new PIXI.Texture.fromImage(logo);
+    logoTexture.baseTexture.once('loaded', () => {
+      this.drawText();
+    });
+    this.bgText = new PIXI.Sprite(logoTexture);
     this.bgText.alpha = 0;
     this.bgText.zIndex = 1;
     this.addToStage(this.bgText);
@@ -67,6 +73,7 @@ class Canvas extends Component {
     this.visualsTextureSprite = null;
 
     // Subtitle
+    this.subtitleMinRatioH = 1.2;
     this.subtitleText = null;
     this.subtitleTextStyle = new PIXI.TextStyle({
       fontFamily: 'Futura Std, sans-serif',
@@ -76,7 +83,8 @@ class Canvas extends Component {
     });
 
     // Overlay
-    this.overlay = new PIXI.Graphics();
+    this.overlay = new PIXI.Sprite(PIXI.Texture.WHITE);
+    this.overlay.tint = 0x000000;
     this.overlay.alpha = 0;
     this.overlay.zIndex = 4;
     this.addToStage(this.overlay);
@@ -102,12 +110,8 @@ class Canvas extends Component {
     this.displacementFilter.scale.x = 1;
 
     this.displacementTl = new TimelineMax({ paused: true, repeat: -1, yoyo: true });
-    this.displacementTl.to(this.displacementFilter.scale, 0.05, {
-      x: 50,
-    });
-    this.displacementTl.to(this.displacementFilter.scale, 0.05, {
-      x: 1,
-    });
+    this.displacementTl.to(this.displacementFilter.scale, 0.05, { x: 50 });
+    this.displacementTl.to(this.displacementFilter.scale, 0.05, { x: 1 });
     this.displacementTl.to(this.displacementFilter.scale, 0.1, {
       x: 100,
       repeat: 1,
@@ -157,28 +161,32 @@ class Canvas extends Component {
   }
 
   componentWillReceiveProps (newProps) {
-    if (!this.showBgText && newProps.appState.loadingAnimComplete) {
-      this.showBgText = true;
-      TweenMax.to(this.bgText, 0.8, { alpha: 1 });
+    if (this.isEnabled) {
+      if (!this.showBgText && newProps.appState.loadingAnimComplete) {
+        this.showBgText = true;
+        TweenMax.to(this.bgText, 0.8, { alpha: 1 });
+      }
+
+      if (newProps.scrollRatio !== this.scrollRatio) {
+        this.scrollRatio = newProps.scrollRatio;
+        !this.showingVisuals && this.moveText();
+      }
+
+      if (newProps.isWavingText !== this.isWavingText) {
+        this.isWavingText = newProps.isWavingText;
+        this.waveText();
+      }
+
+      if (this.hasVisuals) {
+        // Debounce calls to the update method
+        clearTimeout(this.updateVisualsTimeout);
+
+        this.updateVisualsTimeout = setTimeout(() => {
+          this.updateVisualsTimeout = null;
+          this.updateVisuals(newProps.visuals);
+        }, this.updateVisualsTimeout === null ? 0 : 500);
+      }
     }
-
-    if (newProps.scrollRatio !== this.scrollRatio) {
-      this.scrollRatio = newProps.scrollRatio;
-      !this.showingVisuals && this.moveText();
-    }
-
-    if (newProps.isWavingText !== this.isWavingText) {
-      this.isWavingText = newProps.isWavingText;
-      this.waveText();
-    }
-
-    // Debounce calls to the update method
-    clearTimeout(this.updateVisualsTimeout);
-
-    this.updateVisualsTimeout = setTimeout(() => {
-      this.updateVisualsTimeout = null;
-      this.updateVisuals(newProps.visuals);
-    }, this.updateVisualsTimeout === null ? 0 : 500);
   }
 
   updateVisuals = (visualsInfo) => {
@@ -188,8 +196,8 @@ class Canvas extends Component {
       if (this.visualsInfo) {
         this.setVisuals();
       } else {
+        this.moveText(true);
         this.removeVisuals();
-        this.moveText();
       }
     }
   };
@@ -222,35 +230,41 @@ class Canvas extends Component {
 
     function proceed () {
       if (this.visualsInfo && this.visualsInfo.url) {
-        this.visualsTexture = this.visualsInfo.type === "video"
+        const isVideo = this.visualsInfo.type === "video";
+        this.visualsTexture = isVideo
           ? PIXI.Texture.fromVideo(this.visualsInfo.url)
           : PIXI.Texture.fromImage(this.visualsInfo.url);
 
-        if (this.visualsInfo.type === "video") {
-          this.visualsTexture.baseTexture.source.muted = true;
-          this.visualsTexture.baseTexture.source.loop = true;
-        }
+        const source = this.visualsTexture.baseTexture.source;
 
-        if (subtitle) {
-          this.subtitleText = new PIXI.Text(subtitle, this.subtitleTextStyle);
-          this.subtitleText.alpha = 0;
-          this.subtitleText.zIndex = 3;
-          this.addToStage(this.subtitleText);
+        if (isVideo) {
+          source.muted = true;
+          source.loop = true;
         }
 
         this.visualsTexture.baseTexture.once("loaded", () => {
           // Abort if the visuals have been removed in the meantime
           if (!this.visualsTexture) {
+            this.removeVisuals();
             return;
           }
 
           this.resizeVisuals();
           this.addToStage(this.visualsTextureSprite);
+
+          const ratioH = this.visualsTextureSprite.height / this.height;
+          this.subtitleText = new PIXI.Text(subtitle, this.subtitleTextStyle);
+          this.subtitleText.alpha = 0;
+          this.subtitleText.zIndex = 3;
+
+          this.resizeSubtitle();
+          this.addToStage(this.subtitleText);
+
           this.showingVisuals = true;
 
           const tl = new TimelineMax();
-          !switchingVisuals && tl.fromTo(this.overlay, 0.2, { alpha: 0 }, { alpha: 1 });
-          tl.fromTo([this.visualsTextureSprite, this.subtitleText], 0.2, { alpha: 0 }, { alpha: 1 }, switchingVisuals ? 0 : 0.1);
+          !switchingVisuals && tl.fromTo(this.overlay, 0.2, { alpha: 0 }, { alpha: 0.85 });
+          tl.fromTo([this.visualsTextureSprite, (ratioH >= this.subtitleMinRatioH) ? this.subtitleText : null], 0.2, { alpha: 0 }, { alpha: 1 }, switchingVisuals ? 0 : 0.1);
         });
 
         this.visualsTextureSprite = new PIXI.Sprite.from(this.visualsTexture);
@@ -313,13 +327,18 @@ class Canvas extends Component {
 
     this.visualsTextureSprite.x = (this.width - this.visualsTextureSprite.width) / 2;
     this.visualsTextureSprite.y = (this.height - this.visualsTextureSprite.height) / 2;
-
-    if (this.subtitleText) {
-      const textMetrics = PIXI.TextMetrics.measureText(this.subtitleText.text, this.subtitleTextStyle);
-      this.subtitleText.x = (this.width - Math.floor(textMetrics.width)) / 2;
-      this.subtitleText.y = this.height - (1.5 * Math.floor(textMetrics.height));
-    }
   };
+
+  resizeSubtitle = (checkAlpha) => {
+    const textMetrics = PIXI.TextMetrics.measureText(this.subtitleText.text, this.subtitleTextStyle);
+    this.subtitleText.x = (this.width - Math.floor(textMetrics.width)) / 2;
+    this.subtitleText.y = this.height - (1.5 * Math.floor(textMetrics.height));
+
+    if (checkAlpha) {
+      const ratioH = this.visualsTextureSprite && this.visualsTextureSprite.height / this.height;
+      this.subtitleText.alpha = this.visualsTextureSprite && ratioH >= this.subtitleMinRatioH ? 1 : 0;
+    }
+  }
 
   addToStage = (child) => {
     this.stage.addChild(child);
@@ -332,30 +351,28 @@ class Canvas extends Component {
   }
 
   drawBackground = () => {
-    this.background.clear();
-    this.background.beginFill(0x111111);
-    this.background.drawRect(0, 0, this.width, this.height);
-    this.background.endFill();
+    this.background.cacheAsBitmap = false;
+    this.background.width = this.width;
+    this.background.height = this.height;
+    this.background.cacheAsBitmap = true;
   }
 
   drawText = () => {
-    this.bgTextStyle.fontSize = 1;
+    const width = this.width * this.bgTextWidthRatio;
+    const source = this.bgText.texture.baseTexture.source;
 
-    const context = this.canvas2d.getContext('2d');
-
-    context.save();
-    context.font = `${this.bgTextStyle.fontSize}px 'Didot, serif'`;
-    while (Math.floor(context.measureText(this.bgTextString).width) < this.width * (this.bgTextWidthRatio + this.bgTextWidthBleedRatio)) {
-      context.font = `${this.bgTextStyle.fontSize++}px 'Didot, serif'`;
-    }
-    context.restore();
-
-    const textMetrics = PIXI.TextMetrics.measureText(this.bgTextString, this.bgTextStyle);
-    this.bgText.style = this.bgTextStyle;
-    this.bgText.y = this.height - Math.floor(textMetrics.fontProperties.ascent);
+    this.bgText.width = width;
+    this.bgText.height = width * (source.naturalHeight / source.naturalWidth);
+    this.bgText.y = this.height - this.bgText.height;
   };
 
-  moveText = () => {
+  moveText = (skipAnim) => {
+    if (skipAnim) {
+      this.currentScrollRatio = this.scrollRatio;
+      this.bgText.x = getNewX.call(this, this.currentScrollRatio);
+      return;
+    }
+
     TweenMax.killTweensOf(this, { currentScrollRatio: true });
     TweenMax.killTweensOf(this.bgText.skew, { x: true });
     const direction = this.scrollRatio > this.currentScrollRatio ? -1 : 1;
@@ -365,12 +382,15 @@ class Canvas extends Component {
     tl.to(this, 0.4, {
       currentScrollRatio: this.scrollRatio,
       onUpdate: () => {
-        this.bgText.x = -1 * ((this.bgText.width / 2) * this.currentScrollRatio) - (this.width * this.bgTextWidthBleedRatio / 4);
+        this.bgText.x = getNewX.call(this, this.currentScrollRatio);
       }
     }, 0);
     tl.to(this.bgText.skew, 0.4, { x: 0 }, "-=0.2");
 
     function degToRad (deg) { return (deg * Math.PI) / 180; }
+    function getNewX (scrollRatio) {
+      return -1 * ((this.bgText.width / 2) * scrollRatio);
+    }
   };
 
   waveText = () => {
@@ -385,10 +405,8 @@ class Canvas extends Component {
   };
 
   drawOverlay = () => {
-    this.overlay.clear();
-    this.overlay.beginFill(0x000000, 0.85);
-    this.overlay.drawRect(0, 0, this.width, this.height);
-    this.overlay.endFill();
+    this.overlay.width = this.width;
+    this.overlay.height = this.height;
   };
 
   drawWaveform = (dataArray) => {
@@ -430,13 +448,13 @@ class Canvas extends Component {
   };
 
   start = () => {
-    if (!this.isDisabled) {
+    if (this.isEnabled) {
       this.rAF = requestAnimationFrame(this.draw);
     }
   };
 
   stop = () => {
-    if (!this.isDisabled) {
+    if (this.isEnabled) {
       cancelAnimationFrame(this.rAF);
     }
   };
@@ -447,11 +465,17 @@ class Canvas extends Component {
     this.width = DOM.width = window.innerWidth;
     this.height = DOM.height = window.innerHeight;
     this.renderer.resize(this.width, this.height);
+    this.stage.filterArea = new PIXI.Rectangle(0, 0, this.width, this.height);
 
     this.drawBackground();
     this.drawText();
     this.moveText();
-    this.showingVisuals && this.visualsTexture && this.resizeVisuals();
+
+    if (this.showingVisuals) {
+      this.visualsTexture && this.resizeVisuals();
+      this.subtitleText && this.resizeSubtitle(true);
+    }
+
     this.drawOverlay();
   };
 

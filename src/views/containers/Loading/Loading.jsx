@@ -26,7 +26,7 @@ class Loading extends Component {
   };
 
   play = () => {
-    const { audioCtx, env, audio } = this.props.appState;
+    const { audioCtx, audio } = this.props.appState;
 
     const messages = [
       "|",
@@ -89,7 +89,7 @@ class Loading extends Component {
 
     tl.addLabel("messagesDone");
 
-    audioCtx && (!env.device.type || env.device.type === "desktop") && tl.call(() => {
+    audioCtx && tl.call(() => {
       Tone.Master.mute = true;
 
       const sequence = new Tone.Sequence((time, note) => {

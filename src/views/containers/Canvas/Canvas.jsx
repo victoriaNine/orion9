@@ -15,7 +15,7 @@ class Canvas extends Component {
     const env = this.props.appState.env;
 
     this.isEnabled = !env.browser.name.match(/(ie|edge)/i);
-    this.hasVisuals = !env.os.name.match(/ios/i);
+    this.hasVisuals = env.os.name.match(/ios/i) ? parseFloat(env.os.version) >= 11 : true;
     this.hasAudio = !!this.props.appState.audioCtx;
   }
 
@@ -238,8 +238,10 @@ class Canvas extends Component {
         const source = this.visualsTexture.baseTexture.source;
 
         if (isVideo) {
-          source.muted = true;
-          source.loop = true;
+          source.autoplay = false;
+          source.setAttribute("muted", "");
+          source.setAttribute("loop", "");
+          source.setAttribute("playsinline", "");
         }
 
         this.visualsTexture.baseTexture.once("loaded", () => {
@@ -251,6 +253,7 @@ class Canvas extends Component {
 
           this.resizeVisuals();
           this.addToStage(this.visualsTextureSprite);
+          isVideo && source.play();
 
           const ratioH = this.visualsTextureSprite.height / this.height;
           this.subtitleText = new PIXI.Text(subtitle, this.subtitleTextStyle);

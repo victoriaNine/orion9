@@ -12,7 +12,8 @@
     "prebuild": "mkdirp dist",
     "test": "npm run -s lint && jest --coverage",
     "test:watch": "npm run -s test -- --watch",
-    "lint": "eslint src test"
+    "lint": "eslint src test",
+    "copyModules": "babel-node ./internal/copyModules.js"
   },
   "jest": {
     "setupFiles": [
@@ -94,6 +95,7 @@
   "dependencies": {
     "classnames": "^2.2.5",
     "gsap": "^1.20.3",
+    "mo-js": "^0.288.2",
     "pixi-filters": "^2.3.1",
     "pixi.js": "^4.6.1",
     "postcss-cssnext": "^3.0.2",

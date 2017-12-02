@@ -18,7 +18,7 @@ let appDOM;
 let initialized = false;
 const appNode = <App ref={(ref) => { appDOM = ref.base; }}/>;
 
-function init() {
+function init () {
   if (initialized) {
     root = render(appNode, document.body, root);
   } else {

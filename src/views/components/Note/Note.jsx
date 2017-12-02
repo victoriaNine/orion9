@@ -3,7 +3,7 @@ import { h, Component } from 'preact';
 import styles from './Note.css';
 
 class Note extends Component {
-  componentDidMount() {
+  componentDidMount () {
     this.props.onMount(this.DOM);
   }
 

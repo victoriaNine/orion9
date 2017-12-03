@@ -95,7 +95,7 @@ const data = {
       items: [
         {
           title: { fr: "M'écrire un mail", en: "Send me an email", jp: "メールを送る" },
-          url: "mailto:victoria-nine[ at ]orion9.net"
+          url: "mailto:victoria-nine[ at ]orion9[ dot ]net"
         },
         {
           title: { fr: "M'envoyer un tweet", en: "Tweet me something", jp: "ツイートする" },

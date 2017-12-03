@@ -421,8 +421,6 @@ class Canvas extends Component {
 
     this.visualizer.clear();
     for (let i = 0; i <= nbEQband; i++) {
-      // const pointNb = Math.ceil(i * (dataArray.length / nbEQband));
-
       this.visualizer.beginFill(0xFF0000);
       this.visualizer.drawRect(i * bandWidth - pointSize, top - (dataArray[i] * zoom), pointSize, pointSize);
       this.visualizer.endFill();

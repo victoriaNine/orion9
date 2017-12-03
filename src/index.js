@@ -1,6 +1,6 @@
 import 'isomorphic-fetch';
 import 'babel-polyfill';
-import /*preact,*/ { h, render } from 'preact';
+import { h, render } from 'preact';
 
 import App from 'Containers/App';
 
@@ -9,8 +9,6 @@ if (!__IS_DEV__) {
   require('Internal/pwa');
 } else {
   require('Internal/stats').default();
-  /*const { whyDidYouUpdate } = require('why-did-you-update');
-  whyDidYouUpdate(preact);*/
 }
 
 let root;
@@ -29,9 +27,8 @@ function init () {
   }
 }
 
-// in development, set up HMR:
 if (module.hot) {
-  require('preact/devtools');   // turn this on if you want to enable React DevTools!
+  require('preact/devtools');
   module.hot.accept('Containers/App', () => requestAnimationFrame(init) );
 }
 

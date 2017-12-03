@@ -80,46 +80,6 @@ const data = {
         }
       ]
     },
-    /*{
-      name: "experiments",
-      title: { fr: "Expériences", en: "Experiments", jp: "試験" },
-      items: [
-        {
-          id: "meteorRain",
-          title: "Meteor Rain",
-          type: "experiment",
-          url: "http://orion9.net/_demos/meteorRain",
-          details: {
-            role: ["dev", "design"],
-            stack: ["vanillajs", "canvas", "svg"],
-            about: {
-              fr: "Une animation inspirée par un artwork de Budi Satria Kwan.",
-              en: "An animation inspired by one of Budi Satria Kwan's artworks.",
-              jp: "Budi Satria Kwanの作品の一つに触発されたアニメーション。"
-            }
-          },
-          color: "#d44b30",
-          visuals: { type: "video", url: "" }
-        },
-        {
-          id: "intertap",
-          title: "Intertap",
-          type: "experiment",
-          url: "http://orion9.net/_demos/intertap",
-          details: {
-            role: ["dev", "design", "audio", "sd"],
-            stack: ["custom framework", "webaudio", "canvas"],
-            about: {
-              fr: "Un concept d'interface basé sur le projet Intertap d'Ilya Burakov",
-              en: "An interface concept based on Ilya Burakov's Intertap project.",
-              jp: "Ilya Burakovの「Intertap」と言うプロジェクトに基づくインターフェースの概念。"
-            }
-          },
-          color: "#e4347a",
-          visuals: { type: "video", url: "" }
-        }
-      ]
-    },*/
     {
       name: "clientsAgencies",
       title: { fr: "Clients & Agences", en: "Clients & Agencies", jp: "クライアントとエージェンシー" },

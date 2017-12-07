@@ -8,5 +8,5 @@
   e.src="//www.google-analytics.com/analytics.js";
   r.parentNode.insertBefore(e,r);
 }(window,document,"script","ga"));
-window.ga("create","UA-89445990-1");
+window.ga("create","UA-43190815-1");
 window.ga("send","pageview");

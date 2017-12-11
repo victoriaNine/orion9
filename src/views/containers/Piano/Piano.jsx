@@ -9,20 +9,25 @@ import * as _$ from 'utils';
 import styles from './Piano.css';
 
 class Piano extends Component {
-  keysDOM = {};
-  layout = this.props.language === 'fr' ? 'azerty' : 'qwerty';
-  keyWidth = 30;
-  keyGap = 4;
-  keySpacing = this.keyWidth + this.keyGap;
-  pointerType = this.props.appState.pointerType;
+  constructor (...args) {
+    super(...args);
 
-  isPressing = false;
-  pointerPressedKeys = [];
+    this.layout = this.getKeyLayout(this.props.language);
+    this.pointerType = this.props.appState.pointerType;
 
-  isPlaying = false;
+    this.keysDOM = {};
+    this.keyWidth = 30;
+    this.keyGap = 4;
+    this.keySpacing = this.keyWidth + this.keyGap;
 
-  synth = this.props.appState.audio.synth;
-  midiInput = null;
+    this.isPressing = false;
+    this.pointerPressedKeys = [];
+
+    this.isPlaying = false;
+
+    this.synth = this.props.appState.audio.synth;
+    this.midiInput = null;
+  }
 
   componentDidMount () {
     document.querySelector("html").classList.add("scrollingLocked");
@@ -73,7 +78,7 @@ class Piano extends Component {
   }
 
   componentWillReceiveProps (newProps) {
-    this.layout = newProps.language === 'fr' ? 'azerty' : 'qwerty';
+    this.layout = this.getKeyLayout(newProps.language);
     this.pointerType = newProps.appState.pointerType;
     this.synth = newProps.appState.audio.synth;
 
@@ -90,6 +95,10 @@ class Piano extends Component {
   componentWillLeave (callback) {
     _$.transitionOut(this.DOM, callback);
   }
+
+  getKeyLayout = (language) => {
+    return language === 'fr' ? 'azerty' : 'qwerty';
+  };
 
   fadeInKeys = () => {
     const tl = new TimelineMax();
@@ -268,6 +277,7 @@ class Piano extends Component {
     const blackKeys = data.keys.filter((key) => !!key.note.match("#")).map((key, index) => {
       prevX += this.keySpacing;
 
+      // Add spacing to form group of 2 and 3 keys
       if ((index % 5 === 2) || (index % 5 === 0 && index !== 0)) {
         prevX += this.keySpacing;
       }
@@ -287,11 +297,15 @@ class Piano extends Component {
   };
 
   parseNoteName = (note) => {
+    // Get the note name using the notation system corresponding to the keyboard layout
+    // (azerty => 'Do Ré Mi Fa Sol La Si' / qwerty => 'A B C D E F G')
     return data.noteNames[note.at(0)][this.layout] + note.slice(1);
   };
 
   render () {
     const { language, appState } = this.props;
+
+    // Get the current layout's key map
     const keyLayout = Object.keys(data.keyLayout).reduce((acc, keyCode) => (
       { ...acc, [keyCode]: data.keyLayout[keyCode][this.layout] }
     ), {});

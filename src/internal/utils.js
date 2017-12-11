@@ -1,9 +1,19 @@
+import { TimelineMax } from 'gsap';
+
+
+/******
+// DOM Events
+*******/
 const eventsMap = {
   down: { touch: 'touchstart', desktop: 'mousedown' },
   up: { touch: 'touchend', desktop: 'mouseup' },
   move: { touch: 'touchmove', desktop: 'mousemove' },
 };
 
+
+/******
+// Language
+*******/
 const navigatorToAppLanguageCode = {
   fr: 'fr',
   en: 'en',
@@ -70,6 +80,10 @@ function getNavigatorLanguageCode (code) {
   return code;
 }
 
+
+/******
+// JSX
+*******/
 function replaceStringToJSX (string, match, jsx, join) {
   const result = [];
 
@@ -81,9 +95,35 @@ function replaceStringToJSX (string, match, jsx, join) {
   return join ? result.join("") : result;
 }
 
+
+/******
+// DOM
+*******/
 function getFirstChild (props) {
   return props.children[0] || null;
 }
+
+
+/******
+// Transitions
+*******/
+const transitionYDelta = 12;
+
+// Generic transition
+function transitionIn (element, callback) {
+  const tl = new TimelineMax({ delay: 0.2, onComplete: () => { callback && callback(); } });
+  tl.from(element, 0.2, { opacity: 0, y: -1 * transitionYDelta, clearProps: "all" });
+
+  return tl;
+}
+
+function transitionOut (element, callback) {
+  const tl = new TimelineMax({ onComplete: () => { callback && callback(); } });
+  tl.to(element, 0.2, { opacity: 0, y: -1 * transitionYDelta, clearProps: "all" });
+
+  return tl;
+}
+
 
 export {
   eventsMap,
@@ -99,4 +139,8 @@ export {
   getDefaultLanguageCode,
   replaceStringToJSX,
   getFirstChild,
+
+  transitionYDelta,
+  transitionIn,
+  transitionOut,
 };

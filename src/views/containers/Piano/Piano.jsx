@@ -83,23 +83,21 @@ class Piano extends Component {
   }
 
   componentWillEnter (callback) {
-    const tl = new TimelineMax({ delay: 0.2, onComplete: () => { callback && callback(); } });
-    tl.from(this.DOM, 0.2, { opacity: 0, y: -12, clearProps: "all" });
+    const tl = _$.transitionIn(this.DOM, callback);
     tl.add(this.fadeInKeys(), 0);
   }
 
   componentWillLeave (callback) {
-    const tl = new TimelineMax({ onComplete: () => { callback && callback(); } });
-    tl.to(this.DOM, 0.2, { opacity: 0, y: -12, clearProps: "all" });
+    _$.transitionOut(this.DOM, callback);
   }
 
   fadeInKeys = () => {
     const tl = new TimelineMax();
-    tl.staggerFrom(this.DOM.querySelectorAll(`.${styles.key}:not(.${styles.isAccidental})`), 0.2, { opacity: 0, y: "-=12", clearProps: "opacity" }, 0.04);
-    tl.staggerFrom(this.DOM.querySelectorAll(`.${styles.key}.${styles.isAccidental}`), 0.2, { opacity: 0, y: "-=12", clearProps: "opacity" }, 0.04, 0);
+    tl.staggerFrom(this.DOM.querySelectorAll(`.${styles.key}:not(.${styles.isAccidental})`), 0.2, { opacity: 0, y: `-=${_$.transitionYDelta}`, clearProps: "opacity" }, 0.04);
+    tl.staggerFrom(this.DOM.querySelectorAll(`.${styles.key}.${styles.isAccidental}`), 0.2, { opacity: 0, y: `-=${_$.transitionYDelta}`, clearProps: "opacity" }, 0.04, 0);
 
     return tl;
-  }
+  };
 
   enable = () => {
     Tone.Master.mute = false;

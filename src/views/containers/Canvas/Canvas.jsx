@@ -267,7 +267,10 @@ class Canvas extends Component {
 
           const tl = new TimelineMax();
           !switchingVisuals && tl.fromTo(this.overlay, 0.2, { alpha: 0 }, { alpha: 0.85 });
-          tl.fromTo([this.visualsTextureSprite, (ratioH >= this.subtitleMinRatioH) ? this.subtitleText : null], 0.2, { alpha: 0 }, { alpha: 1 }, switchingVisuals ? 0 : 0.1);
+          tl.fromTo(
+            [this.visualsTextureSprite, (ratioH >= this.subtitleMinRatioH) ? this.subtitleText : null],
+            0.2, { alpha: 0 }, { alpha: 1 }, switchingVisuals ? 0 : 0.1
+          );
         });
 
         this.visualsTextureSprite = new PIXI.Sprite.from(this.visualsTexture);
@@ -341,7 +344,7 @@ class Canvas extends Component {
       const ratioH = this.visualsTextureSprite && this.visualsTextureSprite.height / this.height;
       this.subtitleText.alpha = this.visualsTextureSprite && ratioH >= this.subtitleMinRatioH ? 1 : 0;
     }
-  }
+  };
 
   addToStage = (child) => {
     this.stage.addChild(child);
@@ -351,14 +354,14 @@ class Canvas extends Component {
   removeFromStage = (child) => {
     this.stage.removeChild(child);
     this.stage.children.sort((a, b) => a.zIndex > b.zIndex);
-  }
+  };
 
   drawBackground = () => {
     this.background.cacheAsBitmap = false;
     this.background.width = this.width;
     this.background.height = this.height;
     this.background.cacheAsBitmap = true;
-  }
+  };
 
   drawText = () => {
     const width = this.width * this.bgTextWidthRatio;

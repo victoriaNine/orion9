@@ -1,6 +1,7 @@
 import classnames from 'classnames';
 import { h, Component } from 'preact';
-import { TimelineMax } from 'gsap';
+
+import * as _$ from 'utils';
 
 import styles from './DefaultHeadline.css';
 
@@ -10,13 +11,11 @@ class DefaultHeadline extends Component {
   }
 
   componentWillEnter (callback) {
-    const tl = new TimelineMax({ delay: 0.2, onComplete: () => { callback(); } });
-    tl.from(this.DOM, 0.2, { opacity: 0, y: -12, clearProps: "all" });
+    _$.transitionIn(this.DOM, callback);
   }
 
   componentWillLeave (callback) {
-    const tl = new TimelineMax({ onComplete: () => { callback(); } });
-    tl.to(this.DOM, 0.2, { opacity: 0, y: -12, clearProps: "all" });
+    _$.transitionOut(this.DOM, callback);
   }
 
   setDOM = (ref) => { this.DOM = ref; };

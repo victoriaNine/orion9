@@ -3,6 +3,7 @@ import { TweenMax, TimelineMax, Power2 } from 'gsap';
 
 import Section from 'Containers/Section';
 import data from './Home.data';
+import * as _$ from 'utils';
 
 import styles from './Home.css';
 
@@ -22,7 +23,7 @@ class Home extends Component {
     const tl = new TimelineMax({ delay: 0.4, onComplete: () => { callback && callback(); } });
     tl.set(this.DOM.parentNode, { height: "100vh" });
     tl.set(this.DOM, { position: "absolute" });
-    tl.from(this.DOM, 0.4, { opacity: 0, y: 12, clearProps: "all" });
+    tl.from(this.DOM, 0.4, { opacity: 0, y: _$.transitionYDelta, clearProps: "all" });
     tl.set(this.DOM.parentNode, { clearProps: "height" });
   }
 
@@ -30,7 +31,7 @@ class Home extends Component {
     const tl = new TimelineMax({ onComplete: () => { callback && callback(); } });
     tl.set(this.DOM.parentNode, { height: "100vh" });
     tl.set(this.DOM, { position: "absolute" });
-    tl.to(this.DOM, 0.4, { opacity: 0, y: 12, clearProps: "all" });
+    tl.to(this.DOM, 0.4, { opacity: 0, y: _$.transitionYDelta, clearProps: "all" });
   }
 
   setDOM = (ref) => { this.DOM = ref; };

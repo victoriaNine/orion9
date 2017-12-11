@@ -41,7 +41,7 @@ class App extends Component {
     const hash = window.location.hash.slice(1);
     const languageFromPath = _$.getLanguageFromPath(window.location.pathname) && _$.getLanguageFromPath(window.location.pathname)[1];
     const navigatorLanguage = navigator.language || navigator.browserLanguage;
-    const languageFromNavigator = navigatorLanguage.slice(0, 2).match(/^(fr|en|ja)$/)
+    const languageFromNavigator = navigatorLanguage.slice(0, 2).match(new RegExp(`^(${_$.getAppLanguageList().join('|')})$`))
       ? _$.getAppLanguageCode(navigatorLanguage.slice(0, 2))
       : null;
 

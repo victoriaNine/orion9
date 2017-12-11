@@ -10,7 +10,32 @@ const data = {
   sections: [
     {
       title: { fr: "Compétences & Outils", en: "Skills & Tools", jp: "スキルとツール" },
-      text: "HTML5, CSS3, ES2017+, PostCSS, SASS, Greensock, mo.js, Canvas, PixiJS, SeriouslyJS, WebAudio API, Tone.js, Gamepad API, jQuery, React, Preact, Backbone, Webpack, RequireJS, Grunt, lodash, Jest, Enzyme, Socket.io, CouchDB, Node.js, Git, Homemade framework development, Photoshop, Illustrator, Premiere Pro, Design, Audio"
+      text: "HTML5, CSS3, ES2017+, PostCSS, SASS, Greensock, mo.js, Canvas, PixiJS, SeriouslyJS, WebAudio API, Tone.js, Gamepad API, jQuery, React, Preact, Backbone, Webpack, RequireJS, Grunt, lodash, Jest, Enzyme, Socket.io, CouchDB, Node.js, Git, Yarn, Homemade framework development, Photoshop, Illustrator, Premiere Pro, Design, Audio"
+    },
+    {
+      title: { fr: "Récompenses", en: "Awards", jp: "受賞" },
+      items: [
+        {
+          title: "The FWA - Outcast: The Possession Begins - Site of The Day",
+          url: "https://thefwa.com/cases/outcast-interactive-trailer-possession-begins"
+        },
+        {
+          title: "The FWA - Canada Goose: OUT THERE - Site of The Day",
+          url: "https://thefwa.com/cases/canada-goose-out-there"
+        },
+        {
+          title: "Awwwards - orion9 - Honorable Mention",
+          url: "https://www.awwwards.com/sites/orion9"
+        },
+        {
+          title: "Awwwards - orion9 - Google Mobile Excellence",
+          url: "https://www.awwwards.com/sites/orion9/mobile-excellence"
+        },
+        {
+          title: "CSS Design Awards - orion9 - Special Kudos",
+          url: "https://www.cssdesignawards.com/sites/orion9/31941"
+        },
+      ]
     },
     {
       title: { fr: "Divers", en: "Trivia", jp: "豆知識" },

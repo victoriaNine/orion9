@@ -42,8 +42,8 @@ class List extends Component {
                   item.details && (
                     <Link to={`/work/${item.id}`} onClick={() => { this.onDeselect(item, index); }}>
                       <div className={styles.title}>{ linkTitle }</div>
-                      <div className={styles.detailsWrapper}>
-                        <div className={styles.dash} /><div className={styles.details}>{data.translations.more[language]}</div>
+                      <div className={styles.baselineWrapper}>
+                        <div className={styles.dash} /><div className={styles.baseline}>{data.translations.more[language]}</div>
                       </div>
                     </Link>
                   )

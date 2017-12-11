@@ -29,14 +29,14 @@
       font-family: var(--font_didot);
     }
 
-    .detailsWrapper {
+    .baselineWrapper {
       opacity: 1;
       margin: 0.5em 0;
       height: auto;
     }
 
     .dash { opacity: 1; transform: scaleX(1); }
-    .details { opacity: 1; transform: translateX(0); }
+    .baseline { opacity: 1; transform: translateX(0); }
   }
 }
 
@@ -46,7 +46,7 @@
   transition: color 200ms, transform 200ms;
 }
 
-.detailsWrapper {
+.baselineWrapper {
   font-size: var(--fontSize_listDetails);
   display: flex;
   align-items: center;
@@ -62,7 +62,7 @@
   transition: transform 200ms 100ms, opacity 200ms 100ms;
 }
 
-.details {
+.baseline {
   opacity: 0;
   transform: translateX(1em);
   transition: transform 200ms 200ms, opacity 200ms 200ms;

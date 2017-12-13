@@ -19,6 +19,7 @@ module.exports = {
       }
     },
     'postcss-cssnext': { browsers: ['last 2 versions', 'ie 10-11', 'Safari >= 8'] },
+    'postcss-icss-values': {},
     'precss': {},
   },
 };

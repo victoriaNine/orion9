@@ -16,8 +16,8 @@ class Piano extends Component {
     this.pointerType = this.props.appState.pointerType;
 
     this.keysDOM = {};
-    this.keyWidth = 30;
-    this.keyGap = 4;
+    this.keyWidth = parseFloat(styles.keyWidth);
+    this.keyGap = parseFloat(styles.keyGap);
     this.keySpacing = this.keyWidth + this.keyGap;
 
     this.isPressing = false;

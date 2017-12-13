@@ -8,6 +8,11 @@
   --count_blackKeys: 10;
 }
 
+:export {
+  keyWidth: var(--size_keyWidth);
+  keyGap: var(--size_keyGap);
+}
+
 .Piano {
   width: 535px;
   font-family: var(--font_futura);

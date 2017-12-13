@@ -99,6 +99,7 @@
     "pixi-filters": "^2.3.1",
     "pixi.js": "^4.6.1",
     "postcss-cssnext": "^3.0.2",
+    "postcss-icss-values": "^2.0.1",
     "preact": "^8.1.0",
     "preact-compat": "^3.15.0",
     "preact-render-to-string": "^3.6.0",

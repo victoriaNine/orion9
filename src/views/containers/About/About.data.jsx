@@ -35,6 +35,14 @@ const data = {
           title: "CSS Design Awards - orion9 - Special Kudos",
           url: "https://www.cssdesignawards.com/sites/orion9/31941"
         },
+        {
+          title: "Mindsparkle Mag - orion9 - Site of The Day",
+          url: "https://mindsparklemag.com/website/orion9"
+        },
+        {
+          title: "Mindsparkle Mag - orion9 - Featured",
+          url: "https://mindsparklemag.com/website/orion9"
+        }
       ]
     },
     {

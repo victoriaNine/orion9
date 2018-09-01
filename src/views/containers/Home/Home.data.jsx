@@ -13,7 +13,7 @@ const data = {
           id: "15thtriad",
           title: "The Fifteenth Triad",
           type: "project",
-          url: "https://15thtriad.com",
+          // url: "https://15thtriad.com",
           details: {
             role: ["dev", "design", "audio"],
             stack: ["backbone", "webpack", "webaudio", "canvas", "webgl", "node.js", "socket.io", "couchdb"],

@@ -97,16 +97,15 @@ class Work extends Component {
     const { language, currentWork, works } = this.props.appState;
 
     const linkItems = [
-      {
-        title: data.translations.visit[language],
-        url: currentWork.url
-      }
-    ].concat(currentWork.details.github ? [
-      {
-        title: data.translations.github[language],
-        url: currentWork.details.github
-      }
-    ] : []);
+      ...(currentWork.url
+        ? [{ title: data.translations.visit[language], url: currentWork.url }]
+        : []
+      ),
+      ...(currentWork.details.github
+        ? [{ title: data.translations.github[language], url: currentWork.details.github }]
+        : []
+      ),
+    ];
 
     const currentWorkId = works.findIndex((item) => item.id === currentWork.id);
     const prevWork = currentWorkId - 1 < 0 ? works[works.length - 1] : works[currentWorkId - 1];
@@ -136,9 +135,11 @@ class Work extends Component {
             <Section language={language} title={data.translations.about} text={currentWork.details.about} noLowercase />
           </div>
         }
-        <div className={styles.section}>
-          <Section language={language} title={data.translations.links} items={linkItems} />
-        </div>
+        {
+          linkItems.length && <div className={styles.section}>
+            <Section language={language} title={data.translations.links} items={linkItems} />
+          </div>
+        }
         {
           currentWork.details.client && <div className={styles.section}>
             <Section language={language} title={data.translations.client} text={currentWork.details.client} />

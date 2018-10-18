@@ -18,8 +18,11 @@ class Section extends Component {
     // Cancel item deselection
     clearTimeout(this.itemDeselectTimeout);
 
-    this.setState({ isActive: true });
-    item && item.color && this.setState({ color: item.color });
+    this.setState({
+      isActive: true,
+      color: (item && item.color) || ''
+    });
+
     item && item.visuals && this.props.setAppState({ visuals: item.visuals });
   };
 

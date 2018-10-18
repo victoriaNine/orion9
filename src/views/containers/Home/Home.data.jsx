@@ -106,6 +106,11 @@ const data = {
           title: { fr: "Voir mon GitHub", en: "Check my GitHub", jp: "GitHubを見る" },
           url: "http://github.com/victoriaNine",
           color: "#6e5494"
+        },
+        {
+          title: { fr: "Me contacter sur LinkedIn", en: "Get in touch on LinkedIn", jp: "LinkedInで連絡する" },
+          url: "https://www.linkedin.com/in/victoria9nine",
+          color: "#1074af"
         }
       ]
     }

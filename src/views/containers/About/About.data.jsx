@@ -10,11 +10,19 @@ const data = {
   sections: [
     {
       title: { fr: "Compétences & Outils", en: "Skills & Tools", jp: "スキルとツール" },
-      text: "HTML5, CSS3, ES2017+, PostCSS, SASS, Babel, Greensock, mo.js, Canvas, PixiJS, SeriouslyJS, WebAudio API, Tone.js, Gamepad API, jQuery, React, Preact, Backbone, Webpack, RequireJS, Grunt, lodash, Jest, Enzyme, Storybook, Socket.io, CouchDB, Node.js, Git, Yarn, Homemade framework development, Photoshop, Illustrator, Premiere Pro, UI design, UX design, Audio"
+      text: "HTML5, CSS3, ES2017+, Babel, styled-components, PostCSS, SASS, Greensock, mo.js, Canvas, PixiJS, SeriouslyJS, WebAudio API, Tone.js, Gamepad API, jQuery, React, Preact, Backbone, Webpack, RequireJS, Grunt, lodash, Ramda, Jest, Enzyme, Storybook, Socket.io, CouchDB, Node.js, Git, Yarn, Homemade framework development, Photoshop, Illustrator, Premiere Pro, UI design, UX design, Audio"
     },
     {
       title: { fr: "Récompenses", en: "Awards", jp: "受賞" },
       items: [
+        {
+          title: "The FWA - StubHub: Gift Rapper - Site of The Day",
+          url: "https://thefwa.com/cases/stubhub-gift-rapper"
+        },
+        {
+          title: "The FWA - OnePlus: Crackables - Site of The Day",
+          url: "https://thefwa.com/cases/oneplus-crackables"
+        },
         {
           title: "The FWA - Outcast: The Possession Begins - Site of The Day",
           url: "https://thefwa.com/cases/outcast-interactive-trailer-possession-begins"

@@ -16,6 +16,14 @@ const data = {
       title: { fr: "Récompenses", en: "Awards", jp: "受賞" },
       items: [
         {
+          title: "The FWA - TIAA: Difference Maker - Site of The Day",
+          url: "https://thefwa.com/cases/tiaa-difference-maker"
+        },
+        {
+          title: "The FWA - Lexus: Takumi Living - Site of The Day",
+          url: "https://thefwa.com/cases/lexus-takumi-living"
+        },
+        {
           title: "The FWA - StubHub: Gift Rapper - Site of The Day",
           url: "https://thefwa.com/cases/stubhub-gift-rapper"
         },
